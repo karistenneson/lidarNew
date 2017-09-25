@@ -2,6 +2,9 @@
 ## Written by MS Patterson (maspatte@uw.edu)
 # Last updated: July 11, 2017
 
+setwd('C:\\Users\\krtenneson\\Desktop\\lidarModel\\VersionControl\\lidarNew')
+setwd('\\\\166.2.126.25\\rseat\\Programs\\Reimbursibles\\fy2016\\R3_lidar_equation_transferability\\Analysis\\VersionControl\\lidarNew')
+
 ### Load required packages
 library(BMS)
 library(stats)
@@ -12,7 +15,7 @@ Coco <- read_csv("./Data/Coconino07162017.csv")
 Sit <- read_csv("./Data/Sitgreaves07162017.csv")
 SWJM <- read_csv("./Data/SWJM07162017.csv")
 Tonto <- read_csv("./Data/Tonto07162017.csv")
-Kaibab <- read_csv("./Data/NKaibab07192017.csv")
+Kaibab <- read_csv("./Data/NKaibab07162017.csv")
 
 AllData <- rbind(Coco, Sit, SWJM, Tonto, Kaibab)
 

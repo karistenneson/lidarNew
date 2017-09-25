@@ -1,7 +1,8 @@
 ################################################################################
 # Code to add sample weights to the data frame for plot vs lidar comparison
 
-setwd('C:\\Users\\krtenneson\\Desktop\\lidarModel\\VersionControl\\lidar')
+setwd('C:\\Users\\krtenneson\\Desktop\\lidarModel\\VersionControl\\lidarNew')
+setwd('\\\\166.2.126.25\\rseat\\Programs\\Reimbursibles\\fy2016\\R3_lidar_equation_transferability\\Analysis\\VersionControl\\lidarNew')
 
 # Load libraries
 library(plyr)

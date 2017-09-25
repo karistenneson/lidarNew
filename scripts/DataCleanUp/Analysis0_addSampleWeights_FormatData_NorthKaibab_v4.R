@@ -3,6 +3,9 @@
 # Written by Karis Tenneson (krtenneson@fs.fed.us) and Joshua Goldstein (joshuagoldstein@fs.fed.us)
 # Last updated: July 2017
 
+setwd('C:\\Users\\krtenneson\\Desktop\\lidarModel\\VersionControl\\lidarNew')
+setwd('\\\\166.2.126.25\\rseat\\Programs\\Reimbursibles\\fy2016\\R3_lidar_equation_transferability\\Analysis\\VersionControl\\lidarNew')
+
 # Load libraries
 library(plyr)
 library(foreign)
