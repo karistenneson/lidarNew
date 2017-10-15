@@ -45,7 +45,7 @@ corrgram(PRED, order=T, lower.panel=panel.shade,
 
 ### Model development
 ### Filter data down for development, package development
-DATA.test <- AllData[AllData$RandomUniform<0.10,]
+DATA.test <- AllData[AllData$RandomUniform<0.25,]
 
 STBIOMS.test <- DATA.test$STBIOMS #Standing biomass
 TCUFT.test <- DATA.test$TCUFT #Total timber volume
@@ -58,7 +58,7 @@ BMod <- cbind(STBIOMS.test, center(PRED.test[,-50]))
 BioBLM <- bas.lm(log(STBIOMS.test+.00001)~ ., 
                  data=BMod, 
                  prior="g-prior", 
-                 modelprior=beta.binomial(1, 1))
+                 modelprior=uniform())
 
 summary(BioBLM)
 plot(BioBLM)
