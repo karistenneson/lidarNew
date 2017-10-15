@@ -7,7 +7,7 @@ setwd('\\\\166.2.126.25\\rseat\\Programs\\Reimbursibles\\fy2016\\R3_lidar_equati
 setwd("~/Documents/R/lidar/")
 
 ### Load required packages
-library(BMS)
+library(BAS)
 library(stats)
 library(tidyverse)
 library(corrgram)
@@ -35,7 +35,7 @@ TCUFT <- AllData$TCUFT #Total timber volume
 PRED <- select(AllData, PredNames) #Select lidar metric data
 
 ### Exploring relationships between predictors
-corrgram(PRED, order=F, lower.panel=panel.shade,
+corrgram(PRED, order=T, lower.panel=panel.shade,
          upper.panel=panel.ellipse, text.panel=panel.txt,
          main="Lidar Predictor Data in PC2/PC1 Order")
 # A lot of positive correlation, but some things relatively uncorrelated with
@@ -44,7 +44,25 @@ corrgram(PRED, order=F, lower.panel=panel.shade,
 
 
 ### Model development
- 
+### Filter data down for development, package development
+DATA.test <- AllData[AllData$RandomUniform<0.10,]
+
+STBIOMS.test <- DATA.test$STBIOMS #Standing biomass
+TCUFT.test <- DATA.test$TCUFT #Total timber volume
+
+PRED.test <- select(DATA.test, PredNames) #Select lidar metric data
+
+BMod <- cbind(STBIOMS.test, center(PRED.test[,-50]))
+
+# Full variable pool
+BioBLM <- bas.lm(log(STBIOMS.test+.00001)~ ., 
+                 data=BMod, 
+                 prior="g-prior", 
+                 modelprior=beta.binomial(1, 1))
+
+summary(BioBLM)
+plot(BioBLM)
+
 ### Generate Predictions
 
 ### Validate Predictions against Validation set

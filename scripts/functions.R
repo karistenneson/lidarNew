@@ -10,7 +10,7 @@ norm.test2 <- function(data, alpha=0.05)
   return(ifelse(result$p.value>alpha, T, F))
 }
 
-center_colmeans <- function(x) {
+center <- function(x) {
   xcenter = colMeans(x)
   x - rep(xcenter, rep.int(nrow(x), ncol(x)))
 }
