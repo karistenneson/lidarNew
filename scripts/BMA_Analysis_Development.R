@@ -52,7 +52,8 @@ TCUFT.test <- DATA.test$TCUFT #Total timber volume
 
 PRED.test <- select(DATA.test, PredNames) #Select lidar metric data
 
-BMod <- cbind(STBIOMS.test, center(PRED.test[,-50]))
+BMod <- cbind(STBIOMS.test, PRED.test[,-50])
+BModC <- cbind(STBIOMS.test, center(PRED.test[,-50]))
 
 # Full variable pool
 BioBLM <- bas.lm(log(STBIOMS.test+.00001)~ ., 
@@ -63,6 +64,15 @@ BioBLM <- bas.lm(log(STBIOMS.test+.00001)~ .,
 summary(BioBLM)
 plot(BioBLM)
 
+
+# Full variable pool, centered
+BioBLMc <- bas.lm(log(STBIOMS.test+.00001)~ ., 
+                 data=BModC, 
+                 prior="g-prior", 
+                 modelprior=uniform())
+
+summary(BioBLMc)
+plot(BioBLMc)
 ### Generate Predictions
 
 ### Validate Predictions against Validation set
