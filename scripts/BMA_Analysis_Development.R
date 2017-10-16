@@ -63,6 +63,8 @@ BioBLM <- bas.lm(log(STBIOMS.test+.00001)~ .,
                  modelprior=uniform())
 
 summary(BioBLM)
+PredNames[which(BioBLM$probne0>0.5)-1]
+
 plot(BioBLM, ask=F)
 
 #Plot CI of all parameters
@@ -79,6 +81,8 @@ BioBLMc <- bas.lm(log(STBIOMS.test+.00001)~ .,
                  modelprior=uniform())
 
 summary(BioBLMc)
+PredNames[which(BioBLMc$probne0>0.5)-1]
+
 plot(BioBLMc, ask=F)
 
 #Plot CI of all parameters
@@ -87,6 +91,18 @@ plot(confint(coef(BioBLMc), parm=2:50))
 #Confidence Intervals on median/highest probability model
 plot(confint(coef(BioBLMc, estimator="MPM")))
 plot(confint(coef(BioBLMc, estimator="HPM")))
+
+# Full variable pool, centered, truncated poisson prior, g = N
+BioBLMp <- bas.lm(log(STBIOMS.test+.00001)~ ., 
+                  data=BModC, 
+                  prior="g-prior",
+                  alpha = nrow(BModC),
+                  modelprior=tr.poisson(9,30))
+
+summary(BioBLMp)
+PredNames[which(BioBLMp$probne0>0.5)-1]
+
+plot(BioBLMc, ask=F)
 
 
 ### Generate Predictions
