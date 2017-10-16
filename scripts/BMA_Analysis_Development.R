@@ -92,7 +92,7 @@ plot(confint(coef(BioBLMc), parm=2:50))
 plot(confint(coef(BioBLMc, estimator="MPM")))
 plot(confint(coef(BioBLMc, estimator="HPM")))
 
-# Full variable pool, centered, truncated poisson prior, g = N
+# Full variable pool, centered, truncated poisson prior, g = N (unit information prior)
 BioBLMp <- bas.lm(log(STBIOMS.test+.00001)~ ., 
                   data=BModC, 
                   prior="g-prior",
@@ -104,6 +104,56 @@ PredNames[which(BioBLMp$probne0>0.5)-1]
 
 plot(BioBLMc, ask=F)
 
+# Full variable pool, truncated poisson prior, hyper-g
+BioBLMh <- bas.lm(log(STBIOMS.test+.00001)~ ., 
+                  data=BMod, 
+                  prior="hyper-g",
+                  alpha = 3,
+                  modelprior=tr.poisson(9,30))
+
+summary(BioBLMh)
+PredNames[which(BioBLMh$probne0>0.5)-1]
+
+
+# Full variable pool, centered, truncated poisson prior, hyper-g
+BioBLMhc <- bas.lm(log(STBIOMS.test+.00001)~ ., 
+                  data=BMod, 
+                  prior="hyper-g",
+                  alpha = 3,
+                  modelprior=tr.poisson(9,30))
+
+summary(BioBLMhc)
+PredNames[which(BioBLMhc$probne0>0.5)-1]
+
+# Correlation in variables in the median model
+MedModVar <- select(BMod, PredNames[which(BioBLMhc$probne0>0.5)-1]) #Select lidar metric data
+
+corrgram(MedModVar, order=T, lower.panel=panel.ellipse,
+         upper.panel=panel.cor, text.panel=panel.txt,
+         main="Lidar Predictor Data in PC2/PC1 Order")
+
+#Fairly strong correlation between a number of pairs, some odd relationships!
+
+### Add in additional variables
+# VarNames <- c(PredNames, FieldNames[c(9,7,20)])
+# 
+# PRED.test2 <- select(DATA.test, VarNames) #Select lidar metric data
+# PRED.test2 <- PRED.test2[,-50]
+# PRED.test2$Forest <- as.factor(PRED.test2$Forest)
+# PRED.test2$ForestType <- as.factor(PRED.test2$ForestType)
+# 
+# BMod2 <- cbind(STBIOMS.test, PRED.test2)
+# BMod2c <- cbind(STBIOMS.test, center(PRED.test2[,c(-51,-52)]), PRED.test2[,51], PRED.test2[,52]) 
+# 
+# 
+# BioBLM2hc <- bas.lm(log(STBIOMS.test+.00001)~ ., 
+#                    data=BMod2c, 
+#                    prior="hyper-g",
+#                    alpha = 3,
+#                    modelprior=tr.poisson(9,30))
+# 
+# summary(BioBLMhc)
+# PredNames[which(BioBLMhc$probne0>0.5)-1]
 
 ### Generate Predictions
 
