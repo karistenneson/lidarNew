@@ -4,7 +4,8 @@
 
 setwd('C:\\Users\\krtenneson\\Desktop\\lidarModel\\VersionControl\\lidarNew')
 setwd('\\\\166.2.126.25\\rseat\\Programs\\Reimbursibles\\fy2016\\R3_lidar_equation_transferability\\Analysis\\VersionControl\\lidarNew')
-setwd("~/Documents/R/lidar/")
+setwd("~/Documents/R/lidar/") #Mac
+setwd("~/R/lidarNew/scripts") #Win
 
 ### Load required packages
 library(BAS)
@@ -62,8 +63,14 @@ BioBLM <- bas.lm(log(STBIOMS.test+.00001)~ .,
                  modelprior=uniform())
 
 summary(BioBLM)
-plot(BioBLM)
+plot(BioBLM, ask=F)
 
+#Plot CI of all parameters
+plot(confint(coef(BioBLM), parm=2:50))
+
+#Confidence Intervals on median/highest probability model
+plot(confint(coef(BioBLM, estimator="MPM")))
+plot(confint(coef(BioBLM, estimator="HPM")))
 
 # Full variable pool, centered
 BioBLMc <- bas.lm(log(STBIOMS.test+.00001)~ ., 
@@ -72,7 +79,16 @@ BioBLMc <- bas.lm(log(STBIOMS.test+.00001)~ .,
                  modelprior=uniform())
 
 summary(BioBLMc)
-plot(BioBLMc)
+plot(BioBLMc, ask=F)
+
+#Plot CI of all parameters
+plot(confint(coef(BioBLMc), parm=2:50))
+
+#Confidence Intervals on median/highest probability model
+plot(confint(coef(BioBLMc, estimator="MPM")))
+plot(confint(coef(BioBLMc, estimator="HPM")))
+
+
 ### Generate Predictions
 
 ### Validate Predictions against Validation set
