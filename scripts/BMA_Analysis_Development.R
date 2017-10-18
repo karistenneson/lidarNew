@@ -28,11 +28,16 @@ AuxTrim <- select(Aux, PLOT_ID, R3ERUCODE, elevation, aspect, slope)
 AllData <- merge(AllData, AuxTrim, by="PLOT_ID", all=F)
 AllData$R3ERUCODE <- as.factor(AllData$R3ERUCODE)
 
+NDVI <- read_csv("../Data/Auxillary/NDVIamplitude.csv")
+
+AllData <- merge(AllData, select(NDVI, PLOT_ID, NDVI_Sample_NDVI_amplitude_1), by="PLOT_ID", all=F)
+AllData <- rename(AllData, NDVI_Amp=NDVI_Sample_NDVI_amplitude_1)
+
 ### Partion data
 Variables <- colnames(AllData) #pull variable names for use with select()
 LidarNames <- c(Variables[23:75]) #subset of lidar metrics
 FieldNames <- Variables[1:20] #subset of field variables
-AuxNames <- Variables[72:75] #subset of additional environmental variables
+AuxNames <- Variables[72:76] #subset of additional environmental variables
 RandUnif <- Variables[11] #The Random Uniform Variable
 
 ### Need to add in bit here for selecting rows using the Random Uniform, 
@@ -62,7 +67,9 @@ TCUFT.test <- DATA.test$TCUFT #Total timber volume
 PRED.test <- select(DATA.test, LidarNames, AuxNames, FieldNames[9]) #Select lidar metric data
 
 BMod <- cbind(STBIOMS.test, PRED.test)
-#BModC <- cbind(STBIOMS.test, center(PRED.test)) Deal with later
+
+# Centering data
+BModC <- cbind(STBIOMS.test, center(PRED.test[,-50]), PRED.test[50])
 
 # # Full variable pool
 # BioBLM <- bas.lm(log(STBIOMS.test+.00001)~ ., 
@@ -112,15 +119,15 @@ BMod <- cbind(STBIOMS.test, PRED.test)
 # 
 # plot(BioBLMc, ask=F)
 # 
-# # Full variable pool, centered, truncated poisson prior, hyper-g
-# BioBLMhc <- bas.lm(log(STBIOMS.test+.00001)~ ., 
-#                    data=BMod, 
-#                    prior="hyper-g",
-#                    alpha = 3,
-#                    modelprior=tr.poisson(9,30))
-# 
-# summary(BioBLMhc)
-# PredNames[which(BioBLMhc$probne0>0.5)-1]
+# Full variable pool, centered, truncated poisson prior, hyper-g
+BioBLMhc <- bas.lm(log(STBIOMS.test+.00001)~ .,
+                   data=BMod,
+                   prior="hyper-g",
+                   alpha = 3,
+                   modelprior=tr.poisson(9,30))
+
+summary(BioBLMhc)
+BioBLMh$namesx[which(BioBLMhc$probne0>0.5)][-1]
 
 # Full variable pool, truncated poisson prior, hyper-g
 BioBLMh <- bas.lm(log(STBIOMS.test+.00001)~ ., 
@@ -134,7 +141,7 @@ BioBLMh$namesx[which(BioBLMh$probne0>0.5)][-1]
 
 
 # Correlation in variables in the median model
-MedModVar <- select(BMod, BioBLMh$namesx[which(BioBLMh$probne0>0.5)][-1]) #Select lidar metric data
+MedModVar <- select(BMod, BioBLMh$namesx[which(BioBLMh$probne0>0.5)][-1])
 
 corrgram(MedModVar, order=T, lower.panel=panel.ellipse,
          upper.panel=panel.cor, text.panel=panel.txt,
