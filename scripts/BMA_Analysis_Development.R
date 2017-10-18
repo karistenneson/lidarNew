@@ -4,7 +4,7 @@
 
 setwd('C:\\Users\\krtenneson\\Desktop\\lidarModel\\VersionControl\\lidarNew')
 setwd('\\\\166.2.126.25\\rseat\\Programs\\Reimbursibles\\fy2016\\R3_lidar_equation_transferability\\Analysis\\VersionControl\\lidarNew')
-setwd("~/Documents/R/lidar/") #Mac
+setwd("~/Documents/R/lidarNew/scripts") #Mac
 setwd("~/R/lidarNew/scripts") #Win
 
 ### Load required packages
@@ -22,10 +22,17 @@ Kaibab <- read_csv("../Data/NKaibab07192017.csv")
 
 AllData <- rbind(Coco, Sit, SWJM, Tonto, Kaibab)
 
+#Bring in Environmental Data
+Aux <- read_csv("../Data/Auxillary/Merged_10172017.csv")
+AuxTrim <- select(Aux, PLOT_ID, R3ERUSUBCO, elevation, aspect, slope)
+AllData <- merge(AllData, AuxTrim, by="PLOT_ID", all=F)
+
 ### Partion data
 Variables <- colnames(AllData) #pull variable names for use with select()
-PredNames <- c(Variables[23:71], Variables[11]) #subset of lidar metrics
+LidarNames <- c(Variables[23:75]) #subset of lidar metrics
 FieldNames <- Variables[1:20] #subset of field variables
+AuxNames <- Variables[72:75] #subset of additional environmental variables
+RandUnif <- Variables[11] #The Random Uniform Variable
 
 ### Need to add in bit here for selecting rows using the Random Uniform, 
 ### or alternately add that to the Independent variables
@@ -33,7 +40,7 @@ FieldNames <- Variables[1:20] #subset of field variables
 STBIOMS <- AllData$STBIOMS #Standing biomass
 TCUFT <- AllData$TCUFT #Total timber volume
 
-PRED <- select(AllData, PredNames) #Select lidar metric data
+PRED <- select(AllData, LidarNames, AuxNames, FieldNames[9], RandUnif) #Select data and fields to work with. 
 
 ### Exploring relationships between predictors
 corrgram(PRED, order=T, lower.panel=panel.shade,
