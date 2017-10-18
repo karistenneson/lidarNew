@@ -24,8 +24,9 @@ AllData <- rbind(Coco, Sit, SWJM, Tonto, Kaibab)
 
 #Bring in Environmental Data
 Aux <- read_csv("../Data/Auxillary/Merged_10172017.csv")
-AuxTrim <- select(Aux, PLOT_ID, R3ERUSUBCO, elevation, aspect, slope)
+AuxTrim <- select(Aux, PLOT_ID, R3ERUCODE, elevation, aspect, slope)
 AllData <- merge(AllData, AuxTrim, by="PLOT_ID", all=F)
+AllData$R3ERUCODE <- as.factor(AllData$R3ERUCODE)
 
 ### Partion data
 Variables <- colnames(AllData) #pull variable names for use with select()
@@ -58,58 +59,68 @@ DATA.test <- AllData[AllData$RandomUniform<0.25,]
 STBIOMS.test <- DATA.test$STBIOMS #Standing biomass
 TCUFT.test <- DATA.test$TCUFT #Total timber volume
 
-PRED.test <- select(DATA.test, PredNames) #Select lidar metric data
+PRED.test <- select(DATA.test, LidarNames, AuxNames, FieldNames[9]) #Select lidar metric data
 
-BMod <- cbind(STBIOMS.test, PRED.test[,-50])
-BModC <- cbind(STBIOMS.test, center(PRED.test[,-50]))
+BMod <- cbind(STBIOMS.test, PRED.test)
+#BModC <- cbind(STBIOMS.test, center(PRED.test)) Deal with later
 
-# Full variable pool
-BioBLM <- bas.lm(log(STBIOMS.test+.00001)~ ., 
-                 data=BMod, 
-                 prior="g-prior", 
-                 modelprior=uniform())
-
-summary(BioBLM)
-PredNames[which(BioBLM$probne0>0.5)-1]
-
-plot(BioBLM, ask=F)
-
-#Plot CI of all parameters
-plot(confint(coef(BioBLM), parm=2:50))
-
-#Confidence Intervals on median/highest probability model
-plot(confint(coef(BioBLM, estimator="MPM")))
-plot(confint(coef(BioBLM, estimator="HPM")))
-
-# Full variable pool, centered
-BioBLMc <- bas.lm(log(STBIOMS.test+.00001)~ ., 
-                 data=BModC, 
-                 prior="g-prior", 
-                 modelprior=uniform())
-
-summary(BioBLMc)
-PredNames[which(BioBLMc$probne0>0.5)-1]
-
-plot(BioBLMc, ask=F)
-
-#Plot CI of all parameters
-plot(confint(coef(BioBLMc), parm=2:50))
-
-#Confidence Intervals on median/highest probability model
-plot(confint(coef(BioBLMc, estimator="MPM")))
-plot(confint(coef(BioBLMc, estimator="HPM")))
-
-# Full variable pool, centered, truncated poisson prior, g = N (unit information prior)
-BioBLMp <- bas.lm(log(STBIOMS.test+.00001)~ ., 
-                  data=BModC, 
-                  prior="g-prior",
-                  alpha = nrow(BModC),
-                  modelprior=tr.poisson(9,30))
-
-summary(BioBLMp)
-PredNames[which(BioBLMp$probne0>0.5)-1]
-
-plot(BioBLMc, ask=F)
+# # Full variable pool
+# BioBLM <- bas.lm(log(STBIOMS.test+.00001)~ ., 
+#                  data=BMod, 
+#                  prior="g-prior", 
+#                  modelprior=uniform())
+# 
+# summary(BioBLM)
+# PredNames[which(BioBLM$probne0>0.5)-1]
+# 
+# plot(BioBLM, ask=F)
+# 
+# #Plot CI of all parameters
+# plot(confint(coef(BioBLM), parm=2:50))
+# 
+# #Confidence Intervals on median/highest probability model
+# plot(confint(coef(BioBLM, estimator="MPM")))
+# plot(confint(coef(BioBLM, estimator="HPM")))
+# 
+# # Full variable pool, centered
+# BioBLMc <- bas.lm(log(STBIOMS.test+.00001)~ ., 
+#                  data=BModC, 
+#                  prior="g-prior", 
+#                  modelprior=uniform())
+# 
+# summary(BioBLMc)
+# PredNames[which(BioBLMc$probne0>0.5)-1]
+# 
+# plot(BioBLMc, ask=F)
+# 
+# #Plot CI of all parameters
+# plot(confint(coef(BioBLMc), parm=2:50))
+# 
+# #Confidence Intervals on median/highest probability model
+# plot(confint(coef(BioBLMc, estimator="MPM")))
+# plot(confint(coef(BioBLMc, estimator="HPM")))
+# 
+# # Full variable pool, centered, truncated poisson prior, g = N (unit information prior)
+# BioBLMp <- bas.lm(log(STBIOMS.test+.00001)~ ., 
+#                   data=BModC, 
+#                   prior="g-prior",
+#                   alpha = nrow(BModC),
+#                   modelprior=tr.poisson(9,30))
+# 
+# summary(BioBLMp)
+# PredNames[which(BioBLMp$probne0>0.5)-1]
+# 
+# plot(BioBLMc, ask=F)
+# 
+# # Full variable pool, centered, truncated poisson prior, hyper-g
+# BioBLMhc <- bas.lm(log(STBIOMS.test+.00001)~ ., 
+#                    data=BMod, 
+#                    prior="hyper-g",
+#                    alpha = 3,
+#                    modelprior=tr.poisson(9,30))
+# 
+# summary(BioBLMhc)
+# PredNames[which(BioBLMhc$probne0>0.5)-1]
 
 # Full variable pool, truncated poisson prior, hyper-g
 BioBLMh <- bas.lm(log(STBIOMS.test+.00001)~ ., 
@@ -119,21 +130,11 @@ BioBLMh <- bas.lm(log(STBIOMS.test+.00001)~ .,
                   modelprior=tr.poisson(9,30))
 
 summary(BioBLMh)
-PredNames[which(BioBLMh$probne0>0.5)-1]
+BioBLMh$namesx[which(BioBLMh$probne0>0.5)][-1]
 
-
-# Full variable pool, centered, truncated poisson prior, hyper-g
-BioBLMhc <- bas.lm(log(STBIOMS.test+.00001)~ ., 
-                  data=BMod, 
-                  prior="hyper-g",
-                  alpha = 3,
-                  modelprior=tr.poisson(9,30))
-
-summary(BioBLMhc)
-PredNames[which(BioBLMhc$probne0>0.5)-1]
 
 # Correlation in variables in the median model
-MedModVar <- select(BMod, PredNames[which(BioBLMhc$probne0>0.5)-1]) #Select lidar metric data
+MedModVar <- select(BMod, BioBLMh$namesx[which(BioBLMh$probne0>0.5)][-1]) #Select lidar metric data
 
 corrgram(MedModVar, order=T, lower.panel=panel.ellipse,
          upper.panel=panel.cor, text.panel=panel.txt,
