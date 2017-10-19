@@ -59,7 +59,7 @@ corrgram(PRED, order=T, lower.panel=panel.shade,
 
 ### Model development
 ### Filter data down for development, package development
-DATA.test <- AllData[AllData$RandomUniform<0.25,]
+DATA.test <- AllData[AllData$RandomUniform<0.4,]
 
 STBIOMS.test <- DATA.test$STBIOMS #Standing biomass
 TCUFT.test <- DATA.test$TCUFT #Total timber volume
@@ -124,17 +124,19 @@ BioBLMhc <- bas.lm(log(STBIOMS.test+.00001)~ .,
                    data=BMod,
                    prior="hyper-g",
                    alpha = 3,
-                   modelprior=tr.poisson(9,30))
+                   modelprior=tr.poisson(10,30),
+                   method="MCMC")
 
 summary(BioBLMhc)
-BioBLMh$namesx[which(BioBLMhc$probne0>0.5)][-1]
+BioBLMhc$namesx[which(BioBLMhc$probne0>0.5)][-1]
 
 # Full variable pool, truncated poisson prior, hyper-g
 BioBLMh <- bas.lm(log(STBIOMS.test+.00001)~ ., 
                   data=BMod, 
                   prior="hyper-g",
                   alpha = 3,
-                  modelprior=tr.poisson(9,30))
+                  modelprior=tr.poisson(10,30),
+                  method="MCMC")
 
 summary(BioBLMh)
 BioBLMh$namesx[which(BioBLMh$probne0>0.5)][-1]
@@ -147,29 +149,44 @@ corrgram(MedModVar, order=T, lower.panel=panel.ellipse,
          upper.panel=panel.cor, text.panel=panel.txt,
          main="Lidar Predictor Data in PC2/PC1 Order")
 
-#Fairly strong correlation between a number of pairs, some odd relationships!
+#Fairly strong correlation between Elev_L2 and Elev_variance, as well as pct_all... and All_returns_above... 
+#some odd relationships!
 
-### Add in additional variables
-# VarNames <- c(PredNames, FieldNames[c(9,7,20)])
-# 
-# PRED.test2 <- select(DATA.test, VarNames) #Select lidar metric data
-# PRED.test2 <- PRED.test2[,-50]
-# PRED.test2$Forest <- as.factor(PRED.test2$Forest)
-# PRED.test2$ForestType <- as.factor(PRED.test2$ForestType)
-# 
-# BMod2 <- cbind(STBIOMS.test, PRED.test2)
-# BMod2c <- cbind(STBIOMS.test, center(PRED.test2[,c(-51,-52)]), PRED.test2[,51], PRED.test2[,52]) 
-# 
-# 
-# BioBLM2hc <- bas.lm(log(STBIOMS.test+.00001)~ ., 
-#                    data=BMod2c, 
-#                    prior="hyper-g",
-#                    alpha = 3,
-#                    modelprior=tr.poisson(9,30))
-# 
-# summary(BioBLMhc)
-# PredNames[which(BioBLMhc$probne0>0.5)-1]
+# Model diagnostics
+plot(BioBLMh, ask=F)
+plot(BioBLMhc, ask=F)
+
+#pull some models out using predict functions
+
+# Highest Probability Model
+HPM <- predict(BioBLMh, estimator="HPM")
+BioBLMh$namesx[HPM$bestmodel+1][-1]
+
+# Median Probability Model (smaller than Highest Probability Model)
+MPM <- predict(BioBLMh, estimator="MPM")
+BioBLMh$namesx[MPM$bestmodel+1][-1]
+
+# Best Predictive Model, closest to BMA in terms of squared error loss, takes a pretty long time to find. 
+BPM <- predict(BioBLMh, estimator="BPM")
+BioBLMh$namesx[BPM$bestmodel+1][-1] # Best Predictive model is quite large, has 19 variables. 
+
+BPMlm <- lm(log(STBIOMS.test +0.00001)~ Elev_variance + Elev_CV + Elev_MAD_mode + Elev_L2 + Elev_Lskewness + Elev_Lkurtosis +
+Elev_P40 + Elev_P50 + Elev_P75 + Elev_P80 + Pct_all_returns_above_ht + pct_all_returns_above_mean +
+All_returns_above_mean_div_Total_first_returns_x_100 + First_returns_above_mode + 
+All_returns_above_mean + Total_all_returns + elevation + slope + NDVI_Amp, data=BMod)
+
+summary(BPMlm)
+plot(BPMlm, ask=F) #Slightly better fit with residuals than model below. 
+
+#A possible final model? 
+BMmodel <- lm(log(STBIOMS.test +0.00001)~ Elev_CV + Elev_L2 + Elev_Lskewness + Elev_Lkurtosis + pct_all_returns_above_mean +
+                elevation + slope, data=BMod)
+summary(BMmodel)
+plot(BMmodel) # Some slight non-linearities in residuals and QQ. 
 
 ### Generate Predictions
+
+# This uses the Bayesian model object
+ValPred <- predict(BioBLMh, newdata= , estimator= )
 
 ### Validate Predictions against Validation set
