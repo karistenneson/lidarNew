@@ -6,7 +6,7 @@ setwd('C:\\Users\\krtenneson\\Desktop\\lidarModel\\VersionControl\\lidarNew')
 setwd('\\\\166.2.126.25\\rseat\\Programs\\Reimbursibles\\fy2016\\R3_lidar_equation_transferability\\Analysis\\VersionControl\\lidarNew')
 setwd("~/Documents/R/lidarNew/scripts") #Mac
 setwd("~/R/lidarNew/scripts") #WinCampus
-setwd("~/R/projects/lidarNew/scripts") #WinCampus
+setwd("~/R/projects/lidarNew/scripts") #WinHome
 
 ### Load required packages
 library(BAS)
@@ -168,11 +168,13 @@ HPMlm <- lm(log(STBIOMS.test +0.00001)~ , data=Bmod)
 summary(HPMlm)
 plot(HPMlm, ask=F)
 
-# Median Probability Model (smaller than Highest Probability Model)
+# Median Probability Model (same as Highest Probability Model)
 MPM <- predict(BioBLMh, estimator="MPM")
 BioBLMh$namesx[MPM$bestmodel+1][-1]
 
-MPMlm <- lm(log(STBIOMS.test +0.00001)~ , data=Bmod)
+MPMlm <- lm(log(STBIOMS.test +0.00001)~ Elev_ave + Elev_variance + Elev_P05 +
+              Elev_P50 + Pct_all_returns_above_ht + Pct_first_returns_above_mean +
+              pct_all_returns_above_mean + R3ERUCODE + elevation + slope, data=BMod)
 
 summary(MPMlm)
 plot(MPMlm, ask=F)
