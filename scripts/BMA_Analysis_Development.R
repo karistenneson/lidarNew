@@ -5,7 +5,8 @@
 setwd('C:\\Users\\krtenneson\\Desktop\\lidarModel\\VersionControl\\lidarNew')
 setwd('\\\\166.2.126.25\\rseat\\Programs\\Reimbursibles\\fy2016\\R3_lidar_equation_transferability\\Analysis\\VersionControl\\lidarNew')
 setwd("~/Documents/R/lidarNew/scripts") #Mac
-setwd("~/R/lidarNew/scripts") #Win
+setwd("~/R/lidarNew/scripts") #WinCampus
+setwd("~/R/projects/lidarNew/scripts") #WinCampus
 
 ### Load required packages
 library(BAS)
@@ -162,9 +163,19 @@ plot(BioBLMhc, ask=F)
 HPM <- predict(BioBLMh, estimator="HPM")
 BioBLMh$namesx[HPM$bestmodel+1][-1]
 
+HPMlm <- lm(log(STBIOMS.test +0.00001)~ , data=Bmod)
+
+summary(HPMlm)
+plot(HPMlm, ask=F)
+
 # Median Probability Model (smaller than Highest Probability Model)
 MPM <- predict(BioBLMh, estimator="MPM")
 BioBLMh$namesx[MPM$bestmodel+1][-1]
+
+MPMlm <- lm(log(STBIOMS.test +0.00001)~ , data=Bmod)
+
+summary(MPMlm)
+plot(MPMlm, ask=F)
 
 # Best Predictive Model, closest to BMA in terms of squared error loss, takes a pretty long time to find. 
 BPM <- predict(BioBLMh, estimator="BPM")
