@@ -34,6 +34,9 @@ NDVI <- read_csv("../Data/Auxillary/NDVIamplitude.csv")
 AllData <- merge(AllData, select(NDVI, PLOT_ID, NDVI_Sample_NDVI_amplitude_1), by="PLOT_ID", all=F)
 AllData <- rename(AllData, NDVI_Amp=NDVI_Sample_NDVI_amplitude_1)
 
+#Remove 'zero' biomass outliers
+AllData <- AllData[AllData$STBIOMS>0,]
+
 ### Partion data
 Variables <- colnames(AllData) #pull variable names for use with select()
 LidarNames <- c(Variables[23:75]) #subset of lidar metrics
@@ -60,7 +63,7 @@ corrgram(PRED, order=T, lower.panel=panel.shade,
 
 ### Model development
 ### Filter data down for development, package development
-DATA.test <- AllData[AllData$RandomUniform<0.4,]
+DATA.test <- AllData[AllData$RandomUniform<0.75]
 
 STBIOMS.test <- DATA.test$STBIOMS #Standing biomass
 TCUFT.test <- DATA.test$TCUFT #Total timber volume
@@ -121,23 +124,23 @@ BModC <- cbind(STBIOMS.test, center(PRED.test[,-50]), PRED.test[50])
 # plot(BioBLMc, ask=F)
 # 
 # Full variable pool, centered, truncated poisson prior, hyper-g
-BioBLMhc <- bas.lm(log(STBIOMS.test+.00001)~ .,
+BioBLMhc <- bas.lm(log(STBIOMS.test)~ .,
                    data=BMod,
                    prior="hyper-g",
                    alpha = 3,
                    modelprior=tr.poisson(10,30),
-                   method="MCMC")
+                   method="MCMC+BAS")
 
 summary(BioBLMhc)
 BioBLMhc$namesx[which(BioBLMhc$probne0>0.5)][-1]
 
 # Full variable pool, truncated poisson prior, hyper-g
-BioBLMh <- bas.lm(log(STBIOMS.test+.00001)~ ., 
+BioBLMh <- bas.lm(log(STBIOMS.test)~ ., 
                   data=BMod, 
                   prior="hyper-g",
                   alpha = 3,
                   modelprior=tr.poisson(10,30),
-                  method="MCMC")
+                  method="MCMC+BAS")
 
 summary(BioBLMh)
 BioBLMh$namesx[which(BioBLMh$probne0>0.5)][-1]
@@ -150,8 +153,7 @@ corrgram(MedModVar, order=T, lower.panel=panel.ellipse,
          upper.panel=panel.cor, text.panel=panel.txt,
          main="Lidar Predictor Data in PC2/PC1 Order")
 
-#Fairly strong correlation between Elev_L2 and Elev_variance, as well as pct_all... and All_returns_above... 
-#some odd relationships!
+#Fairly strong correlations between many variables, several clear pairs that should probably be removed. 
 
 # Model diagnostics
 plot(BioBLMh, ask=F)
@@ -163,37 +165,35 @@ plot(BioBLMhc, ask=F)
 HPM <- predict(BioBLMh, estimator="HPM")
 BioBLMh$namesx[HPM$bestmodel+1][-1]
 
-HPMlm <- lm(log(STBIOMS.test +0.00001)~ , data=Bmod)
+HPMlm <- lm(log(STBIOMS.test)~ Elev_IQ + Elev_P80 + Pct_first_returns_above_ht +
+              Pct_all_returns_above_ht + First_returns_above_ht + All_returns_above_ht +
+              Total_first_returns + Total_all_returns + elevation +slope, data=BMod)
 
 summary(HPMlm)
 plot(HPMlm, ask=F)
 
-# Median Probability Model (same as Highest Probability Model)
+# Median Probability Model 
 MPM <- predict(BioBLMh, estimator="MPM")
 BioBLMh$namesx[MPM$bestmodel+1][-1]
 
-MPMlm <- lm(log(STBIOMS.test +0.00001)~ Elev_ave + Elev_variance + Elev_P05 +
-              Elev_P50 + Pct_all_returns_above_ht + Pct_first_returns_above_mean +
-              pct_all_returns_above_mean + R3ERUCODE + elevation + slope, data=BMod)
+MPMlm <- lm(log(STBIOMS.test)~ Pct_first_returns_above_ht +
+              Pct_all_returns_above_ht + First_returns_above_ht + All_returns_above_ht +
+              Total_first_returns + Total_all_returns + elevation, data=BMod)
 
 summary(MPMlm)
 plot(MPMlm, ask=F)
 
 # Best Predictive Model, closest to BMA in terms of squared error loss, takes a pretty long time to find. 
-BPM <- predict(BioBLMh, estimator="BPM")
-BioBLMh$namesx[BPM$bestmodel+1][-1] # Best Predictive model is quite large, has 19 variables. 
-
-BPMlm <- lm(log(STBIOMS.test +0.00001)~ Elev_variance + Elev_CV + Elev_MAD_mode + Elev_L2 + Elev_Lskewness + Elev_Lkurtosis +
-Elev_P40 + Elev_P50 + Elev_P75 + Elev_P80 + Pct_all_returns_above_ht + pct_all_returns_above_mean +
-All_returns_above_mean_div_Total_first_returns_x_100 + First_returns_above_mode + 
-All_returns_above_mean + Total_all_returns + elevation + slope + NDVI_Amp, data=BMod)
-
-summary(BPMlm)
-plot(BPMlm, ask=F) #Slightly better fit with residuals than model below. 
+BPM <- predict(BioBLMh, estimator="BPM") #not running, grrrr
+# BioBLMh$namesx[BPM$bestmodel+1][-1] # Best Predictive model is  
+# 
+# BPMlm <- lm(log(STBIOMS.test)~ , data=BMod)
+# 
+# summary(BPMlm)
+# plot(BPMlm, ask=F) #Slightly better fit with residuals than model below. 
 
 #A possible final model? 
-BMmodel <- lm(log(STBIOMS.test +0.00001)~ Elev_CV + Elev_L2 + Elev_Lskewness + Elev_Lkurtosis + pct_all_returns_above_mean +
-                elevation + slope, data=BMod)
+BMmodel <- lm(log(STBIOMS.test)~ , data=BMod)
 summary(BMmodel)
 plot(BMmodel) # Some slight non-linearities in residuals and QQ. 
 

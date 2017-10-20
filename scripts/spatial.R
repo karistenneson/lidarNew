@@ -22,7 +22,7 @@ colnames(coords) <- c("X_Albers", "Y_Albers")
 BModsp <- SpatialPointsDataFrame(coords=(coords), data=BMod, proj4string=projection)
 
 ### Fit a variogram to the residuals from the data
-Vgam <- variogram(residuals(BPMlm)~1, BModsp, cutoff = 75000) #produce a variogram
+Vgam <- variogram(residuals(HPMlm)~1, BModsp, cutoff = 75000) #produce a variogram
 
 plot(Vgam, type='b', main='Residual Variogram') #very peculiar! 
 
