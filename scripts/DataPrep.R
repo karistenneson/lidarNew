@@ -38,6 +38,7 @@ AllData <- rename(AllData, NDVI_Amp=NDVI_Sample_NDVI_amplitude_1)
 
 #Remove 'zero' biomass outliers
 AllData <- AllData[AllData$STBIOMS>0,]
+AllData <- AllData[AllData$TCUFT>0,]
 
 ### Partion data
 Variables <- colnames(AllData) #pull variable names for use with select()
