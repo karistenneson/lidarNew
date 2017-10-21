@@ -53,4 +53,4 @@ DATA.mod <- AllData[AllData$RandomUniform<0.75,]
 DATA.mod <- select(DATA.mod, STBIOMS, TCUFT, LidarNames, AuxNames, FieldNames[9])
 
 # Centering data
-DATA.modC <- cbind(center(DATA.mod[,-52]), DATA.mod[52])
+DATA.modC <- cbind(DATA.mod[, c(1,2)], center(DATA.mod[,c(-1,-2,-52)]), DATA.mod[52])
