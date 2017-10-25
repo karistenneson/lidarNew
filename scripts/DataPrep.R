@@ -7,7 +7,7 @@
 #setwd('C:\\Users\\krtenneson\\Desktop\\lidarModel\\VersionControl\\lidarNew')
 #setwd('\\\\166.2.126.25\\rseat\\Programs\\Reimbursibles\\fy2016\\R3_lidar_equation_transferability\\Analysis\\VersionControl\\lidarNew')
 #setwd("~/Documents/R/lidarNew/scripts") #Mac
-setwd("~/R/lidarNew/scripts") #WinCampus
+#setwd("~/R/lidarNew/scripts") #WinCampus
 #setwd("~/R/projects/lidarNew/scripts") #WinHome
 
 ### Load required packages

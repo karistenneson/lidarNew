@@ -1,8 +1,10 @@
 ### This file is for running the BMA components of the analysis
 ## Written by MS Patterson (maspatte@uw.edu)
-# Last updated: Cot 20, 2017
+# Last updated: Oct 20, 2017
 
 ### Bring in data
+setwd("~/Documents/R/lidarNew/scripts") #Mac
+#setwd("~/R/lidarNew/scripts") #WinCampus
 source(file="DataPrep.R")
 
 ### Load required packages
@@ -130,11 +132,19 @@ summary(TCUFT.ModelF)
 plot(TCUFT.ModelF) # Some slight non-linearities in residuals and QQ. 
 
 ### Combined final model?
+cor.test(DATA.mod$STBIOMS, DATA.mod$TCUFT)
+# Standing biomass and volume are 0.98 correlated. 
 
 FinModB <- lm(log(STBIOMS)~ Elev_LCV + Elev_skewness + Elev_P80 + Pct_all_returns_above_ht +
                Total_first_returns + R3ERUCODE + elevation + slope + PlotSizeAcres, data=DATA.mod)
 summary(FinModB)
+plot(FinModB, ask=F)
 
 FinModT <- lm(log(TCUFT)~ Elev_LCV + Elev_skewness + Elev_P80 + Pct_all_returns_above_ht +
                 Total_first_returns + R3ERUCODE + elevation + slope + PlotSizeAcres, data=DATA.mod)
 summary(FinModT)
+plot(FinModT, ask=F)
+
+# Possible Outliers
+Outliers <- c("53","1148","1238","1242","2145", "2651")
+DATA.mod[Outliers, c(1,2)] #most low values, though 1238 has a fair bit of Biomass. 
