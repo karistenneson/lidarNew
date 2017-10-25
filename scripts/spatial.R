@@ -7,22 +7,60 @@ setwd("~/R/lidarNew/scripts") #WinCampus
 setwd("~/R/projects/lidarNew/scripts") #WinCampus
 
 ### Load required packages
-library(BAS)
-library(stats)
-library(tidyverse)
-library(corrgram)
 library(sp)
 library(raster)
 library(gstat)
+library(tidyverse)
 
-### Check for spatial autocorrelation
+
+### Bring in data
+Coco <- read_csv("../Data/Coconino07162017.csv")
+Sit <- read_csv("../Data/Sitgreaves07162017.csv")
+SWJM <- read_csv("../Data/SWJM07162017.csv")
+Tonto <- read_csv("../Data/Tonto07162017.csv")
+Kaibab <- read_csv("../Data/NKaibab07192017.csv")
+
+AllData <- rbind(Coco, Sit, SWJM, Tonto, Kaibab)
+
+#Bring in Environmental Data
+Aux <- read_csv("../Data/Auxillary/Merged_10172017.csv")
+AuxTrim <- select(Aux, PLOT_ID, R3ERUCODE, elevation, aspect, slope)
+AllData <- merge(AllData, AuxTrim, by="PLOT_ID", all=F)
+AllData$R3ERUCODE <- as.factor(AllData$R3ERUCODE)
+
+NDVI <- read_csv("../Data/Auxillary/NDVIamplitude.csv")
+
+AllData <- merge(AllData, select(NDVI, PLOT_ID, NDVI_Sample_NDVI_amplitude_1), by="PLOT_ID", all=F)
+AllData <- rename(AllData, NDVI_Amp=NDVI_Sample_NDVI_amplitude_1)
+
+#Remove 'zero' biomass outliers
+AllData <- AllData[AllData$STBIOMS>0,]
+AllData <- AllData[AllData$TCUFT>0,]
+
+### Partion data
+Variables <- colnames(AllData) #pull variable names for use with select()
+LidarNames <- c(Variables[23:75]) #subset of lidar metrics
+FieldNames <- Variables[1:20] #subset of field variables
+AuxNames <- Variables[72:76] #subset of additional environmental variables
+RandUnif <- Variables[11] #The Random Uniform Variable
+
+### Build Spatial Data Frame
 projection <- crs(shapefile("../Data/Merged_EPSG102009_101717.shp"))
-coords <- data.frame(cbind(DATA.test$X_albers, DATA.test$Y_albers))
+coords <- data.frame(cbind(AllData$X_albers, AllData$Y_albers))
 colnames(coords) <- c("X_Albers", "Y_Albers")
-BModsp <- SpatialPointsDataFrame(coords=(coords), data=BMod, proj4string=projection)
+AllData.sp <- SpatialPointsDataFrame(coords=(coords), data=AllData, proj4string=projection)
+
+## Filter data down for modeling
+DATA.mod.sp <- AllData.sp[AllData.sp$RandomUniform<0.75,]
+
+#Select predictors, chuck unused variables
+DATA.mod.sp <- DATA.mod.sp[, c("Forest", "STBIOMS", "TCUFT", LidarNames, AuxNames, FieldNames[9])]
+
+#Objects for each forest.
+
 
 ### Fit a variogram to the residuals from the data
-Vgam <- variogram(residuals(HPMlm)~1, BModsp, cutoff = 75000) #produce a variogram
+Vgam <- variogram(residuals(FinModB)~1, , cutoff = 75000) #produce a variogram
 
 plot(Vgam, type='b', main='Residual Variogram') #very peculiar! 
 
