@@ -97,3 +97,7 @@ plot(Vgam.ton, type='b', main='Residual Variogram')
 
 #Vmod <- fit.variogram(Vgam, vgm(model="Exp", range=75000)) #fit variogram model
 #lot(Vgam, Vmod, main='Fitted Variogram') #Exponential seems best fit?
+
+detach(package:raster)
+detach(package:sp)
+detach(package:gstat)
