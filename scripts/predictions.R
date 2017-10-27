@@ -36,7 +36,9 @@ CufRMSPE <- rmspe(DATA.new$TCUFT, exp(NewTCUFT), includeSE=T)
 CufMAPE <- mape(DATA.new$TCUFT, exp(NewTCUFT), includeSE=T)
 CufMBE <- sum((exp(NewTCUFT) - DATA.new$TCUFT))/length(NewBiomass)
 
-# This uses the Bayesian model object
-ValPred <- predict(BioBLMh, newdata= , estimator= )
+# Robust metrics, drops outliers from data to calculate metrics 
+BioRMSPE.r <- rtmspe(DATA.new$STBIOMS, exp(NewBiomass), includeSE=T)
+
+CufRMSPE.r <- rtmspe(DATA.new$TCUFT, exp(NewTCUFT), includeSE=T)
 
 ### Validate Predictions against Validation set
