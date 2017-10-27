@@ -40,5 +40,3 @@ CufMBE <- sum((exp(NewTCUFT) - DATA.new$TCUFT))/length(NewBiomass)
 BioRMSPE.r <- rtmspe(DATA.new$STBIOMS, exp(NewBiomass), includeSE=T)
 
 CufRMSPE.r <- rtmspe(DATA.new$TCUFT, exp(NewTCUFT), includeSE=T)
-
-### Validate Predictions against Validation set
