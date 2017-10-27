@@ -56,16 +56,44 @@ DATA.mod.sp <- AllData.sp[AllData.sp$RandomUniform<0.75,]
 #Select predictors, chuck unused variables
 DATA.mod.sp <- DATA.mod.sp[, c("Forest", "STBIOMS", "TCUFT", LidarNames, AuxNames, FieldNames[9])]
 
-#Objects for each forest.
+#Objects for each forest. Might not be necessary, but whatevs.
+summary(as.factor(DATA.mod.sp$Forest))
 
+Coco.sp <- DATA.mod.sp[DATA.mod.sp$Forest=="Coconino",]
+Kaibab.sp <- DATA.mod.sp[DATA.mod.sp$Forest=="NorthKaibab",]
+Sit.sp <- DATA.mod.sp[DATA.mod.sp$Forest=="Sitgreaves",]
+SWJM.sp <- DATA.mod.sp[DATA.mod.sp$Forest=="SWJM",]
+Tonto.sp <-DATA.mod.sp[DATA.mod.sp$Forest=="Tonto",]
 
 ### Fit a variogram to the residuals from the data
-Vgam <- variogram(residuals(FinModB)~1, , cutoff = 75000) #produce a variogram
+Vgam.coco <- variogram(residuals(FinModB)[which(DATA.mod.sp$Forest=="Coconino")]~1, 
+                       data = Coco.sp) #produce a variogram
+plot(Vgam.coco, type='b', main='Residual Variogram') 
+#pretty level, but very low semivariance.  
 
-plot(Vgam, type='b', main='Residual Variogram') #very peculiar! 
+Vgam.kai <- variogram(residuals(FinModB)[which(DATA.mod.sp$Forest=="NorthKaibab")]~1, 
+                       data = Kaibab.sp) #produce a variogram
+plot(Vgam.kai, type='b', main='Residual Variogram') 
+#erratic, but essentially flatish, higher semivariance than Coco.
 
-# variogram is very poorly behaved. Could be because of outliers, or random sampling seeming not
-# to be representative at times.
+Vgam.sit <- variogram(residuals(FinModB)[which(DATA.mod.sp$Forest=="Sitgreaves")]~1, 
+                      data = Sit.sp) #produce a variogram
+plot(Vgam.sit, type='b', main='Residual Variogram') 
+#erratic, but some trend upwards, could be some spatial correlation here.
+
+Vgam.swjm <- variogram(residuals(FinModB)[which(DATA.mod.sp$Forest=="SWJM")]~1, 
+                      data = SWJM.sp) #produce a variogram
+plot(Vgam.swjm, type='b', main='Residual Variogram') 
+#erratic, but mostly flat. No clear distance to filter on. 
+
+Vgam.ton <- variogram(residuals(FinModB)[which(DATA.mod.sp$Forest=="Tonto")]~1, 
+                      data = Tonto.sp) #produce a variogram
+plot(Vgam.ton, type='b', main='Residual Variogram') 
+#pretty flat, small trend up to 15,000, but very low change in semivariance. 
+
+### Overall, it generally seems like there may be some spatial autocorrelation in the data,
+### but there's not really a clear distance to filter on in any of the data sets, and 
+### fitting a variogram model is unlikely to work well in any instance. 
 
 #Vmod <- fit.variogram(Vgam, vgm(model="Exp", range=75000)) #fit variogram model
 #lot(Vgam, Vmod, main='Fitted Variogram') #Exponential seems best fit?
