@@ -10,6 +10,7 @@ source(file="DataPrep.R")
 ### Load required packages
 library(BAS)
 library(corrgram)
+library(robustbase)
 
 # Full variable pool, centered, truncated poisson prior, hyper-g
 BioMass.Modc <- bas.lm(log(STBIOMS)~ . -TCUFT,
@@ -148,3 +149,19 @@ plot(FinModT, ask=F)
 # Possible Outliers
 Outliers <- c("53","1148","1238","1242","2145", "2651")
 DATA.mod[Outliers, c(1,2)] #most low values, though 1238 has a fair bit of Biomass. 
+
+### RObust versions of final model.
+
+# Standing biomass and volume are 0.98 correlated. 
+
+FinModB.r <- lmrob(log(STBIOMS)~ Elev_LCV + Elev_skewness + Elev_P80 + Pct_all_returns_above_ht +
+                Total_first_returns + R3ERUCODE + elevation + slope + PlotSizeAcres, data=DATA.mod, 
+                setting = "KS2014", fast.s.large.n = Inf)
+summary(FinModB.r)
+plot(FinModB.r, ask=F)
+
+FinModT.r <- lmrob(log(TCUFT)~ Elev_LCV + Elev_skewness + Elev_P80 + Pct_all_returns_above_ht +
+                Total_first_returns + R3ERUCODE + elevation + slope + PlotSizeAcres, data=DATA.mod, 
+                setting = "KS2014", fast.s.large.n = Inf)
+summary(FinModT.r)
+plot(FinModT.r, ask=F)
