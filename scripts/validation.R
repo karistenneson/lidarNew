@@ -74,22 +74,22 @@ ValBioRMSPE.r <- rtmspe(ValData.mod$STBIOMS, exp(ValBiomass), includeSE=T)
 
 ValCufRMSPE.r <- rtmspe(ValData.mod$TCUFT, exp(ValTCUFT), includeSE=T)
 
-### Generate robust predictions
-ValBiomass.r <- predict(object=FinModB.r, newdata=ValData.mod)
-ValTCUFT.r <- predict(object=FinModT.r, newdata=ValData.mod)
-
-### Compare robust predictions to real data
-
-# plots
-qqplot(exp(ValBiomass.r), ValData.mod$STBIOMS)
-qqplot(exp(ValTCUFT.r), ValData.mod$TCUFT)
-
-qplot(exp(ValBiomass.r), ValData.mod$STBIOMS) +geom_smooth(method=lm, se=T)
-qplot(exp(ValTCUFT.r), ValData.mod$TCUFT) +geom_smooth(method=lm, se=T)
-
-# metrics, Root Mean Square Error, Mean Summed Error, Mean Bias Error
-ValBioRMSPE.rob <- rmspe(ValData.mod$STBIOMS, exp(ValBiomass.r), includeSE=T)
-ValBioMBE.rob <- sum((exp(ValBiomass.r) - ValData.mod$STBIOMS))/length(NewBiomass)
-
-ValCufRMSPE.rob <- rmspe(ValData.mod$TCUFT, exp(ValTCUFT.r), includeSE=T)
-ValCufMBE.rob <- sum((exp(ValTCUFT.r) - ValData.mod$TCUFT))/length(NewBiomass)
+# ### Generate robust predictions
+# ValBiomass.r <- predict(object=FinModB.r, newdata=ValData.mod)
+# ValTCUFT.r <- predict(object=FinModT.r, newdata=ValData.mod)
+# 
+# ### Compare robust predictions to real data
+# 
+# # plots
+# qqplot(exp(ValBiomass.r), ValData.mod$STBIOMS)
+# qqplot(exp(ValTCUFT.r), ValData.mod$TCUFT)
+# 
+# qplot(exp(ValBiomass.r), ValData.mod$STBIOMS) +geom_smooth(method=lm, se=T)
+# qplot(exp(ValTCUFT.r), ValData.mod$TCUFT) +geom_smooth(method=lm, se=T)
+# 
+# # metrics, Root Mean Square Error, Mean Summed Error, Mean Bias Error
+# ValBioRMSPE.rob <- rmspe(ValData.mod$STBIOMS, exp(ValBiomass.r), includeSE=T)
+# ValBioMBE.rob <- sum((exp(ValBiomass.r) - ValData.mod$STBIOMS))/length(NewBiomass)
+# 
+# ValCufRMSPE.rob <- rmspe(ValData.mod$TCUFT, exp(ValTCUFT.r), includeSE=T)
+# ValCufMBE.rob <- sum((exp(ValTCUFT.r) - ValData.mod$TCUFT))/length(NewBiomass)
