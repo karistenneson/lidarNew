@@ -40,3 +40,17 @@ CufMBE <- sum((exp(NewTCUFT) - DATA.new$TCUFT))/length(NewBiomass)
 BioRMSPE.r <- rtmspe(DATA.new$STBIOMS, exp(NewBiomass), includeSE=T)
 
 CufRMSPE.r <- rtmspe(DATA.new$TCUFT, exp(NewTCUFT), includeSE=T)
+
+
+### Predictions from BAS object itself.
+
+BMABio <- predict(BioMass.Mod, DATA.new, top='10000')
+
+BmaBioRMSPE <- rmspe(DATA.new$STBIOMS, exp(BMABio$fit), includeSE=T)
+BmaBioMBE <- sum((exp(BMABio$fit) - DATA.new$STBIOMS))/length(NewBiomass)
+
+
+BMAWood <- predict(TCUFT.Mod, DATA.new, top='10000')
+
+BmaWoodRMSPE <- rmspe(DATA.new$TCUFT, exp(BMAWood$fit), includeSE=T)
+BmaWoodMBE <- sum((exp(BMAWood$fit) - DATA.new$TCUFT))/length(NewBiomass)
