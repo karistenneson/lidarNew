@@ -74,6 +74,20 @@ ValBioRMSPE.r <- rtmspe(ValData.mod$STBIOMS, exp(ValBiomass), includeSE=T)
 
 ValCufRMSPE.r <- rtmspe(ValData.mod$TCUFT, exp(ValTCUFT), includeSE=T)
 
+### Predictions from BAS object itself.
+
+VBMABio <- predict(BioMass.Mod, ValData.mod, top='10000')
+
+VBmaBioRMSPE <- rmspe(ValData.mod$STBIOMS, exp(VBMABio$fit), includeSE=T)
+VBmaBioMBE <- sum((exp(VBMABio$fit) - ValData.mod$STBIOMS))/length(NewBiomass)
+
+
+VBMAWood <- predict(TCUFT.Mod, ValData.mod, top='10000')
+
+vBmaWoodRMSPE <- rmspe(ValData.mod$TCUFT, exp(VBMAWood$fit), includeSE=T)
+VBmaWoodMBE <- sum((exp(VBMAWood$fit) - ValData.mod$TCUFT))/length(NewBiomass)
+
+
 # ### Generate robust predictions
 # ValBiomass.r <- predict(object=FinModB.r, newdata=ValData.mod)
 # ValTCUFT.r <- predict(object=FinModT.r, newdata=ValData.mod)
