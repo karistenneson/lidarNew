@@ -50,10 +50,10 @@ BmaWoodMBE <- sum((exp(BMAWood$fit) - DATA.new$TCUFT))/length(NewBiomass)
 
 # metrics, Root Mean Square Error, Mean Summed Error, Mean Bias Error
 ValBioRMSPE <- rmspe(ValData.mod$STBIOMS, exp(ValBiomass), includeSE=T)
-ValBioMBE <- sum((exp(ValBiomass) - ValData.mod$STBIOMS))/length(NewBiomass)
+ValBioMBE <- sum((exp(ValBiomass) - ValData.mod$STBIOMS))/length(ValBiomass)
 
 ValCufRMSPE <- rmspe(ValData.mod$TCUFT, exp(ValTCUFT), includeSE=T)
-ValCufMBE <- sum((exp(ValTCUFT) - ValData.mod$TCUFT))/length(NewBiomass)
+ValCufMBE <- sum((exp(ValTCUFT) - ValData.mod$TCUFT))/length(ValTCUFT)
 
 # Robust metrics, drops outliers from data to calculate metrics 
 ValBioRMSPE.r <- rtmspe(ValData.mod$STBIOMS, exp(ValBiomass), includeSE=T)
@@ -63,8 +63,8 @@ ValCufRMSPE.r <- rtmspe(ValData.mod$TCUFT, exp(ValTCUFT), includeSE=T)
 # Metrics from predictions based on top 10,000 models in the BAS object itself.
 
 VBmaBioRMSPE <- rmspe(ValData.mod$STBIOMS, exp(VBMABio$fit), includeSE=T)
-VBmaBioMBE <- sum((exp(VBMABio$fit) - ValData.mod$STBIOMS))/length(NewBiomass)
+VBmaBioMBE <- sum((exp(VBMABio$fit) - ValData.mod$STBIOMS))/length(ValBiomass)
 
 vBmaWoodRMSPE <- rmspe(ValData.mod$TCUFT, exp(VBMAWood$fit), includeSE=T)
-VBmaWoodMBE <- sum((exp(VBMAWood$fit) - ValData.mod$TCUFT))/length(NewBiomass)
+VBmaWoodMBE <- sum((exp(VBMAWood$fit) - ValData.mod$TCUFT))/length(ValTCUFT)
 
