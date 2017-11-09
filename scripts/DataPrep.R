@@ -30,6 +30,7 @@ Aux <- read_csv("../Data/Auxillary/Merged_10172017.csv")
 AuxTrim <- select(Aux, PLOT_ID, R3ERUCODE, elevation, aspect, slope)
 AllData <- merge(AllData, AuxTrim, by="PLOT_ID", all=F)
 AllData$R3ERUCODE <- as.factor(AllData$R3ERUCODE)
+AllData$Forest <- as.factor(AllData$Forest)
 
 NDVI <- read_csv("../Data/Auxillary/NDVIamplitude.csv")
 
@@ -42,16 +43,18 @@ AllData <- AllData[AllData$TCUFT>0,]
 
 ### Partion data
 Variables <- colnames(AllData) #pull variable names for use with select()
-LidarNames <- c(Variables[23:75]) #subset of lidar metrics
+LidarNames <- Variables[23:71] #subset of lidar metrics
 FieldNames <- Variables[1:20] #subset of field variables
 AuxNames <- Variables[72:76] #subset of additional environmental variables
 RandUnif <- Variables[11] #The Random Uniform Variable
+
+Predictors <- c(LidarNames, AuxNames, FieldNames[c(7,9)])
 
 ### Filter data down for modeling
 DATA.mod <- AllData[AllData$RandomUniform<0.75,]
 
 #Select predictors, chuck unused variables
-DATA.mod <- select(DATA.mod, STBIOMS, TCUFT, LidarNames, AuxNames, FieldNames[9])
+DATA.mod <- select(DATA.mod, STBIOMS, TCUFT, Predictors)
 
 # Centering data
-DATA.modC <- cbind(DATA.mod[, c(1,2)], center(DATA.mod[,c(-1,-2,-52)]), DATA.mod[52])
+DATA.modC <- cbind(DATA.mod[, c(1,2)], center(DATA.mod[,c(-1,-2,-52,-57)]), DATA.mod[c(52,57)])
