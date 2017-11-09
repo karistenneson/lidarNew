@@ -49,8 +49,8 @@ ValData.mod <- select(ValData, STBIOMS, TCUFT, LidarNames, AuxNames, FieldNames[
 
 ### Validate Predictions against Validation set
 ### Generate Predictions 
-ValBiomass <- predict(object=FinModB, newdata=ValData.mod)
-ValTCUFT <- predict(object=FinModT, newdata=ValData.mod)
+ValBiomass <- predict(object=FinModBt, newdata=ValData.mod)
+ValTCUFT <- predict(object=FinModTt, newdata=ValData.mod)
 
 ### Compare to real data
 

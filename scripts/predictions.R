@@ -14,8 +14,8 @@ DATA.new <- select(DATA.new, STBIOMS, TCUFT, LidarNames, AuxNames, FieldNames[9]
 DATA.newC <- cbind(DATA.new[, c(1,2)], center(DATA.new[,c(-1,-2,-52)]), DATA.new[52])
 
 ### Generate Predictions
-NewBiomass <- predict(object=FinModB, newdata=DATA.new)
-NewTCUFT <- predict(object=FinModT, newdata=DATA.new)
+NewBiomass <- predict(object=FinModBt, newdata=DATA.new)
+NewTCUFT <- predict(object=FinModTt, newdata=DATA.new)
 
 #Compare to real data
 

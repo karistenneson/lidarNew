@@ -11,16 +11,16 @@ library(condformat)
 ### Produce some clean model outputs for paper
 
 # Tables of predictors
-BioMass.tab <- tidy(FinModB)
+BioMass.tab <- tidy(FinModBt)
 BioMass.tab[,2:5] <- round(BioMass.tab[,2:5],4)
 BioMass.tab <- condformat(BioMass.tab)
 
-Volume.tab <- tidy(FinModT)
+Volume.tab <- tidy(FinModTt)
 Volume.tab[2:5] <- round(Volume.tab[,2:5],4)
 Volume.tab <- condformat(Volume.tab)
 
 # "Table" of model significance
-Sig.tab <- rbind(glance(FinModB), glance(FinModT))
+Sig.tab <- rbind(glance(FinModBt), glance(FinModTt))
 rownames(Sig.tab) <- c("STBIOMS", "TCUFT")
 Sig.tab <- condformat(round(Sig.tab, 4))
 
