@@ -20,8 +20,8 @@ Volume.tab[2:5] <- round(Volume.tab[,2:5],4)
 Volume.tab <- condformat(Volume.tab)
 
 # "Table" of model significance
-Sig.tab <- rbind(glance(FinModBt), glance(FinModTt))
-rownames(Sig.tab) <- c("STBIOMS", "TCUFT")
+Sig.tab <- rbind(glance(FinModBt), glance(PredModB), glance(FinModTt), glance(PredModT))
+rownames(Sig.tab) <- c("STBIOMS", "STBIOMS, Prediction", "TCUFT", "TCUFT, prediction")
 Sig.tab <- condformat(round(Sig.tab, 4))
 
 ### Internal performance metrics
