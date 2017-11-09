@@ -28,6 +28,7 @@ Aux <- read_csv("../Data/Auxillary/Merged_10172017.csv")
 AuxTrim <- select(Aux, PLOT_ID, R3ERUCODE, elevation, aspect, slope)
 ValData <- merge(ValData, AuxTrim, by="PLOT_ID", all=F)
 ValData$R3ERUCODE <- as.factor(ValData$R3ERUCODE)
+ValData$Forest <- as.factor(ValData$Forest)
 
 NDVI <- read_csv("../Data/Auxillary/NDVIamplitude.csv")
 
@@ -39,18 +40,30 @@ ValData <- ValData[ValData$STBIOMS>0,]
 ValData <- ValData[ValData$TCUFT>0,]
 
 ### Partion data
-Variables <- colnames(ValData) #pull variable names for use with select()
-LidarNames <- c(Variables[23:71]) #subset of lidar metrics
+Variables <- colnames(AllData) #pull variable names for use with select()
+LidarNames <- Variables[23:71] #subset of lidar metrics
 FieldNames <- Variables[1:20] #subset of field variables
 AuxNames <- Variables[72:76] #subset of additional environmental variables
+RandUnif <- Variables[11] #The Random Uniform Variable
+
+Predictors <- c(LidarNames, AuxNames, FieldNames[c(7,9)])
 
 ### Modeling Data
-ValData.mod <- select(ValData, STBIOMS, TCUFT, LidarNames, AuxNames, FieldNames[9])
+ValData.mod <- select(ValData, STBIOMS, TCUFT, Predictors)
 
-### Validate Predictions against Validation set
+## Prediction Model formulas
+PredModB <- lm(log(STBIOMS)~ Elev_skewness + Elev_LCV + Elev_P80 + Total_first_returns + 
+                         Pct_all_returns_above_ht + elevation + slope + PlotSizeAcres + R3ERUCODE,
+               data=DATA.mod.t)
+
+PredModT <- lm(log(TCUFT)~ Elev_skewness + Elev_LCV + Elev_P80 + Total_first_returns + 
+                         Pct_all_returns_above_ht + elevation + slope + PlotSizeAcres + R3ERUCODE,
+               data=DATA.mod.t)
+
+### Validate Predictions against Validation set. Can't include Forest, because new Forests! 
 ### Generate Predictions 
-ValBiomass <- predict(object=FinModBt, newdata=ValData.mod)
-ValTCUFT <- predict(object=FinModTt, newdata=ValData.mod)
+ValBiomass <- predict(object=PredModB, newdata=ValData.mod)
+ValTCUFT <- predict(object=PredModT, newdata=ValData.mod)
 
 ### Compare to real data
 
