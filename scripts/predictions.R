@@ -8,10 +8,10 @@ library(cvTools)
 DATA.new <- AllData[AllData$RandomUniform>=0.75,]
 
 #Select predictors, chuck unused variables
-DATA.new <- select(DATA.new, STBIOMS, TCUFT, LidarNames, AuxNames, FieldNames[9])
+DATA.new <- select(DATA.new, STBIOMS, TCUFT, Predictors)
 
 # Centering data
-DATA.newC <- cbind(DATA.new[, c(1,2)], center(DATA.new[,c(-1,-2,-52)]), DATA.new[52])
+DATA.newC <- cbind(DATA.new[, c(1,2)], center(DATA.new[,c(-1,-2,-52,-57)]), DATA.new[52, 57])
 
 ### Generate Predictions
 NewBiomass <- predict(object=FinModBt, newdata=DATA.new)
