@@ -22,9 +22,7 @@ Sit <- read.csv("../Data/Sitgreaves07162017.csv", stringsAsFactors=FALSE)
 SWJM <- read.csv("../Data/SWJM07162017.csv", stringsAsFactors=FALSE)
 Tonto <- read.csv("../Data/Tonto07162017.csv", stringsAsFactors=FALSE)
 Kaibab <- read.csv("../Data/NKaibab07192017.csv", stringsAsFactors=FALSE)
-Kaibab[,'fpc']
 AllData <- rbind(Coco, Sit, SWJM, Tonto, Kaibab)
-unique(AllData[,'fpc'])
 
 #Bring in Environmental Data
 Aux <- read.csv("../Data/Auxillary/Merged_10172017.csv", stringsAsFactors=FALSE)
@@ -45,40 +43,41 @@ AllData <- AllData[AllData$TCUFT>0,]
 
 ### Partion data
 Variables <- colnames(AllData) #pull variable names for use with select()
-LidarNames <- Variables[23:71] #subset of lidar metrics
+LidarNames <- Variables[c(23:57, 60:65)] #subset of lidar metrics
 FieldNames <- Variables[1:20] #subset of field variables
 AuxNames <- Variables[72:76] #subset of additional environmental variables
 RandUnif <- Variables[11] #The Random Uniform Variable
+#head(select(AllData, LidarNames))
 
-Predictors <- c(LidarNames, AuxNames, FieldNames[c(6, 7,9, 15)])
+Predictors <- c(LidarNames, AuxNames, FieldNames[c(6, 7,9, 12, 15)])
 
 ### Filter data down for modeling
 DATA.mod <- AllData[AllData$RandomUniform<0.75,]
 
 #Select predictors, chuck unused variables
-DATA.mod <- select(DATA.mod, STBIOMS, TCUFT, fpc, Predictors)
+data.mod <- select(DATA.mod, STBIOMS, TCUFT, Predictors)
+
 # Centering data
-DATA.modC <- cbind(DATA.mod[, c(1,2)], center(DATA.mod[,c(-1, -2, -53, -58, -59)]), DATA.mod[c(53, 58, 59)])
-data.modC <- cbind(DATA.mod[, c(1,2)], (DATA.mod[,c(-1, -2, -53, -58, -59)]), DATA.mod[c(53, 58, 59)])
+#DATA.modC <- cbind(data.mod[, c(1,2)], center(data.mod[,c(-1, -2, -53, -58, -59)]), data.mod[c(53, 58, 59)])
 
 #########################################################
 ### Filter data down for modeling
 DATA.val <- AllData[AllData$RandomUniform>=0.75,]
 
 #Select predictors, chuck unused variables
-DATA.val <- select(DATA.val, STBIOMS, TCUFT, fpc, Predictors)
+data.val <- select(DATA.val, STBIOMS, TCUFT, Predictors)
 
 # Centering data
-DATA.valC <- cbind(DATA.val[, c(1,2)], center(DATA.val[,c(-1, -2, -53, -58, -59)]), DATA.val[c(53, 58, 59)])
-data.valC <- cbind(DATA.val[, c(1,2)], (DATA.val[,c(-1, -2, -53, -58, -59)]), DATA.val[c(53, 58, 59)])
+#DATA.valC <- cbind(data.val[, c(1,2)], center(data.val[,c(-1, -2, -53, -58, -59)]), data.val[c(53, 58, 59)])
 
 #########################################################
 library(survey)
-# average biomass and volume
-data.modC.svy <- svydesign(ids = ~1, data = data.modC, strata = data.modC$, fpc = data.modC$fpc) 
-unique(data.modC[,'fpc'])
 
-data.valC.svy <- svydesign(ids = ~1, data = data.valC, fpc = data.valC$fpc) 
+# average biomass and volume
+data.mod.svy <- svydesign(ids = ~1, data = data.mod, strata = data.mod$Stratum, fpc = data.mod$fpc) 
+unique(data.mod[,'fpc'])
+
+data.valC.svy <- svydesign(ids = ~1, data = data.val, fpc = fpc) 
 
 boxplot(data.modC$STBIOMS ~ data.modC$R3ERUCODE, varwidth = T)
 boxplot(data.valC$STBIOMS ~ data.valC$R3ERUCODE, varwidth = T)
