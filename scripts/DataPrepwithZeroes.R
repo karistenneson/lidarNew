@@ -1,5 +1,5 @@
 ### This file is for processing the raw data into working data frames. 
-## Written by MS Patterson (maspatte@uw.edu) and modified by Karis Tenneson (karistenneson@gmail.com)
+## Written by MS Patterson (maspatte@uw.edu) and Karis Tenneson (karistenneson@gmail.com)
 # Last updated: Dec 9 2017
 
 ### Set working environment, necessary for any next steps. 
@@ -49,6 +49,11 @@ CocoSub<-Coco[Coco$RandomUniform >=0.75,]
 data.svy <- svydesign(ids = ~1, data = CocoSub, strata = CocoSub$Stratum, fpc = CocoSub$fpc) 
 svymean(~STBIOMSha,design=data.svy)
 svymean(~TCUmha,design=data.svy)
+
+table(Coco$PlotSizeAcres)
+table(Tonto$PlotSizeAcres)
+table(Sit$PlotSizeAcres)
+table(SWJM$PlotSizeAcres)
 ##
 
 
@@ -162,6 +167,7 @@ svymean(~TCUmha, data.val.svy)
 svymean(~elevation, data.val.svy)
 
 # average elevation by project
+i =  0
 forestname <- unique(data.mod$Forest)
 
 i = i +1
@@ -229,7 +235,7 @@ svymean(~elevation, data.mod.svy)
 
 # average elevation by project
 forestname <- unique(data.ind.val$Forest)
-
+i = 0
 i = i +1
 Forest = forestname[i]
 Forest
@@ -262,7 +268,7 @@ fulldata$R3ERUlabel[fulldata$R3ERUCODE == '350'] <- 'h'
 fulldata$R3ERUlabel[fulldata$R3ERUCODE == 'PPE'] <- 'i'
 fulldata$R3ERUlabel[fulldata$R3ERUCODE == 'PPF'] <- 'j'
 unique(fulldata$R3ERUlabel)
-fulldata <- fulldata[fulldata$R3ERUlabel != 'k', ]
+#fulldata <- fulldata[fulldata$R3ERUlabel != 'k', ]
 fulldata$R3ERUlabel <- as.factor(fulldata$R3ERUlabel)
 fulldata$R3ERUlabel <- as.character(fulldata$R3ERUlabel)
 
@@ -300,21 +306,67 @@ forestname <- unique(fulldata$Forest)
 forestname <- forestname[c(4, 1, 3, 2, 5, 7, 6)]
 labels <- c("b) Kaibab Plateau", 'c) Coconino N.F.', 'd) Tonto N.F.', 'e) Apache-Sitgreaves N.F., Phase 1', 'f) Santa Fe N.F.',  'h) Apache-Sitgreaves N.F., Phase 2',  'i) Apache-Sitgreaves N.F., Phase 3')
 
+table(fulldata$R3ERUlabel[(fulldata$Forest != forestname[6] & fulldata$Forest != forestname[7])])
 data.svy <- svydesign(ids = ~1, 
                       data = fulldata[(fulldata$Forest != forestname[6] & fulldata$Forest != forestname[7] & fulldata$R3ERUlabel != 'k'),], 
                       strata = fulldata$Stratum[(fulldata$Forest != forestname[6] & fulldata$Forest != forestname[7] & fulldata$R3ERUlabel != 'k')], 
                       fpc = fulldata$fpc[(fulldata$Forest != forestname[6] & fulldata$Forest != forestname[7] & fulldata$R3ERUlabel != 'k')]) 
 
-svyboxplot(STBIOMSha ~ R3ERUlabel, data.svy, varwidth = T, col = colVec[c(1:4,6:11)], main = "a) All Plots used for Model Development", ylim = c(0,700), ylab = 'AGB (tons/acre)')
+svyboxplot(STBIOMSha ~ R3ERUlabel, data.svy, varwidth = T, col = colVec[c(1:4,6:11)], main = "a) All Plots used for Model Development", ylim = c(0,700), ylab = 'AGB (tons/ha)')
 abline(h = 0)
 
-table(fulldata$R3ERUlabel[(fulldata$Forest != forestname[6] & fulldata$Forest != forestname[7])])
+#################
+
+table <- svytotal(~R3ERUlabelFull, data.svy)
+
+#Az
+(table[1]/sum(table))*100
+(10.5/sum(table))*100
+
+#Grass
+100*(table[2]/sum(table)+table[5]/sum(table))
+100*(1598.4/sum(table)+12061/sum(table))
+
+#con aspen
+100*table[3]/sum(table)
+100*695.9/sum(table)
+
+#con fire
+100*table[4]/sum(table)
+100*19104/sum(table)
+
+#cotton shrub
+100*table[6]/sum(table)
+100*20/sum(table)
+
+#PJ
+100*table[7]/sum(table)
+100*3401/sum(table)
+
+#PP
+100*table[8]/sum(table)
+100*24187.3/sum(table)
+
+#PPE
+100*table[9]/sum(table)
+100*103.7/sum(table)
+
+#PPW
+100*table[10]/sum(table)
+100*37.5/sum(table)
+
+#Spruce
+100*table[11]/sum(table)
+100*17312/sum(table)
+
 #################
 
 ## Kaibab  
 i = 1
 Forest = forestname[i]
 Forest
+
+table(fulldata$R3ERUlabel[(fulldata$Forest == Forest)])
 data.svy <- svydesign(ids = ~1, 
                       data = fulldata[(fulldata$Forest == Forest & fulldata$R3ERUlabel != 'a'& fulldata$R3ERUlabel != 'b'),], 
                       strata = fulldata$Stratum[(fulldata$Forest == Forest & fulldata$R3ERUlabel != 'a'& fulldata$R3ERUlabel != 'b')], 
@@ -328,6 +380,7 @@ abline(h = 0)
 i = i +1
 Forest = forestname[i]
 Forest
+table(fulldata$R3ERUlabel[(fulldata$Forest == Forest)])
 data.svy <- svydesign(ids = ~1, 
                       data = fulldata[(fulldata$Forest == Forest & fulldata$R3ERUlabel != 'k'),], 
                       strata = fulldata$Stratum[(fulldata$Forest == Forest & fulldata$R3ERUlabel != 'k')], 
@@ -340,18 +393,20 @@ abline(h = 0)
 i = i +1
 Forest = forestname[i]
 Forest
+table(fulldata$R3ERUlabel[(fulldata$Forest == Forest)])
 data.svy <- svydesign(ids = ~1, 
                       data = fulldata[(fulldata$Forest == Forest),], 
                       strata = fulldata$Stratum[(fulldata$Forest == Forest)], 
                       fpc = fulldata$fpc[(fulldata$Forest == Forest)]) 
 
-svyboxplot(STBIOMSha ~ R3ERUlabel, data.svy, varwidth = T, col = colVec[c(2:4,7, 9:11)], main = labels[i], ylim = c(0,700), ylab = 'AGB (tons/acre)')
+svyboxplot(STBIOMSha ~ R3ERUlabel, data.svy, varwidth = T, col = colVec[c(2:4,7, 9:11)], main = labels[i], ylim = c(0,700), ylab = 'AGB (tons/ha)')
 abline(h = 0)
 
 ## Sitgreaves
 i = i +1
 Forest = forestname[i]
 Forest
+table(fulldata$R3ERUlabel[(fulldata$Forest == Forest)])
 data.svy <- svydesign(ids = ~1, 
                       data = fulldata[(fulldata$Forest == Forest & fulldata$R3ERUlabel != 'g'),], 
                       strata = fulldata$Stratum[(fulldata$Forest == Forest& fulldata$R3ERUlabel != 'g')], 
@@ -364,6 +419,7 @@ abline(h = 0)
 i = i +1
 Forest = forestname[i]
 Forest
+table(fulldata$R3ERUlabel[(fulldata$Forest == Forest)])
 data.svy <- svydesign(ids = ~1, 
                       data = fulldata[(fulldata$Forest == Forest & fulldata$R3ERUlabel != 'g'),], 
                       strata = fulldata$Stratum[(fulldata$Forest == Forest & fulldata$R3ERUlabel != 'g')], 
@@ -371,25 +427,38 @@ data.svy <- svydesign(ids = ~1,
 
 svyboxplot(STBIOMSha ~ R3ERUlabel, data.svy, varwidth = T, col = colVec[c(2,6, 7, 11)], main = labels[i], ylim = c(0,700))
 abline(h = 0)
+
+#################################
+##################################################################
 #################################
 
-
 par(mfrow = c(2, 3))
+table(fulldata$R3ERUlabel[(fulldata$Forest == forestname[6] | fulldata$Forest == forestname[7])])
+
 data.svy <- svydesign(ids = ~1, 
                       data = fulldata[((fulldata$Forest == forestname[6] | fulldata$Forest == forestname[7]) & fulldata$R3ERUlabel != 'a'),], 
                       strata = fulldata$Stratum[((fulldata$Forest == forestname[6] | fulldata$Forest == forestname[7]) & fulldata$R3ERUlabel != 'a')], 
                       fpc = fulldata$fpc[((fulldata$Forest == forestname[6] | fulldata$Forest == forestname[7]) & fulldata$R3ERUlabel != 'a')]) 
 
-svyboxplot(STBIOMSha ~ R3ERUlabel, data.svy, varwidth = T, col = colVec[c(4,6:8,11)], main = "g) Plots for Model Assessment", ylim = c(0,700), ylab = 'AGB (tons/acre)')
+svyboxplot(STBIOMSha ~ R3ERUlabel, data.svy, varwidth = T, col = colVec[c(4,6:8,11)], main = "g) Plots for Model Assessment", ylim = c(0,700), ylab = 'AGB (tons/ha)')
 abline(h = 0)
 
-table(fulldata$R3ERUlabel[(fulldata$Forest == forestname[6] | fulldata$Forest == forestname[7])])
+#################
+table <- svytotal(~R3ERUlabelFull, data.svy)
+
+table[1]/sum(table)
+table[2]/sum(table)
+table[3]/sum(table)
+table[4]/sum(table)
+table[5]/sum(table)
 #################
 
 ## Sit, P2
 i = 6
 Forest = forestname[i]
 Forest
+table(fulldata$R3ERUlabel[(fulldata$Forest == Forest)])
+
 data.svy <- svydesign(ids = ~1, 
                       data = fulldata[(fulldata$Forest == Forest),], 
                       strata = fulldata$Stratum[(fulldata$Forest == Forest)], 
@@ -403,6 +472,8 @@ abline(h = 0)
 i = 7
 Forest = forestname[i]
 Forest
+table(fulldata$R3ERUlabel[(fulldata$Forest == Forest)])
+
 data.svy <- svydesign(ids = ~1, 
                       data = fulldata[(fulldata$Forest == Forest & fulldata$R3ERUlabel != 'a'),], 
                       strata = fulldata$Stratum[(fulldata$Forest == Forest & fulldata$R3ERUlabel != 'a')], 

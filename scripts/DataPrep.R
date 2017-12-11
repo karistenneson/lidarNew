@@ -1,5 +1,5 @@
 ### This file is for processing the raw data into working data frames. 
-## Written by MS Patterson (maspatte@uw.edu) and modified by Karis Tenneson (karistenneson@gmail.com)
+## Written by MS Patterson (maspatte@uw.edu) and Karis Tenneson (karistenneson@gmail.com)
 # Last updated: Dec 9 2017
 
 ### Set working environment, necessary for any next steps. 
