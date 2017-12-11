@@ -3,7 +3,9 @@
 # Last updated: Oct 20, 2017
 
 ### Bring in data
-setwd("~/Documents/R/lidarNew/scripts") #Mac
+#setwd('C:\\Users\\krtenneson\\Desktop\\lidarPaper\\lidarNew\\scripts')
+#setwd('\\\\166.2.126.25\\rseat\\Programs\\Reimbursibles\\fy2016\\R3_lidar_equation_transferability\\Analysis\\VersionControl\\lidarNew\\scripts')
+#setwd("~/Documents/R/lidarNew/scripts") #Mac
 #setwd("~/R/lidarNew/scripts") #WinCampus
 source(file="DataPrep.R")
 
