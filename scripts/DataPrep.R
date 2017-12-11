@@ -262,7 +262,9 @@ fulldata$R3ERUlabel[fulldata$R3ERUCODE == '350'] <- 'h'
 fulldata$R3ERUlabel[fulldata$R3ERUCODE == 'PPE'] <- 'i'
 fulldata$R3ERUlabel[fulldata$R3ERUCODE == 'PPF'] <- 'j'
 unique(fulldata$R3ERUlabel)
-#fulldata$R3ERUlabel <- as.factor(fulldata$R3ERUlabel)
+fulldata <- fulldata[fulldata$R3ERUlabel != 'k', ]
+fulldata$R3ERUlabel <- as.factor(fulldata$R3ERUlabel)
+fulldata$R3ERUlabel <- as.character(fulldata$R3ERUlabel)
 
 fulldata$R3ERUlabelFull[fulldata$R3ERUCODE == 'CPGB'] <- 'Colorado Plateau, Great Basin grassland' # a
 fulldata$R3ERUlabelFull[fulldata$R3ERUCODE == 'MSG'] <- 'Montane, subalpine grassland' # a
