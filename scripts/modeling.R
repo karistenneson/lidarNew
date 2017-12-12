@@ -14,8 +14,27 @@ library(BAS)
 library(corrgram)
 #library(robustbase)
 
+data.svy <- svydesign(ids = ~1, data = fulldata[(fulldata$Forest != forestname[6] & fulldata$Forest != forestname[7]),], strata = fulldata$Stratum[(fulldata$Forest != forestname[6] & fulldata$Forest != forestname[7])], fpc = fulldata$fpc[(fulldata$Forest != forestname[6] & fulldata$Forest != forestname[7])]) 
+
+## Update data set to just 
+## the bottom 75% of teh random uniform distribution.
+
+## remove these columns for the models:
+## 'R3ERUCODE', 'R3ERUlabelFull', 'Site','Forest', 
+## "PlotSizeAcres", "fpc", "Stratum"
+
+DATA.modC <- fulldata[(fulldata$Forest != forestname[6] & fulldata$Forest != forestname[7] & fulldata$RandomUniform <0.75), c(
+  "STBIOMSha", "TCUmha", 
+  "Elev_ave", "Elev_mode", "Elev_stddev")] #, "Elev_variance", "Elev_CV", "Elev_IQ", "Elev_skewness", "Elev_kurtosis", "Elev_AAD", "Elev_MAD_median", "Elev_MAD_mode", "Elev_L2", "Elev_L3", "Elev_L4", "Elev_LCV", "Elev_Lskewness", "Elev_Lkurtosis", "Elev_P01", "Elev_P05", "Elev_P10", "Elev_P20", "Elev_P25", "Elev_P30", "Elev_P40", "Elev_P50", "Elev_P60", "Elev_P70", "Elev_P75", "Elev_P80", "Elev_P90", "Elev_P95", "Elev_P99", 
+#  "Pct_first_returns_above_ht", "Pct_all_returns_above_ht", "all_returns_above_ht_div_Total_first_returns_x_100", "Pct_first_returns_above_mean", "Pct_first_returns_above_mode", "pct_all_returns_above_mean", "pct_all_returns_above_mode", "All_returns_above_mean_div_Total_first_returns_x_100", "All_returns_above_mode_div_Total_first_returns_x_100", 
+#  "elevation", "aspect", "slope", "NDVI_Amp", "R3ERUlabel")]
+
+DATA.modC$R3ERUlabel <- as.factor(DATA.modC$R3ERUlabel)
+DATA.modC$STBIOMSha <- DATA.modC$STBIOMSha+0.05
+DATA.modC$TCUmha <- DATA.modC$TCUmha+0.05
+
 # Full variable pool, centered, truncated poisson prior, hyper-g
-BioMass.Modc <- bas.lm(log(STBIOMS)~ . -TCUFT,
+BioMass.Modc <- bas.lm(log(STBIOMSha)~ . -TCUmha,
                    data=DATA.modC,
                    prior="hyper-g",
                    alpha = 3,
@@ -25,7 +44,7 @@ BioMass.Modc <- bas.lm(log(STBIOMS)~ . -TCUFT,
 summary(BioMass.Modc)
 
 # Full variable pool, truncated poisson prior, hyper-g
-BioMass.Mod <- bas.lm(log(STBIOMS)~ . -TCUFT, 
+BioMass.Mod <- bas.lm(log(STBIOMSha)~ . -TCUFT, 
                   data=DATA.mod, 
                   prior="hyper-g",
                   alpha = 3,
@@ -48,7 +67,7 @@ plot(BioMass.Modc, ask=F)
 HPM <- predict(BioMass.Mod, estimator="HPM")
 BioMass.Mod$namesx[HPM$bestmodel+1][-1]
 
-HPMlm <- lm(log(STBIOMS)~ Elev_ave + Elev_CV + Elev_LCV + Pct_first_returns_above_ht + 
+HPMlm <- lm(log(STBIOMSha)~ Elev_ave + Elev_CV + Elev_LCV + Pct_first_returns_above_ht + 
               Pct_all_returns_above_ht + all_returns_above_ht_div_Total_first_returns_x_100 + 
               Pct_first_returns_above_mean + All_returns_above_mean_div_Total_first_returns_x_100 + 
               Total_first_returns + Total_all_returns + R3ERUCODE + Forest + PlotSizeAcres, data=DATA.mod)
@@ -60,7 +79,7 @@ plot(HPMlm, ask=F)
 MPM <- predict(BioMass.Mod, estimator="MPM")
 BioMass.Mod$namesx[MPM$bestmodel+1][-1]
 
-MPMlm <- lm(log(STBIOMS)~ Elev_CV + Elev_LCV + Elev_P80+ Pct_first_returns_above_ht + 
+MPMlm <- lm(log(STBIOMSha)~ Elev_CV + Elev_LCV + Elev_P80+ Pct_first_returns_above_ht + 
               Pct_all_returns_above_ht + All_returns_above_ht + Pct_first_returns_above_mean + 
               All_returns_above_mean_div_Total_first_returns_x_100 + Total_first_returns + 
               Total_all_returns + R3ERUCODE + Forest + PlotSizeAcres, data=DATA.mod)
@@ -75,7 +94,7 @@ BPM <- predict(BioMass.Mod, estimator="BPM") #not running, grrrr
 ### Same business, but for Total Cubit Feet of wood.
 
 # Full variable pool, truncated poisson prior, hyper-g
-TCUFT.Mod <- bas.lm(log(TCUFT)~ . -STBIOMS, 
+TCUFT.Mod <- bas.lm(log(TCUFT)~ . -STBIOMSha, 
                       data=DATA.mod, 
                       prior="hyper-g",
                       alpha = 3,
@@ -114,7 +133,7 @@ plot(MPMlm, ask=F)
 BPM <- predict(BioMass.Mod, estimator="BPM") #not running, grrrr
 
 ### Combined final model?
-cor.test(DATA.mod$STBIOMS, DATA.mod$TCUFT)
+cor.test(DATA.mod$STBIOMSha, DATA.mod$TCUFT)
 # Standing biomass and volume are 0.98 correlated. 
 
 FinModVarFull <- select(DATA.mod, Elev_skewness, Elev_CV, Elev_LCV, Elev_P80, Pct_first_returns_above_ht, 
@@ -135,7 +154,7 @@ corrgram(FinModVarTrim, order=T, lower.panel=panel.ellipse,
 
 # Final Model Performance
 
-FinModB <- lm(log(STBIOMS)~ Elev_skewness + Elev_LCV + Elev_P80 + Total_first_returns + 
+FinModB <- lm(log(STBIOMSha)~ Elev_skewness + Elev_LCV + Elev_P80 + Total_first_returns + 
                 Pct_all_returns_above_ht + elevation + slope + PlotSizeAcres + Forest + R3ERUCODE , 
               data=DATA.mod)
 summary(FinModB)
@@ -155,7 +174,7 @@ DATA.mod.t <- DATA.mod[-Outliers,]
 
 # Final Model Performance
 
-FinModBt <- lm(log(STBIOMS)~ Elev_skewness + Elev_LCV + Elev_P80 + Total_first_returns + 
+FinModBt <- lm(log(STBIOMSha)~ Elev_skewness + Elev_LCV + Elev_P80 + Total_first_returns + 
                 Pct_all_returns_above_ht + elevation + slope + PlotSizeAcres + Forest + R3ERUCODE , 
               data=DATA.mod.t)
 summary(FinModBt)
@@ -172,7 +191,7 @@ plot(FinModTt, ask=F)
 # 
 # # Standing biomass and volume are 0.98 correlated. 
 # 
-# FinModB.r <- lmrob(log(STBIOMS)~ Elev_LCV + Elev_skewness + Elev_P80 + Pct_all_returns_above_ht +
+# FinModB.r <- lmrob(log(STBIOMSha)~ Elev_LCV + Elev_skewness + Elev_P80 + Pct_all_returns_above_ht +
 #                 Total_first_returns + R3ERUCODE + elevation + slope + PlotSizeAcres, data=DATA.mod, 
 #                 setting = "KS2014", fast.s.large.n = Inf)
 # summary(FinModB.r)
