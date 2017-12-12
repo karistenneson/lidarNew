@@ -7,59 +7,62 @@
 #setwd('\\\\166.2.126.25\\rseat\\Programs\\Reimbursibles\\fy2016\\R3_lidar_equation_transferability\\Analysis\\VersionControl\\lidarNew\\scripts')
 #setwd("~/Documents/R/lidarNew/scripts") #Mac
 #setwd("~/R/lidarNew/scripts") #WinCampus
-source(file="DataPrep.R")
+source(file="DataPrepwithZeroesv2.R")
+
+data.mod$R3ERUlabel <- as.factor(data.mod$R3ERUlabel)
+data.val$R3ERUlabel <- as.factor(data.val$R3ERUlabel)
+data.val.ind$R3ERUlabel <- as.factor(data.val.ind$R3ERUlabel)
 
 ### Load required packages
 library(BAS)
 library(corrgram)
 #library(robustbase)
 
-data.svy <- svydesign(ids = ~1, data = fulldata[(fulldata$Forest != forestname[6] & fulldata$Forest != forestname[7]),], strata = fulldata$Stratum[(fulldata$Forest != forestname[6] & fulldata$Forest != forestname[7])], fpc = fulldata$fpc[(fulldata$Forest != forestname[6] & fulldata$Forest != forestname[7])]) 
-
-## Update data set to just 
-## the bottom 75% of teh random uniform distribution.
-
+head(data.mod)
 ## remove these columns for the models:
-## 'R3ERUCODE', 'R3ERUlabelFull', 'Site','Forest', 
-## "PlotSizeAcres", "fpc", "Stratum"
+## 'Site','Forest', 
+## "PlotSizeAcres", "fpc", "Stratum",
+## R3ERUcodeFull, 'R3ERUlabelName'
 
-DATA.modC <- fulldata[(fulldata$Forest != forestname[6] & fulldata$Forest != forestname[7] & fulldata$RandomUniform <0.75), c(
+DATA.mod <- data.mod[ , c(
   "STBIOMSha", "TCUmha", 
-  "Elev_ave", "Elev_mode", "Elev_stddev")] #, "Elev_variance", "Elev_CV", "Elev_IQ", "Elev_skewness", "Elev_kurtosis", "Elev_AAD", "Elev_MAD_median", "Elev_MAD_mode", "Elev_L2", "Elev_L3", "Elev_L4", "Elev_LCV", "Elev_Lskewness", "Elev_Lkurtosis", "Elev_P01", "Elev_P05", "Elev_P10", "Elev_P20", "Elev_P25", "Elev_P30", "Elev_P40", "Elev_P50", "Elev_P60", "Elev_P70", "Elev_P75", "Elev_P80", "Elev_P90", "Elev_P95", "Elev_P99", 
-#  "Pct_first_returns_above_ht", "Pct_all_returns_above_ht", "all_returns_above_ht_div_Total_first_returns_x_100", "Pct_first_returns_above_mean", "Pct_first_returns_above_mode", "pct_all_returns_above_mean", "pct_all_returns_above_mode", "All_returns_above_mean_div_Total_first_returns_x_100", "All_returns_above_mode_div_Total_first_returns_x_100", 
-#  "elevation", "aspect", "slope", "NDVI_Amp", "R3ERUlabel")]
+  "Elev_ave", "Elev_mode", "Elev_stddev", "Elev_variance", "Elev_CV", "Elev_IQ", "Elev_skewness", "Elev_kurtosis", "Elev_AAD", "Elev_MAD_median", "Elev_MAD_mode", "Elev_L2", "Elev_L3", "Elev_L4", "Elev_LCV", "Elev_Lskewness", "Elev_Lkurtosis", "Elev_P01", "Elev_P05", "Elev_P10", "Elev_P20", "Elev_P25", "Elev_P30", "Elev_P40", "Elev_P50", "Elev_P60", "Elev_P70", "Elev_P75", "Elev_P80", "Elev_P90", "Elev_P95", "Elev_P99", 
+  "Pct_first_returns_above_ht", "Pct_all_returns_above_ht", "all_returns_above_ht_div_Total_first_returns_x_100", "Pct_first_returns_above_mean", "Pct_first_returns_above_mode", "pct_all_returns_above_mean", "pct_all_returns_above_mode", "All_returns_above_mean_div_Total_first_returns_x_100", "All_returns_above_mode_div_Total_first_returns_x_100",   
+  "elevation", "aspect", "slope", "NDVI_Amp", "R3ERUlabel")]
 
-DATA.modC$R3ERUlabel <- as.factor(DATA.modC$R3ERUlabel)
-DATA.modC$STBIOMSha <- DATA.modC$STBIOMSha+0.05
-DATA.modC$TCUmha <- DATA.modC$TCUmha+0.05
+#DATA.modC$STBIOMSha <- DATA.modC$STBIOMSha+0.05
+#DATA.modC$TCUmha <- DATA.modC$TCUmha+0.05
 
-# Full variable pool, centered, truncated poisson prior, hyper-g
-BioMass.Modc <- bas.lm(log(STBIOMSha)~ . -TCUmha,
-                   data=DATA.modC,
+# Full variable pool, no transform truncated poisson prior, hyper-g
+BioMass.Mod <- bas.lm(STBIOMSha ~ . -TCUmha,
+                   data=DATA.mod,
                    prior="hyper-g",
                    alpha = 3,
                    modelprior=tr.poisson(10,30),
                    method="MCMC+BAS")
 
-summary(BioMass.Modc)
+summary(BioMass.Mod)
 
 # Full variable pool, truncated poisson prior, hyper-g
-BioMass.Mod <- bas.lm(log(STBIOMSha)~ . -TCUFT, 
-                  data=DATA.mod, 
+DATA.mod.trans<-DATA.mod
+DATA.mod.trans$STBIOMSha <- DATA.mod.trans$STBIOMSha+1
+
+BioMass.Mod.trans <- bas.lm(log(STBIOMSha)~ . -TCUmha, 
+                  data = DATA.mod.trans, 
                   prior="hyper-g",
                   alpha = 3,
                   modelprior=tr.poisson(10,30),
                   method="MCMC+BAS")
 
-summary(BioMass.Mod)
+summary(BioMass.Mod.trans)
 
 # What are the median model variables
 BioMass.Mod$namesx[which(BioMass.Mod$probne0>0.5)][-1]
-BioMass.Modc$namesx[which(BioMass.Modc$probne0>0.5)][-1]
+BioMass.Mod.trans$namesx[which(BioMass.Mod.trans$probne0>0.5)][-1]
 
 # Model diagnostics
 plot(BioMass.Mod, ask=F)
-plot(BioMass.Modc, ask=F)
+plot(BioMass.Mod.trans, ask=F)
 
 #pull some models out using predict functions
 
