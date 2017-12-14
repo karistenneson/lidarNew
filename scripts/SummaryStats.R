@@ -46,17 +46,9 @@ svymean(~STBIOMSha, data.mod.svy)
 svymean(~TCUmha, data.mod.svy)
 svymean(~elevation, data.mod.svy)
 
-# average by project
-forestname <- unique(data.val.ind$Forest)
-i = 0
-i = i +1
-Forest = forestname[i]
-Forest
-Subset<- data.val.ind[data.val.ind$Forest == Forest,]
-data.mod.svy <- svydesign(ids = ~1, data = Subset, strata = Subset$Stratum, fpc = Subset$fpc) 
-svymean(~STBIOMSha, data.mod.svy)
-svymean(~TCUmha, data.mod.svy)
-svymean(~elevation, data.mod.svy)
+svyby(~STBIOMSha, ~Forest, data.mod.svy, svymean)
+svyby(~TCUmha, ~Forest, data.mod.svy, svymean)
+svyby(~elevation, ~Forest, data.mod.svy, svymean)
 
 ######### Model Construct Data
 # average biomass, volume and elevation
@@ -66,17 +58,9 @@ svymean(~STBIOMSha, data.mod.svy)
 svymean(~TCUmha, data.mod.svy)
 svymean(~elevation, data.mod.svy)
 
-# average by project
-forestname <- unique(data.mod$Forest)
-i = 0
-i = i +1
-Forest = forestname[i]
-Forest
-Subset<- data.mod[data.mod$Forest == Forest,]
-data.mod.svy <- svydesign(ids = ~1, data = Subset, strata = Subset$Stratum, fpc = Subset$fpc) 
-svymean(~STBIOMSha, data.mod.svy)
-svymean(~TCUmha, data.mod.svy)
-svymean(~elevation, data.mod.svy)
+svyby(~STBIOMSha, ~Forest, data.mod.svy, svymean)
+svyby(~TCUmha, ~Forest, data.mod.svy, svymean)
+svyby(~elevation, ~Forest, data.mod.svy, svymean)
 
 ######### Model Construct Data (for validation)
 # average biomass, volume and elevation
@@ -86,18 +70,9 @@ svymean(~STBIOMSha, data.mod.svy)
 svymean(~TCUmha, data.mod.svy)
 svymean(~elevation, data.mod.svy)
 
-# average by project
-forestname <- unique(data.val$Forest)
-i = 0
-
-i = i +1
-Forest = forestname[i]
-Forest
-Subset<- data.val[data.val$Forest == Forest,]
-data.mod.svy <- svydesign(ids = ~1, data = Subset, strata = Subset$Stratum, fpc = Subset$fpc) 
-svymean(~STBIOMSha, data.mod.svy)
-svymean(~TCUmha, data.mod.svy)
-svymean(~elevation, data.mod.svy)
+svyby(~STBIOMSha, ~Forest, data.mod.svy, svymean)
+svyby(~TCUmha, ~Forest, data.mod.svy, svymean)
+svyby(~elevation, ~Forest, data.mod.svy, svymean)
 
 ############################
 
