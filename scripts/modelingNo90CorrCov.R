@@ -33,21 +33,32 @@ sampleData <- sample_n(data.mod, 500, replace = T, weight = fpc)
 ## 'Site','Forest', 
 ## "PlotSizeAcres", "fpc", "Stratum",
 ## R3ERUcodeFull, 'R3ERUlabelName'
+## > 95% corr with P60: "Elev_ave", "Elev_P40", "Elev_P50","Elev_P70", "Elev_P75", "Elev_P80", 
+## > 95% corr with P90: "Elev_P95", "Elev_P99", 
+## > 95% corr with P30: "Elev_P20", "Elev_P25", 
+## > 95% corr with stddev: "Elev_variance", "Elev_IQ", "Elev_AAD", "Elev_L2", 
+## > 95% corr with Elev_LCV: "Elev_CV",
+## > 95% corr with Elev_Lskewness: "Elev_skewness",
+## > 95% corr with pct_all_returns_above_mean: "Pct_first_returns_above_mean", "All_returns_above_mean_div_Total_first_returns_x_100"
+## > 95% corr with Pct_all_returns_above_ht: "Pct_first_returns_above_ht", 
+## > 95% corr with All_returns_above_mode_div_Total_first_returns_x_100: "pct_all_returns_above_mode", "Pct_first_returns_above_mode", 
+
+
 DATA.mod <- sampleData[ , c(
   "STBIOMSha", "TCUmha", 
-  "Elev_ave", "Elev_mode", "Elev_stddev", "Elev_variance", "Elev_CV", "Elev_IQ", "Elev_skewness", "Elev_kurtosis", "Elev_AAD", "Elev_MAD_median", "Elev_MAD_mode", "Elev_L2", "Elev_L3", "Elev_L4", "Elev_LCV", "Elev_Lskewness", "Elev_Lkurtosis", "Elev_P01", "Elev_P05", "Elev_P10", "Elev_P20", "Elev_P25", "Elev_P30", "Elev_P40", "Elev_P50", "Elev_P60", "Elev_P70", "Elev_P75", "Elev_P80", "Elev_P90", "Elev_P95", "Elev_P99", 
-  "Pct_first_returns_above_ht", "Pct_all_returns_above_ht", "all_returns_above_ht_div_Total_first_returns_x_100", "Pct_first_returns_above_mean", "Pct_first_returns_above_mode", "pct_all_returns_above_mean", "pct_all_returns_above_mode", "All_returns_above_mean_div_Total_first_returns_x_100", "All_returns_above_mode_div_Total_first_returns_x_100",   
+  "Elev_mode", "Elev_stddev",  "Elev_kurtosis", "Elev_MAD_median", "Elev_MAD_mode", "Elev_L3", "Elev_L4", "Elev_LCV", "Elev_Lskewness", "Elev_Lkurtosis", "Elev_P01", "Elev_P05", "Elev_P10", "Elev_P30",  "Elev_P60", "Elev_P90",
+  
+  "Pct_all_returns_above_ht", "all_returns_above_ht_div_Total_first_returns_x_100",  "pct_all_returns_above_mean", "All_returns_above_mode_div_Total_first_returns_x_100",   
   "elevation", "aspect", "slope", "NDVI_Amp", "R3ERUlabel")]
 
 
-#DATA.modC$STBIOMSha <- DATA.modC$STBIOMSha+0.05
-#DATA.modC$TCUmha <- DATA.modC$TCUmha+0.05
+colnames(DATA.mod)
 
-corrgram(DATA.mod[ , c(1, 35:43)], type="data", lower.panel=panel.shadeNtext, upper.panel=panel.signif, main="canopy density")
+corrgram(DATA.mod[ , c(1, 3, 13:18)], type="data", lower.panel=panel.shadeNtext, upper.panel=panel.signif, main="height")
 
-corrgram(DATA.mod[ , c(1, 5:19)], type="data", lower.panel=panel.shadeNtext, upper.panel=panel.signif, main="variance")
+corrgram(DATA.mod[ , c(1, 4:12)], type="data", lower.panel=panel.shadeNtext, upper.panel=panel.signif, main="shape")
 
-corrgram(DATA.mod[ , c(1, 3:4, 20:34)], type="data", lower.panel=panel.shadeNtext, upper.panel=panel.signif, main="height")
+corrgram(DATA.mod[ , c(1, 19:22)], type="data", lower.panel=panel.shadeNtext, upper.panel=panel.signif, main="density")
 
 # Full variable pool, no transform truncated poisson prior, hyper-g
 BioMass.Mod <- bas.lm(STBIOMSha ~ . -TCUmha,

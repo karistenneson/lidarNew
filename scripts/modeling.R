@@ -39,6 +39,7 @@ DATA.mod <- sampleData[ , c(
   "Elev_stddev", "Elev_variance", "Elev_CV", "Elev_IQ", "Elev_skewness", "Elev_kurtosis", "Elev_AAD", "Elev_MAD_median", "Elev_MAD_mode", "Elev_L2", "Elev_L3", "Elev_L4", "Elev_LCV", "Elev_Lskewness", "Elev_Lkurtosis", 
   
   "Elev_ave", "Elev_mode", "Elev_P01", "Elev_P05", "Elev_P10", "Elev_P20", "Elev_P25", "Elev_P30", "Elev_P40", "Elev_P50", "Elev_P60", "Elev_P70", "Elev_P75", "Elev_P80", "Elev_P90", "Elev_P95", "Elev_P99", 
+  
   "Pct_first_returns_above_ht", "Pct_all_returns_above_ht", "all_returns_above_ht_div_Total_first_returns_x_100", "Pct_first_returns_above_mean", "Pct_first_returns_above_mode", "pct_all_returns_above_mean", "pct_all_returns_above_mode", "All_returns_above_mean_div_Total_first_returns_x_100", "All_returns_above_mode_div_Total_first_returns_x_100", 
   "elevation", "aspect", "slope", "NDVI_Amp", "R3ERUlabel")]
 
@@ -46,11 +47,11 @@ DATA.mod <- sampleData[ , c(
 #DATA.modC$STBIOMSha <- DATA.modC$STBIOMSha+0.05
 #DATA.modC$TCUmha <- DATA.modC$TCUmha+0.05
 
+corrgram(DATA.mod[ , c(1, 3:17)], type="data", lower.panel=panel.shadeNtext, upper.panel=panel.signif, main="variance")
+
+corrgram(DATA.mod[ , c(1, 18:34)], type="data", lower.panel=panel.shadeNtext, upper.panel=panel.signif, main="height")
+
 corrgram(DATA.mod[ , c(1, 35:43)], type="data", lower.panel=panel.shadeNtext, upper.panel=panel.signif, main="canopy density")
-
-corrgram(DATA.mod[ , c(1, 5:19)], type="data", lower.panel=panel.shadeNtext, upper.panel=panel.signif, main="variance")
-
-corrgram(DATA.mod[ , c(1, 3:4, 20:34)], type="data", lower.panel=panel.shadeNtext, upper.panel=panel.signif, main="height")
 
 # Full variable pool, no transform truncated poisson prior, hyper-g
 BioMass.Mod <- bas.lm(STBIOMSha ~ . -TCUmha,
@@ -83,6 +84,14 @@ BioMass.Mod.trans$namesx[which(BioMass.Mod.trans$probne0>0.5)][-1]
 plot(BioMass.Mod, ask=F)
 plot(BioMass.Mod.trans, ask=F)
 
+image(BioMass.Mod, rotate =F)
+image(BioMass.Mod.trans, rotate =F)
+
+coef.notrans <- coef(BioMass.Mod)
+coef.trans <- coef(BioMass.Mod.trans)
+
+plot(coef.notrans, ask = F)
+plot(coef.trans, ask = F)
 #pull some models out using predict functions
 
 # Highest Probability Model
