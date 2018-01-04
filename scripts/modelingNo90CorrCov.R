@@ -25,9 +25,7 @@ library(corrgram)
 head(data.mod)
 
 #Total area of model construction data set is  713168
-data.mod$SmplWts <- (data.mod$fpc / 713168)*100
-
-sampleData <- sample_n(data.mod, 500, replace = T, weight = fpc)
+#data.mod$SmplWts <- (data.mod$fpc / 713168)*100
 
 ## remove these columns for the models:
 ## 'Site','Forest', 
@@ -43,53 +41,97 @@ sampleData <- sample_n(data.mod, 500, replace = T, weight = fpc)
 ## > 95% corr with Pct_all_returns_above_ht: "Pct_first_returns_above_ht", 
 ## > 95% corr with All_returns_above_mode_div_Total_first_returns_x_100: "pct_all_returns_above_mode", "Pct_first_returns_above_mode", 
 
+#corrgram(DATA.mod[ , c(1, 3, 13:18)], type="data", lower.panel=panel.shadeNtext, upper.panel=panel.signif, main="height")
 
-DATA.mod <- sampleData[ , c(
-  "STBIOMSha", "TCUmha", 
-  "Elev_mode", "Elev_stddev",  "Elev_kurtosis", "Elev_MAD_median", "Elev_MAD_mode", "Elev_L3", "Elev_L4", "Elev_LCV", "Elev_Lskewness", "Elev_Lkurtosis", "Elev_P01", "Elev_P05", "Elev_P10", "Elev_P30",  "Elev_P60", "Elev_P90",
-  
+#corrgram(DATA.mod[ , c(1, 4:12)], type="data", lower.panel=panel.shadeNtext, upper.panel=panel.signif, main="shape")
+
+#corrgram(DATA.mod[ , c(1, 19:22)], type="data", lower.panel=panel.shadeNtext, upper.panel=panel.signif, main="density")
+
+predictorSubset <- c("STBIOMSha", "TCUmha", 
+  "Elev_stddev",  "Elev_kurtosis", "Elev_MAD_median", "Elev_MAD_mode", "Elev_L3", "Elev_L4", "Elev_LCV", "Elev_Lskewness", "Elev_Lkurtosis",   
+  "Elev_mode", "Elev_P01", "Elev_P05", "Elev_P10", "Elev_P30",  "Elev_P60", "Elev_P90",
   "Pct_all_returns_above_ht", "all_returns_above_ht_div_Total_first_returns_x_100",  "pct_all_returns_above_mean", "All_returns_above_mode_div_Total_first_returns_x_100",   
-  "elevation", "aspect", "slope", "NDVI_Amp", "R3ERUlabel")]
+  "elevation", "aspect", "slope", "NDVI_Amp", "R3ERUlabel")
 
+DATA.mod <- data.mod[ , predictorSubset]
+DATA.mod.trans<-DATA.mod
+DATA.mod.trans$STBIOMSha <- DATA.mod.trans$STBIOMSha + 1
 
-colnames(DATA.mod)
+DATA.val <- data.val[ , predictorSubset]
+DATA.val.trans<-DATA.val
+DATA.val.trans$STBIOMSha <- DATA.val.trans$STBIOMSha + 1
 
-corrgram(DATA.mod[ , c(1, 3, 13:18)], type="data", lower.panel=panel.shadeNtext, upper.panel=panel.signif, main="height")
+data.svy <- svydesign(ids = ~1, data = DATA.mod, fpc = DATA.mod$fpc)
+data.svy.trans <- svydesign(ids = ~1, data = DATA.mod.trans, fpc = DATA.mod.trans$fpc) 
+data.svy.val <- svydesign(ids = ~1, data = DATA.val, fpc = DATA.val$fpc)
+data.svy.val.trans <- svydesign(ids = ~1, data = DATA.val.trans, fpc = DATA.val.trans$fpc) 
 
-corrgram(DATA.mod[ , c(1, 4:12)], type="data", lower.panel=panel.shadeNtext, upper.panel=panel.signif, main="shape")
-
-corrgram(DATA.mod[ , c(1, 19:22)], type="data", lower.panel=panel.shadeNtext, upper.panel=panel.signif, main="density")
-
+######################################################
 # Full variable pool, no transform truncated poisson prior, hyper-g
-BioMass.Mod <- bas.lm(STBIOMSha ~ . -TCUmha,
+BioMass.Mod <- bas.lm(STBIOMSha ~ . 
+                      + Elev_mode * Pct_all_returns_above_ht + Elev_mode * pct_all_returns_above_mean + Elev_mode * all_returns_above_ht_div_Total_first_returns_x_100 + Elev_mode * All_returns_above_mode_div_Total_first_returns_x_100
+                      + Elev_P01 * Pct_all_returns_above_ht + Elev_P01 * pct_all_returns_above_mean + Elev_P01 * all_returns_above_ht_div_Total_first_returns_x_100 + Elev_P01 * All_returns_above_mode_div_Total_first_returns_x_100 
+                      + Elev_P05 * Pct_all_returns_above_ht + Elev_P05 * pct_all_returns_above_mean + Elev_P05 * all_returns_above_ht_div_Total_first_returns_x_100 + Elev_P05 * All_returns_above_mode_div_Total_first_returns_x_100 
+                      + Elev_P10 * Pct_all_returns_above_ht + Elev_P10 * pct_all_returns_above_mean + Elev_P10 * all_returns_above_ht_div_Total_first_returns_x_100 + Elev_P10 * All_returns_above_mode_div_Total_first_returns_x_100 
+                      + Elev_P30 * Pct_all_returns_above_ht + Elev_P30 * pct_all_returns_above_mean + Elev_P30 * all_returns_above_ht_div_Total_first_returns_x_100 + Elev_P30 * All_returns_above_mode_div_Total_first_returns_x_100 
+                      + Elev_P60 * Pct_all_returns_above_ht +Elev_P60 * pct_all_returns_above_mean + Elev_P60 * all_returns_above_ht_div_Total_first_returns_x_100 + Elev_P60 * All_returns_above_mode_div_Total_first_returns_x_100  
+                      + Elev_P90 * Pct_all_returns_above_ht + Elev_P90 * pct_all_returns_above_mean + Elev_P90 * all_returns_above_ht_div_Total_first_returns_x_100 + Elev_P90 * All_returns_above_mode_div_Total_first_returns_x_100
+                      -TCUmha, weights = data.mod$fpc,
                    data=DATA.mod,
                    prior="hyper-g",
                    alpha = 3,
                    modelprior=tr.poisson(10,30),
                    method="MCMC+BAS")
 
-summary(BioMass.Mod)
-
+######################################################
 # Full variable pool, truncated poisson prior, hyper-g
-DATA.mod.trans<-DATA.mod
-DATA.mod.trans$STBIOMSha <- DATA.mod.trans$STBIOMSha+1
-
-BioMass.Mod.trans <- bas.lm(log(STBIOMSha)~ . -TCUmha, 
+BioMass.Mod.trans <- bas.lm(log(STBIOMSha)~ . 
+                            + Elev_mode * Pct_all_returns_above_ht + Elev_mode * pct_all_returns_above_mean + Elev_mode * all_returns_above_ht_div_Total_first_returns_x_100 + Elev_mode * All_returns_above_mode_div_Total_first_returns_x_100
+                            + Elev_P01 * Pct_all_returns_above_ht + Elev_P01 * pct_all_returns_above_mean + Elev_P01 * all_returns_above_ht_div_Total_first_returns_x_100 + Elev_P01 * All_returns_above_mode_div_Total_first_returns_x_100 
+                            + Elev_P05 * Pct_all_returns_above_ht + Elev_P05 * pct_all_returns_above_mean + Elev_P05 * all_returns_above_ht_div_Total_first_returns_x_100 + Elev_P05 * All_returns_above_mode_div_Total_first_returns_x_100 
+                            + Elev_P10 * Pct_all_returns_above_ht + Elev_P10 * pct_all_returns_above_mean + Elev_P10 * all_returns_above_ht_div_Total_first_returns_x_100 + Elev_P10 * All_returns_above_mode_div_Total_first_returns_x_100 
+                            + Elev_P30 * Pct_all_returns_above_ht + Elev_P30 * pct_all_returns_above_mean + Elev_P30 * all_returns_above_ht_div_Total_first_returns_x_100 + Elev_P30 * All_returns_above_mode_div_Total_first_returns_x_100 
+                            + Elev_P60 * Pct_all_returns_above_ht +Elev_P60 * pct_all_returns_above_mean + Elev_P60 * all_returns_above_ht_div_Total_first_returns_x_100 + Elev_P60 * All_returns_above_mode_div_Total_first_returns_x_100  
+                            + Elev_P90 * Pct_all_returns_above_ht + Elev_P90 * pct_all_returns_above_mean + Elev_P90 * all_returns_above_ht_div_Total_first_returns_x_100 + Elev_P90 * All_returns_above_mode_div_Total_first_returns_x_100
+                            -TCUmha, weights = data.mod$fpc,
                   data = DATA.mod.trans, 
                   prior="hyper-g",
                   alpha = 3,
                   modelprior=tr.poisson(10,30),
                   method="MCMC+BAS")
 
-summary(BioMass.Mod.trans)
+#summary(BioMass.Mod)
+#summary(BioMass.Mod.trans)
 
+BMAprob <- BioMass.Mod$probne0
+BMAprobtrans <- BioMass.Mod.trans$probne0
+
+####################################################
 # What are the median model variables
-BioMass.Mod$namesx[which(BioMass.Mod$probne0>0.5)][-1]
-BioMass.Mod.trans$namesx[which(BioMass.Mod.trans$probne0>0.5)][-1]
+BioMass.Mod$postprobs
+cov <- BioMass.Mod$namesx[which(BioMass.Mod$probne0>0.5)][-1]
+covariates[1:length(cov), i] <- cov
+
+cov.t <- BioMass.Mod.trans$namesx[which(BioMass.Mod.trans$probne0>0.5)][-1]
+covariates.trans[1:length(cov.t), i] <- cov.t
+
+####################################################
+####################################################
+DATA.mod.full <- data.mod[ , c('STBIOMSha', covariates)]
+data.svy <- svydesign(ids = ~1, data = DATA.mod.full, fpc = DATA.mod.full$fpc) #, strata = DATA.mod.full$Stratum
+
+DATA.val <- data.val[ , predictorSubset]
+data.svy.val <- svydesign(ids = ~1, data = DATA.val, fpc = DATA.val$fpc) #, strata = DATA.val$Stratum
+
+svyglm(STBIOMSha, 
+##################################
+svyglm(log(STBIOMSha),
+data.svy.trans
+data.svy.val.trans
 
 # Model diagnostics
-plot(BioMass.Mod, ask=F)
-plot(BioMass.Mod.trans, ask=F)
+#plot(BioMass.Mod, ask=F)
+#plot(BioMass.Mod.trans, ask=F)
 
 #pull some models out using predict functions
 
@@ -97,7 +139,7 @@ plot(BioMass.Mod.trans, ask=F)
 HPM <- predict(BioMass.Mod, estimator="HPM")
 BioMass.Mod$namesx[HPM$bestmodel+1][-1]
 
-HPMlm <- lm(log(STBIOMSha)~ Elev_ave + Elev_CV + Elev_LCV + Pct_first_returns_above_ht + 
+HPMlm <- svylm(log(STBIOMSha)~ Elev_ave + Elev_CV + Elev_LCV + Pct_first_returns_above_ht + 
               Pct_all_returns_above_ht + all_returns_above_ht_div_Total_first_returns_x_100 + 
               Pct_first_returns_above_mean + All_returns_above_mean_div_Total_first_returns_x_100 + 
               Total_first_returns + Total_all_returns + R3ERUCODE + Forest + PlotSizeAcres, data=DATA.mod)

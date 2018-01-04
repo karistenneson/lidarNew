@@ -23,11 +23,14 @@ library(corrgram)
 #library(robustbase)
 
 head(data.mod)
+data.mod$Forest <- as.character(data.mod$Forest)
+data.mod$Forest <- as.factor(data.mod$Forest)
 
 #Total area of model construction data set is  713168
 data.mod$SmplWts <- (data.mod$fpc / 713168)*100
 
-sampleData <- sample_n(data.mod, 500, replace = T, weight = fpc)
+sampleData <- sample_n(data.mod, 750, replace = T, weight = fpc)
+boxplot(sampleData$STBIOMSha~sampleData$Forest, varwidth = T)
 
 ## remove these columns for the models:
 ## 'Site','Forest', 
