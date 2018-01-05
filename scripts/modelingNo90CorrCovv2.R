@@ -436,24 +436,69 @@ MedianBASModel_transNoInt.no0 <- svyglm(log(STBIOMSha) ~ Elev_stddev + Elev_MAD_
 ## No transformation
 summary(MedianBASModel_Weights.no0); 
 summary(MedianBASModel_Weights.no0)$aic
-MedBASMod_Wts.no0.res <- predict(MedianBASModel_Weights.no0, newdata=DATA.val)
+#Root Mean Square Error
+predictedoutput <- predict(MedianBASModel_Weights.no0, newdata=DATA.val)
+plot(predictedoutput~(DATA.val$STBIOMSha), xlim = c(0,650), ylim = c(0,650))
+abline(a = 0, b = 1, col = 'red')
+Resoutput <- predictedoutput - (DATA.val.trans$STBIOMSha)
+frame <- cbind(Resoutput, Resoutput^2, data.val[ , c('fpc', 'Stratum')])
+colnames(frame)<- c("Resoutput", "ResoutputSE", "SqResoutput", "SqResoutputSE", "fpc", "Stratum")
+ResSqVec <- svydesign(ids = ~1, data = frame, fpc = frame$fpc, strata = frame$Stratum)
+sqrt(svymean(frame$SqResoutput, design = ResSqVec))# remember to Square the Standard Error
+
 
 summary(MedianBASModel_NoWeight.no0); 
 summary(MedianBASModel_NoWeight.no0)$aic
-MedBASMod_noWts.no0.res <- predict(MedianBASModel_NoWeight.no0, newdata=DATA.val)
+#Root Mean Square Error
+predictedoutput <- predict(MedianBASModel_NoWeight.no0, newdata=DATA.val)
+plot(predictedoutput~(DATA.val$STBIOMSha), xlim = c(0,650), ylim = c(0,650))
+abline(a = 0, b = 1, col = 'red')
+Resoutput <- predictedoutput - (DATA.val.trans$STBIOMSha)
+frame <- cbind(Resoutput, Resoutput^2, data.val[ , c('fpc', 'Stratum')])
+colnames(frame)<- c("Resoutput", "ResoutputSE", "SqResoutput", "SqResoutputSE", "fpc", "Stratum")
+ResSqVec <- svydesign(ids = ~1, data = frame, fpc = frame$fpc, strata = frame$Stratum)
+sqrt(svymean(frame$SqResoutput, design = ResSqVec))# remember to Square the Standard Error
+
 
 ## log transformed models
 summary(MedianBASModel_transWeights.no0); 
 summary(MedianBASModel_transWeights.no0)$aic
-MedBASMod_TransWts.no0.res <- predict(MedianBASModel_transWeights.no0, newdata=DATA.val.trans)
+#Root Mean Square Error
+predictedoutput <- exp(predict(MedianBASModel_transWeights.no0, newdata=DATA.val.trans))-1
+plot(predictedoutput~(DATA.val.trans$STBIOMSha-1), xlim = c(0,650), ylim = c(0,650))
+abline(a = 0, b = 1, col = 'red')
+Resoutput <- predictedoutput - (DATA.val.trans$STBIOMSha-1)
+frame <- cbind(Resoutput, Resoutput^2, data.val[ , c('fpc', 'Stratum')])
+colnames(frame)<- c("Resoutput", "ResoutputSE", "SqResoutput", "SqResoutputSE", "fpc", "Stratum")
+ResSqVec <- svydesign(ids = ~1, data = frame, fpc = frame$fpc, strata = frame$Stratum)
+sqrt(svymean(frame$SqResoutput, design = ResSqVec))# remember to Square the Standard Error
+
 
 summary(MedianBASModel_transNoWeight.no0); 
 summary(MedianBASModel_transNoWeight.no0)$aic
-MedBASMod_TransnoWts.no0.res <- predict(MedianBASModel_transNoWeight.no0, newdata=DATA.val.trans)
+#Root Mean Square Error
+predictedoutput <- exp(predict(MedianBASModel_transNoWeight.no0, newdata=DATA.val.trans))-1
+plot(predictedoutput~(DATA.val.trans$STBIOMSha-1), xlim = c(0,650), ylim = c(0,650))
+abline(a = 0, b = 1, col = 'red')
+Resoutput <- predictedoutput - (DATA.val.trans$STBIOMSha-1)
+frame <- cbind(Resoutput, Resoutput^2, data.val[ , c('fpc', 'Stratum')])
+colnames(frame)<- c("Resoutput", "ResoutputSE", "SqResoutput", "SqResoutputSE", "fpc", "Stratum")
+ResSqVec <- svydesign(ids = ~1, data = frame, fpc = frame$fpc, strata = frame$Stratum)
+sqrt(svymean(frame$SqResoutput, design = ResSqVec))# remember to Square the Standard Error
+
 
 summary(MedianBASModel_transNoInt.no0); 
 summary(MedianBASModel_transNoInt.no0)$aic
-MedBASMod_TransnoInt.no0.res <- predict(MedianBASModel_transNoInt.no0, newdata=DATA.val.trans)
+#Root Mean Square Error
+predictedoutput <- exp(predict(MedianBASModel_transNoInt.no0, newdata=DATA.val.trans))-1
+plot(predictedoutput~(DATA.val.trans$STBIOMSha-1), xlim = c(0,650), ylim = c(0,650))
+abline(a = 0, b = 1, col = 'red')
+Resoutput <- predictedoutput - (DATA.val.trans$STBIOMSha-1)
+frame <- cbind(Resoutput, Resoutput^2, data.val[ , c('fpc', 'Stratum')])
+colnames(frame)<- c("Resoutput", "ResoutputSE", "SqResoutput", "SqResoutputSE", "fpc", "Stratum")
+ResSqVec <- svydesign(ids = ~1, data = frame, fpc = frame$fpc, strata = frame$Stratum)
+sqrt(svymean(frame$SqResoutput, design = ResSqVec))# remember to Square the Standard Error
+
 
 
 ### models built on data without zeroes.
@@ -513,7 +558,7 @@ Resoutput <- predictedoutput - (DATA.val.trans$STBIOMSha-1)
 frame <- cbind(Resoutput, Resoutput^2, data.val[ , c('fpc', 'Stratum')])
 colnames(frame)<- c("Resoutput", "ResoutputSE", "SqResoutput", "SqResoutputSE", "fpc", "Stratum")
 ResSqVec <- svydesign(ids = ~1, data = frame, fpc = frame$fpc, strata = frame$Stratum)
-sqrt(svymean(frame$Resoutput, design = ResSqVec))# remember to Square the Standard Error
+sqrt(svymean(frame$SqResoutput, design = ResSqVec))# remember to Square the Standard Error
 
 ## Model #4
 summary(HPMlm.trans.no.no0); 

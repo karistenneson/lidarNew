@@ -12,7 +12,7 @@
 
 ### Load required packages
 library(tidyverse)
-
+library(dplyr)
 library(survey)
 options(survey.lonely.psu="certainty")
 options(survey.lonely.psu="adjust")
@@ -41,7 +41,7 @@ AllData$TCUmha <- AllData$TCUFT*2.47105*0.0283168
 
 #Bring in Environmental Data
 Aux <- read.csv("../Data/Auxillary/Merged_10172017.csv", stringsAsFactors=FALSE)
-AuxTrim <- select(Aux, PLOT_ID, R3ERUCODE, elevation, aspect, slope)
+AuxTrim <- Aux[, c('PLOT_ID', 'R3ERUCODE', 'elevation', 'aspect', 'slope')]
 AllData <- merge(AllData, AuxTrim, by="PLOT_ID", all=F)
 AllData$R3ERUCODE <- as.factor(AllData$R3ERUCODE)
 AllData$Forest <- as.factor(AllData$Forest)
@@ -49,7 +49,7 @@ AllData$Site <- as.factor(AllData$Site)
 
 NDVI <- read.csv("../Data/Auxillary/NDVIamplitude.csv")
 
-AllData <- merge(AllData, select(NDVI, PLOT_ID, NDVI_Sample_NDVI_amplitude_1), by="PLOT_ID", all=F)
+AllData <- merge(AllData, NDVI[, c('PLOT_ID', 'NDVI_Sample_NDVI_amplitude_1')], by="PLOT_ID", all=F)
 AllData <- rename(AllData, NDVI_Amp=NDVI_Sample_NDVI_amplitude_1)
 
 remove(AuxTrim, Aux, NDVI)
