@@ -98,7 +98,7 @@ AllData$R3ERUlabelName[AllData$R3ERUCODE == 'PPF'] <- 'G. Ponderosa pine'
 ### Partion data
 Variables <- colnames(AllData) #pull variable names for use with select()
 ## exclude total count lidar metrics, use only the relative count measures (e.g., percent returns)
-LidarNames <- Variables[c(23:57, 60:65)] #subset of lidar metrics
+LidarNames <- Variables[c(23: 40, 42, 43, 45:49, 51, 52, 54, 55:57, 60:65)] #subset of lidar metrics
 FieldNames <- Variables[c(1:20, 74, 79, 81)] #subset of field variables
 AuxNames <- Variables[c(75:78, 80)] #subset of additional environmental variables
 RandUnif <- Variables[11] #The Random Uniform Variable
