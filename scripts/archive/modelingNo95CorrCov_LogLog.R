@@ -59,87 +59,58 @@ for (i in 1:length(strata)){
 
 #corrgram(DATA.mod[ , c(1, 19:22)], type="data", lower.panel=panel.shadeNtext, upper.panel=panel.signif, main="density")
 
-predictorSubset <- c("STBIOMSha", "TCUmha", 
+predictorSubset <- c("STBIOMSha", 'logSTBIOMSha', "TCUmha", 
   "Elev_stddev",  "Elev_kurtosis", "Elev_MAD_median", "Elev_MAD_mode", "Elev_L3", "Elev_L4", "Elev_LCV", "Elev_Lskewness", "Elev_Lkurtosis",   
-  "Elev_mode", "Elev_P01", "Elev_P05", "Elev_P10", "Elev_P30",  "Elev_P60", "Elev_P90",
-  "Pct_all_returns_above_ht", "all_returns_above_ht_div_Total_first_returns_x_100",  "pct_all_returns_above_mean", "All_returns_above_mode_div_Total_first_returns_x_100",   
+  "Elev_mode", "Elev_P01", "Elev_P10", "Elev_P30",  "Elev_P60", "Elev_P90",
+  "Pct_all_returns_above_ht", "all_returns_above_ht_div_Total_first_returns_x_100",  "pct_all_returns_above_mean", "All_returns_above_mode_div_Total_first_returns_x_100",  
+  "mode_pctAllOver3m", "mode_pctAlloverModeDiv1st","P01_pctAllOver3m", "P10_pctAllOver3m", "P30_pctAllOver3m", "P60_pctAllOver3m",  "P90_pctAllOver3m", 
+  "logmode", "logP01", "logP10", "logP30", "logP60", "logP90", 
+  "log_Pct_all_returns_above_ht", "log_pct_all_returns_above_mean",  "log_all_returns_above_ht_div_Total_first_returns_x_100", 
+  "logmode_pctAllOver3m", "logmode_pctAlloverModeDiv1st", "logP01_pctAllOver3m", "logP10_pctAllOver3m", "logP30_pctAllOver3m", "logP60_pctAllOver3m","logP90_pctAllOver3m",
   "elevation", "aspect", "slope", "NDVI_Amp", "R3ERUlabel")
 
 DATA.mod <- data.mod[ , predictorSubset]
-DATA.mod.trans<-DATA.mod
-DATA.mod.trans$STBIOMSha <- DATA.mod.trans$STBIOMSha + 1
-DATA.mod.trans$Elev_mode<- DATA.mod.trans$Elev_mode + 1
-DATA.mod.trans$Elev_P01 <- DATA.mod.trans$Elev_P01 + 1
-DATA.mod.trans$Elev_P05 <- DATA.mod.trans$Elev_P05 + 1
-DATA.mod.trans$Elev_P10 <- DATA.mod.trans$Elev_P10 + 1
-DATA.mod.trans$Elev_P30 <- DATA.mod.trans$Elev_P30 + 1
-DATA.mod.trans$Elev_P60 <- DATA.mod.trans$Elev_P60 + 1
-DATA.mod.trans$Elev_P90 <- DATA.mod.trans$Elev_P90 + 1
-DATA.mod.trans$Pct_all_returns_above_ht <- DATA.mod.trans$Pct_all_returns_above_ht + 1
-DATA.mod.trans$all_returns_above_ht_div_Total_first_returns_x_100 <- DATA.mod.trans$all_returns_above_ht_div_Total_first_returns_x_100 + 1
-DATA.mod.trans$pct_all_returns_above_mean <- DATA.mod.trans$pct_all_returns_above_mean + 1
-DATA.mod.trans$All_returns_above_mode_div_Total_first_returns_x_100 <- DATA.mod.trans$All_returns_above_mode_div_Total_first_returns_x_100 + 1
-
 DATA.val <- data.val[ , predictorSubset]
-DATA.val.trans<-DATA.val
-DATA.val.trans$STBIOMSha <- DATA.val.trans$STBIOMSha + 1
-DATA.val.trans$Elev_mode <- DATA.val.trans$Elev_mode + 1
-DATA.val.trans$Elev_P01 <- DATA.val.trans$Elev_P01 + 1
-DATA.val.trans$Elev_P05 <- DATA.val.trans$Elev_P05 + 1
-DATA.val.trans$Elev_P10 <- DATA.val.trans$Elev_P10 + 1
-DATA.val.trans$Elev_P30 <- DATA.val.trans$Elev_P30 + 1
-DATA.val.trans$Elev_P60 <- DATA.val.trans$Elev_P60 + 1
-DATA.val.trans$Elev_P90 <- DATA.val.trans$Elev_P90 + 1
-DATA.val.trans$Pct_all_returns_above_ht <- DATA.val.trans$Pct_all_returns_above_ht + 1
-DATA.val.trans$all_returns_above_ht_div_Total_first_returns_x_100 <- DATA.val.trans$all_returns_above_ht_div_Total_first_returns_x_100 + 1
-DATA.val.trans$pct_all_returns_above_mean <- DATA.val.trans$pct_all_returns_above_mean + 1
-DATA.val.trans$All_returns_above_mode_div_Total_first_returns_x_100 <- DATA.val.trans$All_returns_above_mode_div_Total_first_returns_x_100 + 1
 
 ######################################################
 #weights = data.mod$SmplWts,
-BioMass.Mod.trans <- bas.lm(log(STBIOMSha)~ Elev_stddev +  Elev_kurtosis + Elev_MAD_median + Elev_MAD_mode + Elev_L3 + Elev_L4 + Elev_LCV + Elev_Lskewness + Elev_Lkurtosis +   
-                              log(Elev_mode) + log(Elev_P01) + log(Elev_P05) + log(Elev_P10) + log(Elev_P30) +  log(Elev_P60) + log(Elev_P90) +
-                              log(Pct_all_returns_above_ht) + log(all_returns_above_ht_div_Total_first_returns_x_100) +  log(pct_all_returns_above_mean) + log(All_returns_above_mode_div_Total_first_returns_x_100) + elevation + aspect + slope + NDVI_Amp + R3ERUlabel
-                               + log(Elev_mode) * log(Pct_all_returns_above_ht) + log(Elev_mode) * log(pct_all_returns_above_mean) + log(Elev_mode) * log(all_returns_above_ht_div_Total_first_returns_x_100) + log(Elev_mode) * log(All_returns_above_mode_div_Total_first_returns_x_100)
-                               + log(Elev_P01) * log(Pct_all_returns_above_ht) + log(Elev_P01) * log(pct_all_returns_above_mean) + log(Elev_P01) * log(all_returns_above_ht_div_Total_first_returns_x_100) + log(Elev_P01) * log(All_returns_above_mode_div_Total_first_returns_x_100) 
-                            + log(Elev_P05) * log(Pct_all_returns_above_ht) + log(Elev_P05) * log(pct_all_returns_above_mean) + log(Elev_P05) * log(all_returns_above_ht_div_Total_first_returns_x_100) + log(Elev_P05) * log(All_returns_above_mode_div_Total_first_returns_x_100)
-                            + log(Elev_P10) * log(Pct_all_returns_above_ht) + log(Elev_P10) * log(pct_all_returns_above_mean) + log(Elev_P10) * log(all_returns_above_ht_div_Total_first_returns_x_100) + log(Elev_P10) * log(All_returns_above_mode_div_Total_first_returns_x_100)
-                            + log(Elev_P30) * log(Pct_all_returns_above_ht) + log(Elev_P30) * log(pct_all_returns_above_mean) + log(Elev_P30) * log(all_returns_above_ht_div_Total_first_returns_x_100) + log(Elev_P30) * log(All_returns_above_mode_div_Total_first_returns_x_100)
-                            + log(Elev_P60) * log(Pct_all_returns_above_ht) + log(Elev_P60) * log(pct_all_returns_above_mean) + log(Elev_P60) * log(all_returns_above_ht_div_Total_first_returns_x_100) + log(Elev_P60) * log(All_returns_above_mode_div_Total_first_returns_x_100)
-                            + log(Elev_P90) * log(Pct_all_returns_above_ht) + log(Elev_P90) * log(pct_all_returns_above_mean) + log(Elev_P90) * log(all_returns_above_ht_div_Total_first_returns_x_100) + log(Elev_P90) * log(All_returns_above_mode_div_Total_first_returns_x_100)
-                               -TCUmha, weights = data.mod$SmplWts,
-                               data = DATA.mod.trans, 
-                               prior="hyper-g",
-                               alpha = 3,
-                               modelprior=tr.poisson(10,30),
-                               method="MCMC+BAS")
-# Full variable pool, truncated poisson prior, hyper-g
-BioMass.Mod.trans.no <- bas.lm(log(STBIOMSha)~ Elev_stddev +  Elev_kurtosis + Elev_MAD_median + Elev_MAD_mode + Elev_L3 + Elev_L4 + Elev_LCV + Elev_Lskewness + Elev_Lkurtosis +   
-                                 log(Elev_mode) + log(Elev_P01) + log(Elev_P05) + log(Elev_P10) + log(Elev_P30) +  log(Elev_P60) + log(Elev_P90) +
-                                 log(Pct_all_returns_above_ht) + log(all_returns_above_ht_div_Total_first_returns_x_100) +  log(pct_all_returns_above_mean) + log(All_returns_above_mode_div_Total_first_returns_x_100) + elevation + aspect + slope + NDVI_Amp + R3ERUlabel
-                               + log(Elev_mode) * log(Pct_all_returns_above_ht) + log(Elev_mode) * log(pct_all_returns_above_mean) + log(Elev_mode) * log(all_returns_above_ht_div_Total_first_returns_x_100) + log(Elev_mode) * log(All_returns_above_mode_div_Total_first_returns_x_100)
-                               + log(Elev_P01) * log(Pct_all_returns_above_ht) + log(Elev_P01) * log(pct_all_returns_above_mean) + log(Elev_P01) * log(all_returns_above_ht_div_Total_first_returns_x_100) + log(Elev_P01) * log(All_returns_above_mode_div_Total_first_returns_x_100) 
-                               + log(Elev_P05) * log(Pct_all_returns_above_ht) + log(Elev_P05) * log(pct_all_returns_above_mean) + log(Elev_P05) * log(all_returns_above_ht_div_Total_first_returns_x_100) + log(Elev_P05) * log(All_returns_above_mode_div_Total_first_returns_x_100)
-                               + log(Elev_P10) * log(Pct_all_returns_above_ht) + log(Elev_P10) * log(pct_all_returns_above_mean) + log(Elev_P10) * log(all_returns_above_ht_div_Total_first_returns_x_100) + log(Elev_P10) * log(All_returns_above_mode_div_Total_first_returns_x_100)
-                               + log(Elev_P30) * log(Pct_all_returns_above_ht) + log(Elev_P30) * log(pct_all_returns_above_mean) + log(Elev_P30) * log(all_returns_above_ht_div_Total_first_returns_x_100) + log(Elev_P30) * log(All_returns_above_mode_div_Total_first_returns_x_100)
-                               + log(Elev_P60) * log(Pct_all_returns_above_ht) + log(Elev_P60) * log(pct_all_returns_above_mean) + log(Elev_P60) * log(all_returns_above_ht_div_Total_first_returns_x_100) + log(Elev_P60) * log(All_returns_above_mode_div_Total_first_returns_x_100)
-                               + log(Elev_P90) * log(Pct_all_returns_above_ht) + log(Elev_P90) * log(pct_all_returns_above_mean) + log(Elev_P90) * log(all_returns_above_ht_div_Total_first_returns_x_100) + log(Elev_P90) * log(All_returns_above_mode_div_Total_first_returns_x_100)
-                               -TCUmha, 
-                               data = DATA.mod.trans, 
-                               prior="hyper-g",
-                               alpha = 3,
-                               modelprior=tr.poisson(10,30),
-                               method="MCMC+BAS")
+BioMass.Mod.loglog <- bas.lm(logSTBIOMSha ~   logmode + logP01 + logP10 + logP30 + logP60 + logP90 +
+  Elev_stddev +  Elev_kurtosis + Elev_MAD_median + Elev_MAD_mode + Elev_L3 + Elev_L4 + Elev_LCV + Elev_Lskewness + Elev_Lkurtosis + 
+  log_Pct_all_returns_above_ht + log_pct_all_returns_above_mean + log_all_returns_above_ht_div_Total_first_returns_x_100 + 
+  logmode_pctAllOver3m + logmode_pctAlloverModeDiv1st + logP01_pctAllOver3m + logP10_pctAllOver3m + logP30_pctAllOver3m + logP60_pctAllOver3m + logP90_pctAllOver3m + 
+  aspect + slope + NDVI_Amp + R3ERUlabel, 
+  weights = data.mod$SmplWts,
+  data = DATA.mod, 
+  prior="hyper-g",
+  alpha = 3,
+  modelprior=tr.poisson(10,30),
+  method="MCMC+BAS")
 
-BioMass.Mod.trans.noInt <- bas.lm(log(STBIOMSha)~ Elev_stddev +  Elev_kurtosis + Elev_MAD_median + Elev_MAD_mode + Elev_L3 + Elev_L4 + Elev_LCV + Elev_Lskewness + Elev_Lkurtosis +   
-                                    log(Elev_mode) + log(Elev_P01) + log(Elev_P05) + log(Elev_P10) + log(Elev_P30) +  log(Elev_P60) + log(Elev_P90) +
-                                    log(Pct_all_returns_above_ht) + log(all_returns_above_ht_div_Total_first_returns_x_100) +  log(pct_all_returns_above_mean) + log(All_returns_above_mode_div_Total_first_returns_x_100) + elevation + aspect + slope + NDVI_Amp + R3ERUlabel 
-                                  -TCUmha, 
-                                  data = DATA.mod.trans, 
-                                  prior="hyper-g",
-                                  alpha = 3,
-                                  modelprior=tr.poisson(10,30),
-                                  method="MCMC+BAS")
+# Full variable pool, truncated poisson prior, hyper-g
+BioMass.Mod.log <- bas.lm(logSTBIOMSha ~ Elev_mode + Elev_P01 + Elev_P10 + Elev_P30 + Elev_P60 + Elev_P90 +   
+      Elev_stddev +  Elev_kurtosis + Elev_MAD_median + Elev_MAD_mode + Elev_L3 + Elev_L4 + Elev_LCV + Elev_Lskewness + Elev_Lkurtosis + 
+      Pct_all_returns_above_ht + all_returns_above_ht_div_Total_first_returns_x_100 + pct_all_returns_above_mean + All_returns_above_mode_div_Total_first_returns_x_100 + 
+      mode_pctAllOver3m + mode_pctAlloverModeDiv1st + P01_pctAllOver3m + P10_pctAllOver3m + P30_pctAllOver3m + P60_pctAllOver3m + P90_pctAllOver3m +
+      elevation + aspect + slope + NDVI_Amp + R3ERUlabel, 
+      weights = data.mod$SmplWts, 
+      data = DATA.mod, 
+      prior="hyper-g",
+      alpha = 3,
+      modelprior=tr.poisson(10,30),
+      method="MCMC+BAS")
+
+# Full variable pool, truncated poisson prior, hyper-g
+BioMass.Mod <- bas.lm(STBIOMSha ~ Elev_mode + Elev_P01 + Elev_P10 + Elev_P30 + Elev_P60 + Elev_P90 +   
+                            Elev_stddev +  Elev_kurtosis + Elev_MAD_median + Elev_MAD_mode + Elev_L3 + Elev_L4 + Elev_LCV + Elev_Lskewness + Elev_Lkurtosis + 
+                            Pct_all_returns_above_ht + all_returns_above_ht_div_Total_first_returns_x_100 + pct_all_returns_above_mean + All_returns_above_mode_div_Total_first_returns_x_100 + 
+                            mode_pctAllOver3m + mode_pctAlloverModeDiv1st + P01_pctAllOver3m + P10_pctAllOver3m + P30_pctAllOver3m + P60_pctAllOver3m + P90_pctAllOver3m +
+                            elevation + aspect + slope + NDVI_Amp + R3ERUlabel, 
+                          weights = data.mod$SmplWts, 
+                          data = DATA.mod, 
+                          prior="hyper-g",
+                          alpha = 3,
+                          modelprior=tr.poisson(10,30),
+                          method="MCMC+BAS")
 
 ####################################################
 ####################################################
