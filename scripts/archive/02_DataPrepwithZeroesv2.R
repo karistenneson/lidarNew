@@ -59,8 +59,8 @@ AllData$R3ERUcodeFull[AllData$R3ERUCODE == 'CPGB'] <- 'Colorado Plateau, Great B
 AllData$R3ERUcodeFull[AllData$R3ERUCODE == 'MSG'] <- 'Montane, subalpine grassland' # A
 AllData$R3ERUcodeFull[AllData$R3ERUCODE == 'PJO'] <- 'Pinyon-juniper woodland' # B
 AllData$R3ERUcodeFull[AllData$R3ERUCODE == '230'] <- 'Narrowleaf cottonwood, shrub' # C
-AllData$R3ERUcodeFull[AllData$R3ERUCODE == '110'] <- 'Arizona alder, willow' # D
-AllData$R3ERUcodeFull[AllData$R3ERUCODE == '290'] <- 'Willow, thinleaf alder' # D
+AllData$R3ERUcodeFull[AllData$R3ERUCODE == '110'] <- 'Arizona alder, willow' # C
+AllData$R3ERUcodeFull[AllData$R3ERUCODE == '290'] <- 'Willow, thinleaf alder' # C
 AllData$R3ERUcodeFull[AllData$R3ERUCODE == 'SFF'] <- 'Spruce-fir' # E
 AllData$R3ERUcodeFull[AllData$R3ERUCODE == 'MCD'] <- 'Mixed conifer, freq. fire' # F
 AllData$R3ERUcodeFull[AllData$R3ERUCODE == 'MCW'] <- 'Mixed conifer with aspen' # F
@@ -72,8 +72,8 @@ AllData$R3ERUlabel[AllData$R3ERUCODE == 'CPGB'] <- 'A'
 AllData$R3ERUlabel[AllData$R3ERUCODE == 'MSG'] <- 'A'
 AllData$R3ERUlabel[AllData$R3ERUCODE == 'PJO'] <- 'B'
 AllData$R3ERUlabel[AllData$R3ERUCODE == '230'] <- 'C'
-AllData$R3ERUlabel[AllData$R3ERUCODE == '110'] <- 'D'
-AllData$R3ERUlabel[AllData$R3ERUCODE == '290'] <- 'D'
+AllData$R3ERUlabel[AllData$R3ERUCODE == '110'] <- 'C'
+AllData$R3ERUlabel[AllData$R3ERUCODE == '290'] <- 'C'
 AllData$R3ERUlabel[AllData$R3ERUCODE == 'SFF'] <- 'E'
 AllData$R3ERUlabel[AllData$R3ERUCODE == 'MCD'] <- 'F'
 AllData$R3ERUlabel[AllData$R3ERUCODE == 'MCW'] <- 'F'
@@ -84,9 +84,9 @@ AllData$R3ERUlabel[AllData$R3ERUCODE == 'PPF'] <- 'G'
 AllData$R3ERUlabelName[AllData$R3ERUCODE == 'CPGB'] <- 'A. herbaceous and grasslands'
 AllData$R3ERUlabelName[AllData$R3ERUCODE == 'MSG'] <- 'A. herbaceous and grasslands'
 AllData$R3ERUlabelName[AllData$R3ERUCODE == 'PJO'] <- 'B. Pinyon-juniper woodland'
-AllData$R3ERUlabelName[AllData$R3ERUCODE == '230'] <- 'C. narrowleaf cottonwood, shrub'
-AllData$R3ERUlabelName[AllData$R3ERUCODE == '110'] <- 'D. alder and willow'
-AllData$R3ERUlabelName[AllData$R3ERUCODE == '290'] <- 'D. alder and willow'
+AllData$R3ERUlabelName[AllData$R3ERUCODE == '230'] <- 'C. decid'
+AllData$R3ERUlabelName[AllData$R3ERUCODE == '110'] <- 'C. decid'
+AllData$R3ERUlabelName[AllData$R3ERUCODE == '290'] <- 'C. decid'
 AllData$R3ERUlabelName[AllData$R3ERUCODE == 'SFF'] <- 'E. spruce-fir'
 AllData$R3ERUlabelName[AllData$R3ERUCODE == 'MCD'] <- 'F. mixed conifer'
 AllData$R3ERUlabelName[AllData$R3ERUCODE == 'MCW'] <- 'F. mixed conifer'
