@@ -71,16 +71,17 @@ predictorSubset <- c("STBIOMSha", 'logSTBIOMSha', "TCUmha",
   "elevation", "aspect", "slope", "NDVI_Amp", "R3ERUlabel")
 
 DATA.mod <- data.mod[ c(-591, -1958), predictorSubset]
+DATA.mod$SmplWts<- data.mod$SmplWts[c(-591, -1958)]
 DATA.val <- data.val[ c(-622, -736), predictorSubset]
 
 ######################################################
 #sq rt, log
-BioMass.Mod.loglog <- bas.lm(sqrt(STBIOMSha) ~   logmode + logP01 + logP10 + logP30 + logP60 + logP90 +
+BioMass.Mod.sqrtlog <- bas.lm(sqrt(STBIOMSha) ~   logmode + logP01 + logP10 + logP30 + logP60 + logP90 +
                                Elev_stddev +  Elev_kurtosis + Elev_MAD_median + Elev_MAD_mode + Elev_L3 + Elev_L4 + Elev_LCV + Elev_Lskewness + Elev_Lkurtosis + 
                                log_Pct_all_returns_above_ht + log_pct_all_returns_above_mean + log_all_returns_above_ht_div_Total_first_returns_x_100 + 
                                logmode_pctAllOver3m + logmode_pctAlloverModeDiv1st + logP01_pctAllOver3m + logP10_pctAllOver3m + logP30_pctAllOver3m + logP60_pctAllOver3m + logP90_pctAllOver3m + 
                                elevation + aspect + slope + NDVI_Amp + R3ERUlabel, 
-                             weights = data.mod$SmplWts,
+                             weights = DATA.mod$SmplWts,
                              data = DATA.mod, 
                              prior="hyper-g",
                              alpha = 3,
@@ -88,12 +89,12 @@ BioMass.Mod.loglog <- bas.lm(sqrt(STBIOMSha) ~   logmode + logP01 + logP10 + log
                              method="MCMC+BAS")
 
 # sqrt
-BioMass.Mod.log <- bas.lm(sqrt(STBIOMSha) ~ Elev_mode + Elev_P01 + Elev_P10 + Elev_P30 + Elev_P60 + Elev_P90 +   
+BioMass.Mod.sqrt <- bas.lm(sqrt(STBIOMSha) ~ Elev_mode + Elev_P01 + Elev_P10 + Elev_P30 + Elev_P60 + Elev_P90 +   
                             Elev_stddev +  Elev_kurtosis + Elev_MAD_median + Elev_MAD_mode + Elev_L3 + Elev_L4 + Elev_LCV + Elev_Lskewness + Elev_Lkurtosis + 
                             Pct_all_returns_above_ht + all_returns_above_ht_div_Total_first_returns_x_100 + pct_all_returns_above_mean + All_returns_above_mode_div_Total_first_returns_x_100 + 
                             mode_pctAllOver3m + mode_pctAlloverModeDiv1st + P01_pctAllOver3m + P10_pctAllOver3m + P30_pctAllOver3m + P60_pctAllOver3m + P90_pctAllOver3m +
                             elevation + aspect + slope + NDVI_Amp + R3ERUlabel, 
-                          weights = data.mod$SmplWts, 
+                          weights = DATA.mod$SmplWts, 
                           data = DATA.mod, 
                           prior="hyper-g",
                           alpha = 3,
@@ -106,7 +107,7 @@ BioMass.Mod.loglog <- bas.lm(logSTBIOMSha ~   logmode + logP01 + logP10 + logP30
   log_Pct_all_returns_above_ht + log_pct_all_returns_above_mean + log_all_returns_above_ht_div_Total_first_returns_x_100 + 
   logmode_pctAllOver3m + logmode_pctAlloverModeDiv1st + logP01_pctAllOver3m + logP10_pctAllOver3m + logP30_pctAllOver3m + logP60_pctAllOver3m + logP90_pctAllOver3m + 
   elevation + aspect + slope + NDVI_Amp + R3ERUlabel, 
-  weights = data.mod$SmplWts,
+  weights = DATA.mod$SmplWts,
   data = DATA.mod, 
   prior="hyper-g",
   alpha = 3,
@@ -119,7 +120,7 @@ BioMass.Mod.log <- bas.lm(logSTBIOMSha ~ Elev_mode + Elev_P01 + Elev_P10 + Elev_
       Pct_all_returns_above_ht + all_returns_above_ht_div_Total_first_returns_x_100 + pct_all_returns_above_mean + All_returns_above_mode_div_Total_first_returns_x_100 + 
       mode_pctAllOver3m + mode_pctAlloverModeDiv1st + P01_pctAllOver3m + P10_pctAllOver3m + P30_pctAllOver3m + P60_pctAllOver3m + P90_pctAllOver3m +
       elevation + aspect + slope + NDVI_Amp + R3ERUlabel, 
-      weights = data.mod$SmplWts, 
+      weights = DATA.mod$SmplWts, 
       data = DATA.mod, 
       prior="hyper-g",
       alpha = 3,
@@ -132,7 +133,7 @@ BioMass.Mod <- bas.lm(STBIOMSha ~ Elev_mode + Elev_P01 + Elev_P10 + Elev_P30 + E
                             Pct_all_returns_above_ht + all_returns_above_ht_div_Total_first_returns_x_100 + pct_all_returns_above_mean + All_returns_above_mode_div_Total_first_returns_x_100 + 
                             mode_pctAllOver3m + mode_pctAlloverModeDiv1st + P01_pctAllOver3m + P10_pctAllOver3m + P30_pctAllOver3m + P60_pctAllOver3m + P90_pctAllOver3m +
                             elevation + aspect + slope + NDVI_Amp + R3ERUlabel, 
-                          weights = data.mod$SmplWts, 
+                          weights = DATA.mod$SmplWts, 
                           data = DATA.mod, 
                           prior="hyper-g",
                           alpha = 3,
