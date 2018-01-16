@@ -7,68 +7,26 @@
 #setwd('\\\\166.2.126.25\\rseat\\Programs\\Reimbursibles\\fy2016\\R3_lidar_equation_transferability\\Analysis\\VersionControl\\lidarNew\\scripts')
 #setwd("~/Documents/R/lidarNew/scripts") #Mac
 #setwd("~/R/lidarNew/scripts") #WinCampus
-list.files()
-### source data
-source(file='02_DataPrep.R')
-
-### source functions
-source(file="01_functions.R")
-
-data.mod$R3ERUlabel <- as.factor(data.mod$R3ERUlabel)
-data.val$R3ERUlabel <- as.factor(data.val$R3ERUlabel)
-data.val.ind$R3ERUlabel <- as.factor(data.val.ind$R3ERUlabel)
+#source(file='02_DataPrep.R')
 
 ### Load required packages
 library(cvTools)
 library(BAS)
 library(corrgram)
+library(survey)
+library(tidyverse)
+library(dplyr)
+
 #library(robustbase)
+
+### load data
+data.mod <- read.csv('Data//datamod.csv')
+data.val <- read.csv('Data//dataval.csv')
+data.val.ind <- read.csv('Data//datavalind.csv')
 
 head(data.mod); dim(data.mod)
 #data.mod <- data.mod[data.mod$STBIOMS != 0 , ]
 #data.val <- data.val[data.val$STBIOMS != 0 , ]
-
-#Total area of model construction data set is  713168
-data.mod$PercentArea <- (data.mod$fpc / 713168)*100
-data.mod$SmplSize <- data.mod$SmplWts <- rep(0, length(data.mod$fpc))
-
-strata<-unique(data.mod$Stratum)
-
-for (i in 1:length(strata)){
-  SampleSize <- length(data.mod$Stratum[data.mod$Stratum == strata[i]])
-  data.mod$SmplSize[data.mod$Stratum == strata[i]] <- SampleSize
-  data.mod$SmplWts[data.mod$Stratum == strata[i]] <- data.mod$PercentArea[data.mod$Stratum == strata[i]]/SampleSize* 100
-}
-
-## remove these columns for the models:
-## 'Site','Forest', 
-## "PlotSizeAcres", "fpc", "Stratum",
-## R3ERUcodeFull, 'R3ERUlabelName'
-## > 95% corr with P60: "Elev_ave", "Elev_P40", "Elev_P50","Elev_P70", "Elev_P75", "Elev_P80", 
-## > 95% corr with P90: "Elev_P95", "Elev_P99", 
-## > 95% corr with P30: "Elev_P20", "Elev_P25", 
-## > 95% corr with stddev: "Elev_variance", "Elev_IQ", "Elev_AAD", "Elev_L2", 
-## > 95% corr with Elev_LCV: "Elev_CV",
-## > 95% corr with Elev_Lskewness: "Elev_skewness",
-## > 95% corr with pct_all_returns_above_mean: "Pct_first_returns_above_mean", "All_returns_above_mean_div_Total_first_returns_x_100"
-## > 95% corr with Pct_all_returns_above_ht: "Pct_first_returns_above_ht", 
-## > 95% corr with All_returns_above_mode_div_Total_first_returns_x_100: "pct_all_returns_above_mode", "Pct_first_returns_above_mode", 
-
-#corrgram(DATA.mod[ , c(1, 3, 13:18)], type="data", lower.panel=panel.shadeNtext, upper.panel=panel.signif, main="height")
-
-#corrgram(DATA.mod[ , c(1, 4:12)], type="data", lower.panel=panel.shadeNtext, upper.panel=panel.signif, main="shape")
-
-#corrgram(DATA.mod[ , c(1, 19:22)], type="data", lower.panel=panel.shadeNtext, upper.panel=panel.signif, main="density")
-
-predictorSubset <- c("STBIOMSha", 'logSTBIOMSha', "TCUmha", 
-  "Elev_stddev",  "Elev_kurtosis", "Elev_MAD_median", "Elev_MAD_mode", "Elev_L3", "Elev_L4", "Elev_LCV", "Elev_Lskewness", "Elev_Lkurtosis",   
-  "Elev_mode", "Elev_P01", "Elev_P10", "Elev_P30",  "Elev_P60", "Elev_P90",
-  "Pct_all_returns_above_ht", "all_returns_above_ht_div_Total_first_returns_x_100",  "pct_all_returns_above_mean", "All_returns_above_mode_div_Total_first_returns_x_100",  
-  "mode_pctAllOver3m", "mode_pctAlloverModeDiv1st","P01_pctAllOver3m", "P10_pctAllOver3m", "P30_pctAllOver3m", "P60_pctAllOver3m",  "P90_pctAllOver3m", 
-  "logmode", "logP01", "logP10", "logP30", "logP60", "logP90", 
-  "log_Pct_all_returns_above_ht", "log_pct_all_returns_above_mean",  "log_all_returns_above_ht_div_Total_first_returns_x_100", 
-  "logmode_pctAllOver3m", "logmode_pctAlloverModeDiv1st", "logP01_pctAllOver3m", "logP10_pctAllOver3m", "logP30_pctAllOver3m", "logP60_pctAllOver3m","logP90_pctAllOver3m",
-  "elevation", "aspect", "slope", "NDVI_Amp", "R3ERUlabel")
 
 DATA.mod <- data.mod[ c(-591, -1958), predictorSubset]
 DATA.mod$SmplWts<- data.mod$SmplWts[c(-591, -1958)]
@@ -158,9 +116,10 @@ data.val$R3ERUlabelF[data.val$R3ERUlabel == 'F'] <- 1
 data.val$R3ERUlabelG[data.val$R3ERUlabel == 'G'] <- 1
 
 
-DATA.mod <- data.mod[ , c(predictorSubset, 'R3ERUlabelB', 'R3ERUlabelE', 'R3ERUlabelF', 'R3ERUlabelG', 'fpc', 'Stratum')]
+DATA.mod <- data.mod[ c(-591, -1958), c(predictorSubset, 'R3ERUlabelB', 'R3ERUlabelE', 'R3ERUlabelF', 'R3ERUlabelG', 'Forest','PlotSizeAcres', 'fpc', 'Stratum')]
 
-DATA.val <- data.val[ , c(predictorSubset, 'R3ERUlabelB', 'R3ERUlabelE', 'R3ERUlabelF', 'R3ERUlabelG', 'fpc', 'Stratum')]
+DATA.val <- data.val[ c(-622, -736), c(predictorSubset, 'R3ERUlabelB', 'R3ERUlabelE', 
+                                       'R3ERUlabelF', 'R3ERUlabelG', 'Forest','PlotSizeAcres', 'fpc', 'Stratum')]
 
 data.svy <- svydesign(ids = ~1, data = DATA.mod, fpc = DATA.mod$fpc, strata = DATA.mod$Stratum)
 
@@ -189,6 +148,14 @@ MedianBASModel_loglog <- svyglm(logSTBIOMSha ~ logP60 +
                                 logP60_pctAllOver3m,
                                 design = data.svy)
 
+summary(lm(logSTBIOMSha ~ logP60 +
+                                  Elev_stddev +
+                                  Elev_L3 +
+                                  log_Pct_all_returns_above_ht +
+                                  logP10_pctAllOver3m +
+                                  logP60_pctAllOver3m,
+                                data = DATA.mod))
+
 MedianBASModel_log <- svyglm(logSTBIOMSha ~ Elev_P01 +
                              Elev_P90 +
                              Elev_stddev +
@@ -201,6 +168,18 @@ MedianBASModel_log <- svyglm(logSTBIOMSha ~ Elev_P01 +
                              slope,  
                              design = data.svy)
 
+summary(lm(logSTBIOMSha ~ Elev_P01 +
+                               Elev_P90 +
+                               Elev_stddev +
+                               Pct_all_returns_above_ht +
+                               P01_pctAllOver3m +
+                               P10_pctAllOver3m +
+                               P60_pctAllOver3m +
+                               P90_pctAllOver3m +
+                               elevation +
+                               slope,  
+                             data = DATA.mod))
+
 MedianBASModel <- svyglm(STBIOMSha ~ Elev_P60 +
                          Elev_L3 +
                          Elev_Lskewness +
@@ -212,6 +191,16 @@ MedianBASModel <- svyglm(STBIOMSha ~ Elev_P60 +
                          elevation,
                          design = data.svy)
 
+summary(lm(STBIOMSha ~ Elev_P60 +
+                           Elev_L3 +
+                           Elev_Lskewness +
+                           Elev_Lkurtosis +
+                           all_returns_above_ht_div_Total_first_returns_x_100 +
+                           P30_pctAllOver3m +
+                           P60_pctAllOver3m +
+                           P90_pctAllOver3m +
+                           elevation,
+                         data = DATA.mod))
 #################################################################### 
 
 # Highest Probability Model
@@ -241,6 +230,19 @@ HPMlm.log <- svyglm(logSTBIOMSha ~ Elev_P01 +
                       slope, 
                     design = data.svy)
 
+summary(lm(logSTBIOMSha ~ Elev_P01 + 
+                      Elev_P90 + 
+                      Elev_stddev + 
+                      Elev_Lskewness + 
+                      Pct_all_returns_above_ht + 
+                      P01_pctAllOver3m + 
+                      P10_pctAllOver3m + 
+                      P60_pctAllOver3m + 
+                      P90_pctAllOver3m + 
+                      elevation + 
+                      aspect + 
+                      slope, data = DATA.mod))
+
 HPMlm <- svyglm(STBIOMSha ~ Elev_P30 +  
                   Elev_L3 + 
                   Elev_Lskewness + 
@@ -249,7 +251,14 @@ HPMlm <- svyglm(STBIOMSha ~ Elev_P30 +
                   P30_pctAllOver3m + 
                   P90_pctAllOver3m, 
                 design = data.svy)
-
+summary(lm(STBIOMSha ~ Elev_P30 +  
+        Elev_L3 + 
+        Elev_Lskewness + 
+        Elev_Lkurtosis + 
+        all_returns_above_ht_div_Total_first_returns_x_100 + 
+        P30_pctAllOver3m + 
+        P90_pctAllOver3m, 
+      data = DATA.mod))
 ##################################
 ##################################
 #################################################################################
@@ -270,7 +279,7 @@ Resoutput <- predictedoutput - (DATA.val$STBIOMSha)
 PctRes <- ((predictedoutput+1) / (DATA.val$STBIOMSha))*100
 
 frame <- cbind(predictedoutput, Resoutput, Resoutput^2, PctRes, 
-               data.val [ , c('STBIOMSha', 'Forest','PlotSizeAcres', 'fpc', 'Stratum', 
+               DATA.val [ , c('STBIOMSha', 'Forest','PlotSizeAcres', 'fpc', 'Stratum', 
                               'R3ERUlabelB', 'R3ERUlabelE', 'R3ERUlabelF', 'R3ERUlabelG')])
 colnames(frame)<- c('Prediction', 'PredictionSE', "Residual", "ResidualSE", "SqResidual", "SqResidualSE", "PctResidual", "PctResidualSE", 
                     'STBIOMSha', 'Forest','PlotSizeAcres', "fpc", "Stratum",
@@ -308,7 +317,7 @@ Resoutput <- predictedoutput - (DATA.val$STBIOMSha)
 PctRes <- ((predictedoutput+1) / (DATA.val$STBIOMSha))*100
 
 frame <- cbind(predictedoutput, Resoutput, Resoutput^2, PctRes, 
-               data.val [ , c('STBIOMSha', 'Forest','PlotSizeAcres', 'fpc', 'Stratum', 
+               DATA.val [ , c('STBIOMSha', 'Forest','PlotSizeAcres', 'fpc', 'Stratum', 
                               'R3ERUlabelB', 'R3ERUlabelE', 'R3ERUlabelF', 'R3ERUlabelG')])
 colnames(frame)<- c('Prediction', 'PredictionSE', "Residual", "ResidualSE", "SqResidual", "SqResidualSE", "PctResidual", "PctResidualSE", 
                     'STBIOMSha', 'Forest','PlotSizeAcres', "fpc", "Stratum",
@@ -346,7 +355,7 @@ Resoutput <- predictedoutput - (DATA.val$STBIOMSha)
 PctRes <- ((predictedoutput+1) / (DATA.val$STBIOMSha))*100
 
 frame <- cbind(predictedoutput, Resoutput, Resoutput^2, PctRes, 
-               data.val [ , c('STBIOMSha', 'Forest','PlotSizeAcres', 'fpc', 'Stratum', 
+               DATA.val [ , c('STBIOMSha', 'Forest','PlotSizeAcres', 'fpc', 'Stratum', 
                               'R3ERUlabelB', 'R3ERUlabelE', 'R3ERUlabelF', 'R3ERUlabelG')])
 colnames(frame)<- c('Prediction', 'PredictionSE', "Residual", "ResidualSE", "SqResidual", "SqResidualSE", "PctResidual", "PctResidualSE", 
                     'STBIOMSha', 'Forest','PlotSizeAcres', "fpc", "Stratum",
@@ -425,7 +434,7 @@ Resoutput <- predictedoutput - (DATA.val$STBIOMSha)
 PctRes <- ((predictedoutput+1) / (DATA.val$STBIOMSha))*100
 
 frame <- cbind(predictedoutput, Resoutput, Resoutput^2, PctRes, 
-               data.val [ , c('STBIOMSha', 'Forest','PlotSizeAcres', 'fpc', 'Stratum', 
+               DATA.val [ , c('STBIOMSha', 'Forest','PlotSizeAcres', 'fpc', 'Stratum', 
                               'R3ERUlabelB', 'R3ERUlabelE', 'R3ERUlabelF', 'R3ERUlabelG')])
 colnames(frame)<- c('Prediction', 'PredictionSE', "Residual", "ResidualSE", "SqResidual", "SqResidualSE", "PctResidual", "PctResidualSE", 
                     'STBIOMSha', 'Forest','PlotSizeAcres', "fpc", "Stratum",
@@ -462,7 +471,7 @@ Resoutput <- predictedoutput - (DATA.val$STBIOMSha)
 PctRes <- ((predictedoutput+1) / (DATA.val$STBIOMSha))*100
 
 frame <- cbind(predictedoutput, Resoutput, Resoutput^2, PctRes, 
-               data.val [ , c('STBIOMSha', 'Forest','PlotSizeAcres', 'fpc', 'Stratum', 
+               DATA.val [ , c('STBIOMSha', 'Forest','PlotSizeAcres', 'fpc', 'Stratum', 
                               'R3ERUlabelB', 'R3ERUlabelE', 'R3ERUlabelF', 'R3ERUlabelG')])
 colnames(frame)<- c('Prediction', 'PredictionSE', "Residual", "ResidualSE", "SqResidual", "SqResidualSE", "PctResidual", "PctResidualSE", 
                     'STBIOMSha', 'Forest','PlotSizeAcres', "fpc", "Stratum",
@@ -493,8 +502,46 @@ ggplot(frame[frame$Forest == 'Coconino', ], aes(STBIOMSha,Residual)) + geom_poin
 ####################################################################
 ####################################################################
 ####################################################################
-
+## selected model
 ########################################
+#################################################################
+## no transformation 
+## #3
+summary(MedianBASModel); 
+summary(MedianBASModel)$aic
+
+# residual and error data frame
+predictedoutput <- predict(MedianBASModel, newdata=DATA.val)
+Resoutput <- predictedoutput - (DATA.val$STBIOMSha)
+PctRes <- ((predictedoutput+1) / (DATA.val$STBIOMSha))*100
+
+frame <- cbind(predictedoutput, Resoutput, Resoutput^2, PctRes, 
+               DATA.val [ , c('STBIOMSha', 'Forest','PlotSizeAcres', 'fpc', 'Stratum', 
+                              'R3ERUlabelB', 'R3ERUlabelE', 'R3ERUlabelF', 'R3ERUlabelG')])
+colnames(frame)<- c('Prediction', 'PredictionSE', "Residual", "ResidualSE", "SqResidual", "SqResidualSE", "PctResidual", "PctResidualSE", 
+                    'STBIOMSha', 'Forest','PlotSizeAcres', "fpc", "Stratum",
+                    'B, PJ woodland', 'E, spruce fir', 'F, mix con', 'G, PIPO')
+CrossValidation <- svydesign(ids = ~1, data = frame, fpc = frame$fpc, strata = frame$Stratum)
+
+#Bias
+svymean(frame$Residual, design = CrossValidation)
+# % Bias
+100*(svymean(frame$Residual, design = CrossValidation)/
+       svymean(frame$Prediction, design = CrossValidation)) # remember to 
+
+#Root Mean Square Error
+sqrt(svymean(frame$SqResidual, design = CrossValidation)) # remember to Square the Standard Error
+#% RMSE
+100*(sqrt(svymean(frame$SqResidual, design = CrossValidation))/
+       svymean(frame$Prediction, design = CrossValidation)) # remember to Square the Standard Error
+
+ggplot(frame, aes(STBIOMSha,Residual)) + geom_point() + geom_smooth()
+
+ggplot(frame[frame$Forest == 'NorthKaibab', ], aes(STBIOMSha,Residual)) + geom_point() + geom_smooth()
+ggplot(frame[frame$Forest == 'SWJM', ], aes(STBIOMSha,Residual)) + geom_point() + geom_smooth()
+ggplot(frame[frame$Forest == 'Sitgreaves', ], aes(STBIOMSha,Residual)) + geom_point() + geom_smooth()
+ggplot(frame[frame$Forest == 'Tonto', ], aes(STBIOMSha,Residual)) + geom_point() + geom_smooth()
+ggplot(frame[frame$Forest == 'Coconino', ], aes(STBIOMSha,Residual)) + geom_point() + geom_smooth()
 
 ### Hex plots, weighted by sample weights
 svyplot(frame$Residual~frame$STBIOMSha, design = CrossValidation, style = 'trans', xlab = 'Observed', ylab = 'Residual')

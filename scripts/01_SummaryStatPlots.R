@@ -1,8 +1,22 @@
 library(ggplot2)
 
-data.mod$ID <- seq(1:length(data.mod$STBIOMSha))
-data.val$ID <- seq(1:length(data.val$STBIOMSha))
-data.val.ind$ID <- seq(1:length(data.val.ind$STBIOMSha))
+### Bring in data
+#setwd('C:\\Users\\krtenneson\\Desktop\\lidarPaper\\lidarNew\\scripts')
+#setwd('\\\\166.2.126.25\\rseat\\Programs\\Reimbursibles\\fy2016\\R3_lidar_equation_transferability\\Analysis\\VersionControl\\lidarNew\\scripts')
+#setwd("~/Documents/R/lidarNew/scripts") #Mac
+#setwd("~/R/lidarNew/scripts") #WinCampus
+#source(file='02_DataPrep.R')
+
+### Load required packages
+library(cvTools)
+library(BAS)
+library(corrgram)
+#library(robustbase)
+
+### load data
+data.mod <- read.csv('Data//datamod.csv')
+data.val <- read.csv('Data//dataval.csv')
+data.val.ind <- read.csv('Data//datavalind.csv')
 
 par(mfrow = c(2,2))
 

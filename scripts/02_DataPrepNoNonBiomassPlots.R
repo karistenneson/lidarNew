@@ -98,7 +98,9 @@ AllData$R3ERUlabelName<- as.factor(AllData$R3ERUlabelName)
 
 ##########################################
 ### Partion data
-AllData$logSTBIOMSha <- log(AllData$STBIOMSha +1)
+AllData <- AllData[AllData$STBIOMSha > 0.9, ]
+
+AllData$logSTBIOMSha <- log(AllData$STBIOMSha )
 
 ######################################################
 ## test volume correlations
@@ -106,72 +108,72 @@ AllData$logSTBIOMSha <- log(AllData$STBIOMSha +1)
 
 AllData$mode_pctAllOver3m <- AllData$Elev_mode * AllData$Pct_all_returns_above_ht 
 #AllData$mode_pctAllOverMean <- AllData$Elev_mode * AllData$pct_all_returns_above_mean 
-#AllData$logmode_pctAllOverMean <- log(AllData$Elev_mode+1) * log(AllData$pct_all_returns_above_mean+1) 
+#AllData$logmode_pctAllOverMean <- log(AllData$Elev_mode) * log(AllData$pct_all_returns_above_mean) 
 #AllData$mode_pctAllover3mDiv1st <- AllData$Elev_mode * AllData$all_returns_above_ht_div_Total_first_returns_x_100 
-#AllData$logmode_pctAllover3mDiv1st <- log(AllData$Elev_mode+1) * log(AllData$all_returns_above_ht_div_Total_first_returns_x_100+1) 
+#AllData$logmode_pctAllover3mDiv1st <- log(AllData$Elev_mode) * log(AllData$all_returns_above_ht_div_Total_first_returns_x_100) 
 AllData$mode_pctAlloverModeDiv1st <- AllData$Elev_mode * AllData$All_returns_above_mode_div_Total_first_returns_x_100 
 
 #####################
 AllData$P01_pctAllOver3m <- AllData$Elev_P01 * AllData$Pct_all_returns_above_ht 
 #AllData$P01_pctAllOverMean <- AllData$Elev_P01 * AllData$pct_all_returns_above_mean 
-#AllData$logP01_pctAllOverMean <- log(AllData$Elev_P01+ 1) * log(AllData$pct_all_returns_above_mean+ 1) 
+#AllData$logP01_pctAllOverMean <- log(AllData$Elev_P01) * log(AllData$pct_all_returns_above_mean) 
 #AllData$P01_pctAllover3mDiv1st <- AllData$Elev_P01 * AllData$all_returns_above_ht_div_Total_first_returns_x_100
-#AllData$logP01_pctAllover3mDiv1st <- log(AllData$Elev_P01+ 1) * log(AllData$all_returns_above_ht_div_Total_first_returns_x_100+ 1) 
+#AllData$logP01_pctAllover3mDiv1st <- log(AllData$Elev_P01) * log(AllData$all_returns_above_ht_div_Total_first_returns_x_100) 
 #AllData$P01_pctAlloverModeDiv1st <- AllData$Elev_P01 * AllData$All_returns_above_mode_div_Total_first_returns_x_100 
-#AllData$logP01_pctAlloverModeDiv1st <- log(AllData$Elev_P01+ 1) * log(AllData$All_returns_above_mode_div_Total_first_returns_x_100+ 1) 
+#AllData$logP01_pctAlloverModeDiv1st <- log(AllData$Elev_P01) * log(AllData$All_returns_above_mode_div_Total_first_returns_x_100) 
 
 #####################
 AllData$P10_pctAllOver3m <- AllData$Elev_P10 * AllData$Pct_all_returns_above_ht 
 #AllData$P10_pctAllOverMean <- AllData$Elev_P10 * AllData$pct_all_returns_above_mean 
-#AllData$logP10_pctAllOverMean <- log(AllData$Elev_P10+ 1) * log(AllData$pct_all_returns_above_mean+ 1) 
+#AllData$logP10_pctAllOverMean <- log(AllData$Elev_P10) * log(AllData$pct_all_returns_above_mean) 
 #AllData$P10_pctAllover3mDiv1st <- AllData$Elev_P10 * AllData$all_returns_above_ht_div_Total_first_returns_x_100 
-#AllData$logP10_pctAllover3mDiv1st <- log(AllData$Elev_P10+ 1) * log(AllData$all_returns_above_ht_div_Total_first_returns_x_100+ 1) 
+#AllData$logP10_pctAllover3mDiv1st <- log(AllData$Elev_P10) * log(AllData$all_returns_above_ht_div_Total_first_returns_x_100) 
 #AllData$P10_pctAlloverModeDiv1st <- AllData$Elev_P10 * AllData$All_returns_above_mode_div_Total_first_returns_x_100 
-#AllData$logP10_pctAlloverModeDiv1st <- log(AllData$Elev_P10+ 1) * log(AllData$All_returns_above_mode_div_Total_first_returns_x_100+ 1) 
+#AllData$logP10_pctAlloverModeDiv1st <- log(AllData$Elev_P10) * log(AllData$All_returns_above_mode_div_Total_first_returns_x_100) 
 
 AllData$P30_pctAllOver3m <- AllData$Elev_P30 * AllData$Pct_all_returns_above_ht 
 #AllData$P30_pctAllOverMean <- AllData$Elev_P30 * AllData$pct_all_returns_above_mean 
-#AllData$logP30_pctAllOverMean <- log(AllData$Elev_P30+ 1) * log(AllData$pct_all_returns_above_mean+ 1) 
+#AllData$logP30_pctAllOverMean <- log(AllData$Elev_P30) * log(AllData$pct_all_returns_above_mean) 
 #AllData$P30_pctAllover3mDiv1st <- AllData$Elev_P30 * AllData$all_returns_above_ht_div_Total_first_returns_x_100 
-#AllData$logP30_pctAllover3mDiv1st <- log(AllData$Elev_P30+ 1) * log(AllData$all_returns_above_ht_div_Total_first_returns_x_100+ 1) 
+#AllData$logP30_pctAllover3mDiv1st <- log(AllData$Elev_P30) * log(AllData$all_returns_above_ht_div_Total_first_returns_x_100) 
 #AllData$P30_pctAlloverModeDiv1st <- AllData$Elev_P30 * AllData$All_returns_above_mode_div_Total_first_returns_x_100 
-#AllData$logP30_pctAlloverModeDiv1st <- log(AllData$Elev_P30+ 1) * log(AllData$All_returns_above_mode_div_Total_first_returns_x_100+ 1) 
+#AllData$logP30_pctAlloverModeDiv1st <- log(AllData$Elev_P30) * log(AllData$All_returns_above_mode_div_Total_first_returns_x_100) 
 
 AllData$P60_pctAllOver3m <- AllData$Elev_P60 * AllData$Pct_all_returns_above_ht 
 #AllData$P60_pctAllOverMean <- AllData$Elev_P60 * AllData$pct_all_returns_above_mean 
-#AllData$logP60_pctAllOverMean <- log(AllData$Elev_P60+ 1) * log(AllData$pct_all_returns_above_mean+ 1) 
+#AllData$logP60_pctAllOverMean <- log(AllData$Elev_P60) * log(AllData$pct_all_returns_above_mean) 
 #AllData$P60_pctAllover3mDiv1st <- AllData$Elev_P60 * AllData$all_returns_above_ht_div_Total_first_returns_x_100 
-#AllData$logP60_pctAllover3mDiv1st <- log(AllData$Elev_P60+ 1) * log(AllData$all_returns_above_ht_div_Total_first_returns_x_100+ 1) 
+#AllData$logP60_pctAllover3mDiv1st <- log(AllData$Elev_P60) * log(AllData$all_returns_above_ht_div_Total_first_returns_x_100) 
 #AllData$P60_pctAlloverModeDiv1st <- AllData$Elev_P60 * AllData$All_returns_above_mode_div_Total_first_returns_x_100 
-#AllData$logP60_pctAlloverModeDiv1st <- log(AllData$Elev_P60+ 1) * log(AllData$All_returns_above_mode_div_Total_first_returns_x_100+ 1) 
+#AllData$logP60_pctAlloverModeDiv1st <- log(AllData$Elev_P60) * log(AllData$All_returns_above_mode_div_Total_first_returns_x_100) 
 
 AllData$P90_pctAllOver3m <- AllData$Elev_P90 * AllData$Pct_all_returns_above_ht 
 #AllData$P90_pctAllOverMean <- AllData$Elev_P90 * AllData$pct_all_returns_above_mean 
-#AllData$logP90_pctAllOverMean <- log(AllData$Elev_P90+ 1) * log(AllData$pct_all_returns_above_mean+ 1) 
+#AllData$logP90_pctAllOverMean <- log(AllData$Elev_P90) * log(AllData$pct_all_returns_above_mean) 
 #AllData$P90_pctAllover3mDiv1st <- AllData$Elev_P90 * AllData$all_returns_above_ht_div_Total_first_returns_x_100
-#AllData$logP90_pctAllover3mDiv1st <- log(AllData$Elev_P90+ 1) * log(AllData$all_returns_above_ht_div_Total_first_returns_x_100+ 1) 
+#AllData$logP90_pctAllover3mDiv1st <- log(AllData$Elev_P90) * log(AllData$all_returns_above_ht_div_Total_first_returns_x_100) 
 #AllData$P90_pctAlloverModeDiv1st <- AllData$Elev_P90 * AllData$All_returns_above_mode_div_Total_first_returns_x_100 
-#AllData$logP90_pctAlloverModeDiv1st <- log(AllData$Elev_P90+ 1) * log(AllData$All_returns_above_mode_div_Total_first_returns_x_100+ 1) 
+#AllData$logP90_pctAlloverModeDiv1st <- log(AllData$Elev_P90) * log(AllData$All_returns_above_mode_div_Total_first_returns_x_100) 
 
-AllData$logmode <- log(AllData$Elev_mode+1) 
-AllData$logP01 <- log(AllData$Elev_P01+ 1) 
-AllData$logP10 <- log(AllData$Elev_P10+ 1) 
-AllData$logP30 <- log(AllData$Elev_P30+ 1) 
-AllData$logP60 <- log(AllData$Elev_P60+ 1) 
-AllData$logP90 <- log(AllData$Elev_P90+ 1)
+AllData$logmode <- log(AllData$Elev_mode) 
+AllData$logP01 <- log(AllData$Elev_P01) 
+AllData$logP10 <- log(AllData$Elev_P10) 
+AllData$logP30 <- log(AllData$Elev_P30) 
+AllData$logP60 <- log(AllData$Elev_P60) 
+AllData$logP90 <- log(AllData$Elev_P90)
 
-AllData$log_Pct_all_returns_above_ht <- log(AllData$Pct_all_returns_above_ht+1)
-AllData$log_pct_all_returns_above_mean <- log(AllData$pct_all_returns_above_mean + 1) 
-AllData$log_all_returns_above_ht_div_Total_first_returns_x_100 <- log(AllData$all_returns_above_ht_div_Total_first_returns_x_100+ 1) 
-AllData$log_All_returns_above_mode_div_Total_first_returns_x_100 <- log(AllData$All_returns_above_mode_div_Total_first_returns_x_100 + 1) 
+AllData$log_Pct_all_returns_above_ht <- log(AllData$Pct_all_returns_above_ht)
+AllData$log_pct_all_returns_above_mean <- log(AllData$pct_all_returns_above_mean ) 
+AllData$log_all_returns_above_ht_div_Total_first_returns_x_100 <- log(AllData$all_returns_above_ht_div_Total_first_returns_x_100) 
+AllData$log_All_returns_above_mode_div_Total_first_returns_x_100 <- log(AllData$All_returns_above_mode_div_Total_first_returns_x_100 ) 
 
-AllData$logmode_pctAllOver3m <- log(AllData$Elev_mode+1) * log(AllData$Pct_all_returns_above_ht+1)
-AllData$logmode_pctAlloverModeDiv1st <- log(AllData$Elev_mode+1) * log(AllData$All_returns_above_mode_div_Total_first_returns_x_100+1) 
-AllData$logP01_pctAllOver3m <- log(AllData$Elev_P01+ 1) * log(AllData$Pct_all_returns_above_ht+ 1) 
-AllData$logP10_pctAllOver3m <- log(AllData$Elev_P10+ 1) * log(AllData$Pct_all_returns_above_ht+ 1) 
-AllData$logP30_pctAllOver3m <- log(AllData$Elev_P30+ 1) * log(AllData$Pct_all_returns_above_ht+ 1) 
-AllData$logP60_pctAllOver3m <- log(AllData$Elev_P60+ 1) * log(AllData$Pct_all_returns_above_ht+ 1) 
-AllData$logP90_pctAllOver3m <- log(AllData$Elev_P90+ 1) * log(AllData$Pct_all_returns_above_ht+ 1) 
+AllData$logmode_pctAllOver3m <- log(AllData$Elev_mode) * log(AllData$Pct_all_returns_above_ht)
+AllData$logmode_pctAlloverModeDiv1st <- log(AllData$Elev_mode) * log(AllData$All_returns_above_mode_div_Total_first_returns_x_100) 
+AllData$logP01_pctAllOver3m <- log(AllData$Elev_P01) * log(AllData$Pct_all_returns_above_ht) 
+AllData$logP10_pctAllOver3m <- log(AllData$Elev_P10) * log(AllData$Pct_all_returns_above_ht) 
+AllData$logP30_pctAllOver3m <- log(AllData$Elev_P30) * log(AllData$Pct_all_returns_above_ht) 
+AllData$logP60_pctAllOver3m <- log(AllData$Elev_P60) * log(AllData$Pct_all_returns_above_ht) 
+AllData$logP90_pctAllOver3m <- log(AllData$Elev_P90) * log(AllData$Pct_all_returns_above_ht) 
 
 #dim(AllData)
 #colnames(AllData)[83:96]
@@ -232,7 +234,7 @@ data.mod <- select(DATA.mod, ID, STBIOMSha, logSTBIOMSha, TCUmha, Predictors)
 data.val <- select(DATA.val, ID, STBIOMSha, logSTBIOMSha, TCUmha, Predictors)
 data.val.ind <- select(DATA.val.ind, ID, STBIOMSha, logSTBIOMSha, TCUmha, Predictors)
 
-write.csv(data.mod, file = 'Data//datamod.csv', row.names = F)
-write.csv(data.val, file = 'Data//dataval.csv', row.names = F)
-write.csv(data.val.ind, file = 'Data//datavalind.csv', row.names = F)
+write.csv(data.mod, file = 'Data//datamodNoZero.csv', row.names = F)
+write.csv(data.val, file = 'Data//datavalNoZero.csv', row.names = F)
+write.csv(data.val.ind, file = 'Data//datavalindNoZero.csv', row.names = F)
 
