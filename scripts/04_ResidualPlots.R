@@ -1,3 +1,7 @@
+### This file is for assessing error structure of models
+## Written by MS Patterson (maspatte@uw.edu) and Karis Tenneson (krtenneson@fs.fed.us)
+# Last updated: Jan 17, 2018
+
 ####################################################################
 ## log log transformed models
 # Median same as HPM

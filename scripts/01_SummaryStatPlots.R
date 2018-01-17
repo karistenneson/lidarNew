@@ -1,3 +1,7 @@
+### This file is for summarizing data
+## Written by MS Patterson (maspatte@uw.edu) and Karis Tenneson (krtenneson@fs.fed.us)
+# Last updated: Jan 17, 2018
+
 library(ggplot2)
 
 ### Bring in data
