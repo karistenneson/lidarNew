@@ -100,7 +100,7 @@ points(STBIOMSha ~ MPMEstimates, data = data.val[data.val$Forest==ForIndex[2], ]
 axis(1, labels=FALSE)
 mtext("Field AGB (Mg/ha)", 2, outer=FALSE, line=2.75, xpd=NA, cex = 0.75)
 abline(a=0, b=1, col = 'red', lwd = 2, lty = 5)
-text(10, 600, c('E. Apache-Sitgreaves NF, P1'), adj=c(0,0.5))
+text(10, 600, c('E. Apache-Sitgreaves NF, Stage 1'), adj=c(0,0.5))
 #legend('topleft', c('E'), col = c('black'), bty = 'n')
 
 # SWJM
@@ -123,7 +123,7 @@ points(STBIOMSha ~ MPMEstimates, data = data.mod[data.val.ind$Forest==ForIndexVa
 abline(a=0, b=1, col = 'red', lwd = 2, lty = 5)
 mtext("Field AGB (Mg/ha)", 2, outer=FALSE, line=2.75, xpd=NA, cex = 0.75)
 mtext("Predicted AGB (Mg/ha)", 1, outer=FALSE, line=2.75, xpd=NA, cex = 0.75)
-text(10, 600, c('G. Apache-Sitgreaves NF, P2'), adj=c(0,0.5))
+text(10, 600, c('G. Apache-Sitgreaves NF, Stage 2'), adj=c(0,0.5))
 #legend('topleft', c('G'), col = c('black'), bty = 'n')
 
 # Sit3
@@ -134,7 +134,7 @@ axis(4, las = 1)
 points(STBIOMSha ~ MPMEstimates, data = data.val.ind[data.val.ind$Forest==ForIndexVal[1], ], pch = 19, cex = .75, col = 'black', bg= 'black')
 abline(a=0, b=1, col = 'red', lwd = 2, lty = 5)
 mtext("Predicted AGB (Mg/ha)", 1, outer=FALSE, line=2.75, xpd=NA, cex = 0.75)
-text(10, 600, c('H. Apache-Sitgreaves NF, P3'), adj=c(0,0.5))
+text(10, 600, c('H. Apache-Sitgreaves NF, Stage 3'), adj=c(0,0.5))
 #legend('topleft', c('H'), col = c('black'), bty = 'n')
 
 #dev.off()
