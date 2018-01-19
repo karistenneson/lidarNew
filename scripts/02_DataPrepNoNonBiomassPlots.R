@@ -1,6 +1,6 @@
 ### This file is for processing the raw data into working data frames. 
-## Written by MS Patterson (maspatte@uw.edu) and Karis Tenneson (karistenneson@gmail.com)
-# Last updated: Jan 17 2018
+## Written by Karis Tenneson (karistenneson@gmail.com) and MS Patterson (maspatte@uw.edu)
+# Last updated: Jan 19 2018
 
 ### Set working environment, necessary for any next steps. 
 
@@ -184,25 +184,10 @@ AllData$logP90_pctAllOver3m <- log(AllData$Elev_P90) * log(AllData$Pct_all_retur
 ######################################################################
 ######################################################################
 ######################################################################
-## remove these columns for the models:
-## 'Site','Forest', 
-## "PlotSizeAcres", "fpc", "Stratum",
-## R3ERUcodeFull, 'R3ERUlabelName'
-## > 95% corr with P60: "Elev_ave", "Elev_P40", "Elev_P50","Elev_P70", "Elev_P75", "Elev_P80", 
-## > 95% corr with P90: "Elev_P95", "Elev_P99", 
-## > 95% corr with P30: "Elev_P20", "Elev_P25", 
-## > 95% corr with stddev: "Elev_variance", "Elev_IQ", "Elev_AAD", "Elev_L2", 
-## > 95% corr with Elev_LCV: "Elev_CV",
-## > 95% corr with Elev_Lskewness: "Elev_skewness",
-## > 95% corr with pct_all_returns_above_mean: "Pct_first_returns_above_mean", "All_returns_above_mean_div_Total_first_returns_x_100"
-## > 95% corr with Pct_all_returns_above_ht: "Pct_first_returns_above_ht", 
-## > 95% corr with All_returns_above_mode_div_Total_first_returns_x_100: "pct_all_returns_above_mode", "Pct_first_returns_above_mode", 
-
-#corrgram(DATA.mod[ , c(1, 3, 13:18)], type="data", lower.panel=panel.shadeNtext, upper.panel=panel.signif, main="height")
-
-#corrgram(DATA.mod[ , c(1, 4:12)], type="data", lower.panel=panel.shadeNtext, upper.panel=panel.signif, main="shape")
-
-#corrgram(DATA.mod[ , c(1, 19:22)], type="data", lower.panel=panel.shadeNtext, upper.panel=panel.signif, main="density")
+## export just lidar metrics for Table 4: correlations
+data.corr <- AllData[(AllData$Forest != 'Sitgreaves, P2' & AllData$Forest != 'Apache'), c(72, 23:71)]
+colnames(data.corr)
+#write.csv(data.corr, file = 'Data//data4CorrelationsNoZero.csv', row.names = F)
 
 #############################################################
 ## organize columns
