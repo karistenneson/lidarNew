@@ -27,6 +27,7 @@ source(file="archive//01_functions.R")
 
 ### Bring in data
 data.corr.ht <- read.csv("Data//data4CorrelationsNoZeroHt.csv", stringsAsFactors=FALSE)
+data.corr.cd <- read.csv("Data//data4CorrelationsNoZeroCanDen.csv", stringsAsFactors=FALSE)
 ######################################################################
 ######################################################################
 ######################################################################
@@ -50,4 +51,15 @@ data.corr.ht <- read.csv("Data//data4CorrelationsNoZeroHt.csv", stringsAsFactors
 
 #corrgram(data.corr[ , c(1, 19:22)], type="data", lower.panel=panel.shadeNtext, upper.panel=panel.signif, main="density")
 
-corrgram(data.corr[ , c(1, 2:9, 11, 12, 14:20)], type="data", lower.panel=panel.shadeNtext, upper.panel=panel.signif, main="interaction terms")
+#1 == st bioms
+#2 == 2:6,31 is height
+
+corrgram(data.corr.ht[ , c(2:6,31)], type="data", lower.panel=panel.shadeNtext, upper.panel=panel.signif, main="interaction terms")
+
+corrgram(data.corr.ht[ , c(2:6, 31, 16, 23:30,32,33)], type="data", lower.panel=panel.shadeNtext, upper.panel=panel.signif, main="interaction terms")
+
+#3 == 7:15 is skew
+corrgram(data.corr.ht[ , c(7:15, 17:22)], type="data", lower.panel=panel.shadeNtext, upper.panel=panel.signif, main="interaction terms")
+
+#4 == density
+corrgram(data.corr.cd[2:10], type="data", lower.panel=panel.shadeNtext, upper.panel=panel.signif, main="interaction terms")

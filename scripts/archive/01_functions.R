@@ -30,7 +30,7 @@ panel.shadeNtext <- function (x, y, corr = NULL, col.regions, ...)
   par(usr = c(0, 1, 0, 1))
   r <- formatC(corr, digits = 2, format = "f")
   cex.cor <- .8/strwidth("-X.xx")
-  text(0.5, 0.5, r, cex = cex.cor)
+  text(0.5, 0.5, r, cex = (cex.cor+0.5), col = 'white')
 }
 
 

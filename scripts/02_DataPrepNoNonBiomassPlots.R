@@ -193,8 +193,8 @@ colnames(data.corr)
 ## organize columns
 Variables <- colnames(AllData) #pull variable names for use with select()
 ## exclude total count lidar metrics, use only the relative count measures (e.g., percent returns)
-LidarNames <- c("Elev_stddev",  "Elev_kurtosis", "Elev_MAD_median", "Elev_MAD_mode", "Elev_L3", "Elev_L4", "Elev_LCV", "Elev_Lskewness", "Elev_Lkurtosis",   
-                "Elev_mode", "Elev_P01", "Elev_P10", "Elev_P30",  "Elev_P60", "Elev_P90",
+LidarNames <- c("Elev_stddev",  "Elev_kurtosis","Elev_skewness", "Elev_MAD_median", "Elev_MAD_mode", "Elev_L2", "Elev_L3", "Elev_L4", "Elev_LCV", "Elev_Lskewness", "Elev_Lkurtosis",   
+                "Elev_mode", "Elev_P01", "Elev_P05", "Elev_P10", "Elev_P30",  "Elev_P60", "Elev_P90",
                 "Pct_all_returns_above_ht", "all_returns_above_ht_div_Total_first_returns_x_100",  "pct_all_returns_above_mean", "All_returns_above_mode_div_Total_first_returns_x_100",  
                 "mode_pctAllOver3m", "mode_pctAlloverModeDiv1st","P01_pctAllOver3m", "P10_pctAllOver3m", "P30_pctAllOver3m", "P60_pctAllOver3m",  "P90_pctAllOver3m", 
                 "logmode", "logP01", "logP10", "logP30", "logP60", "logP90", 
