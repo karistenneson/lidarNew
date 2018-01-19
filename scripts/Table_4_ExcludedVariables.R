@@ -11,14 +11,22 @@
 #setwd("~/R/projects/lidarNew/scripts") #WinHome
 
 ### Load required packages
-library(tidyverse)
-library(dplyr)
+#library(tidyverse)
+#library(dplyr)
+#library(cvTools)
+#library(BAS)
+library(corrgram)
+#library(survey)
+#options(survey.lonely.psu="certainty")
+#options(survey.lonely.psu="adjust")
+#library(robustbase)
+#library(olsrr)
 
 ### Source functions
 source(file="archive//01_functions.R")
 
 ### Bring in data
-data.corr <- read.csv("Data//data4CorrelationsNoZero.csv", stringsAsFactors=FALSE)
+data.corr.ht <- read.csv("Data//data4CorrelationsNoZeroHt.csv", stringsAsFactors=FALSE)
 ######################################################################
 ######################################################################
 ######################################################################
@@ -42,4 +50,4 @@ data.corr <- read.csv("Data//data4CorrelationsNoZero.csv", stringsAsFactors=FALS
 
 #corrgram(data.corr[ , c(1, 19:22)], type="data", lower.panel=panel.shadeNtext, upper.panel=panel.signif, main="density")
 
-corrgram(data.corr[ , c(22,82, 83:96)], type="data", lower.panel=panel.shadeNtext, upper.panel=panel.signif, main="interaction terms")
+corrgram(data.corr[ , c(1, 2:9, 11, 12, 14:20)], type="data", lower.panel=panel.shadeNtext, upper.panel=panel.signif, main="interaction terms")
