@@ -18,6 +18,7 @@ options(survey.lonely.psu="adjust")
 library(tidyverse)
 library(dplyr)
 #library(robustbase)
+library(olsrr)
 
 ### data files with plots that have no biomass
 #data.mod.full <- read.csv('Data//datamod.csv')
@@ -67,6 +68,13 @@ MedianBASModel_log <- lm(logSTBIOMSha ~ Elev_P30+
                          NDVI_Amp,  
                              data = data.mod)
 
+ols_step_forward(MedianBASModel_log)
+
+null <- lm(logSTBIOMSha ~ 1, data = data.mod)
+step(MedianBASModel_log, scope = list(lower = null, upper = MedianBASModel_log), direction ='forward')
+step(null, scope = list(upper = MedianBASModel_log), direction ='both')
+
+##
 MedianBASModel <- lm(STBIOMSha ~ poly(Elev_P60,2) +
                      Elev_MAD_median +
                      all_returns_above_ht_div_Total_first_returns_x_100 +
@@ -74,6 +82,11 @@ MedianBASModel <- lm(STBIOMSha ~ poly(Elev_P60,2) +
                      P60_pctAllOver3m,  
                          data = data.mod)
 
+ols_step_forward(MedianBASModel)
+
+null <- lm(STBIOMSha ~ 1, data = data.mod)
+step(MedianBASModel, scope = list(lower = null, upper = MedianBASModel), direction ='forward')
+step(null, scope = list(upper = MedianBASModel), direction ='both')
 #################################
 ## summary stats
 summary(MedianBASModel_log)
@@ -92,9 +105,9 @@ data.mod$lnBMAEstimates <- exp(predict(object = BioMass.Mod.log, top='10000')$fi
 data.val$lnBMAEstimates <- exp(predict(object = BioMass.Mod.log, newdata = data.val, top='10000')$fit)
 data.val.ind$lnBMAEstimates <- exp(predict(object = BioMass.Mod.log, newdata = data.val.ind, top='10000')$fit)
 
-data.mod$lnBMAResidual <- data.mod$lnBMAEstimates - data.mod$STBIOMSha
-data.val$lnBMAResidual <- data.val$lnBMAEstimates - data.val$STBIOMSha
-data.val.ind$lnBMAResidual <- data.val.ind$lnBMAEstimates - data.val.ind$STBIOMSha
+data.mod$lnBMAResidual <- data.mod$STBIOMSha-data.mod$lnBMAEstimates 
+data.val$lnBMAResidual <- data.val$STBIOMSha-data.val$lnBMAEstimates 
+data.val.ind$lnBMAResidual <- data.val.ind$STBIOMSha-data.val.ind$lnBMAEstimates 
 
 data.mod$lnBMASqResidual <- (data.mod$lnBMAResidual)^2
 data.val$lnBMASqResidual <- (data.val$lnBMAResidual)^2
@@ -106,9 +119,9 @@ data.mod$BMAEstimates <- predict(BioMass.Mod, top='10000')$fit
 data.val$BMAEstimates <- predict(BioMass.Mod, newdata = data.val, top='10000')$fit
 data.val.ind$BMAEstimates <- predict(BioMass.Mod, newdata = data.val.ind, top='10000')$fit
 
-data.mod$BMAResidual <- data.mod$BMAEstimates - data.mod$STBIOMSha
-data.val$BMAResidual <- data.val$BMAEstimates - data.val$STBIOMSha
-data.val.ind$BMAResidual <- data.val.ind$BMAEstimates - data.val.ind$STBIOMSha
+data.mod$BMAResidual <- data.mod$STBIOMSha - data.mod$BMAEstimates 
+data.val$BMAResidual <- data.val$STBIOMSha - data.val$BMAEstimates 
+data.val.ind$BMAResidual <- data.val.ind$STBIOMSha - data.val.ind$BMAEstimates 
 
 data.mod$BMASqResidual <- (data.mod$BMAResidual)^2
 data.val$BMASqResidual <- (data.val$BMAResidual)^2
@@ -120,9 +133,9 @@ data.mod$MPMEstimates <- predict(MedianBASModel, se.fit = F)
 data.val$MPMEstimates <- predict(MedianBASModel, newdata = data.val, se.fit = F)
 data.val.ind$MPMEstimates <- predict(MedianBASModel, newdata = data.val.ind, se.fit = F)
 
-data.mod$MPMResidual <- data.mod$MPMEstimates - data.mod$STBIOMSha
-data.val$MPMResidual <- data.val$MPMEstimates - data.val$STBIOMSha
-data.val.ind$MPMResidual <- data.val.ind$MPMEstimates - data.val.ind$STBIOMSha
+data.mod$MPMResidual <- data.mod$STBIOMSha - data.mod$MPMEstimates 
+data.val$MPMResidual <- data.val$STBIOMSha - data.val$MPMEstimates 
+data.val.ind$MPMResidual <- data.val.ind$STBIOMSha - data.val.ind$MPMEstimates 
 
 data.mod$MPMSqResidual <- (data.mod$MPMResidual)^2
 data.val$MPMSqResidual <- (data.val$MPMResidual)^2

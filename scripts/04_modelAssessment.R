@@ -77,6 +77,8 @@ write.csv(frame, file = 'Manuscript_tables\\modelErrors.csv', row.names = F)
 ########################################################
 ## validation data
 data.svy.val.s <- svydesign(ids = ~1, data = data.val)
+
+data.val$Stratum <- as.character(data.val$Stratum)
 data.svy.val.p <- svydesign(ids = ~1, data = data.val, fpc = data.val$fpc, strata = data.val$Stratum)
 
 sites <- c('Kaibab Plateau, AZ', 'Coconino NF, 4FRI, AZ', 'Tonto NF, 4FRI, AZ', 'Apache-Sitgreaves NF, 4FRI, AZ, Phase 1', 'Southwest Jemez Mountains, NM')

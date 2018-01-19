@@ -35,7 +35,6 @@ data.val.ind <- read.csv('Data\\datavalindNoZeroModelFits.csv')
 ########################################################
 ForIndex <- unique(data.val$Forest)
 
-
 ## plots
 #png(file="scatterplotObPred.png",width=800,height=1200,res=120)
 #pdf(file="scatterplotObPred.pdf", width=6, height=12, family = "Helvetica")
@@ -251,6 +250,18 @@ text(45, 550, paste('n =', lengthVec[6]), adj=c(0,0.5))
 #########################################################################
 #########################################################################
 #########################################################################
+ggplot(data.mod[data.val$PlotSizeha==PlotIndex[1], ], aes(MPMEstimates, STBIOMSha)) + geom_point() + geom_smooth() + xlim(0,600)+ ylim(0,600) + geom_abline(slope = 1, intercept = 0, col = 'red', lty = 2, lwd = 1)
+
+ggplot(data.mod[data.val$PlotSizeha==PlotIndex[2], ], aes(MPMEstimates, STBIOMSha)) + geom_point() + geom_smooth() + xlim(0,600)+ ylim(0,600) + geom_abline(slope = 1, intercept = 0, col = 'red', lty = 2, lwd = 1)
+
+ggplot(data.mod[data.val$PlotSizeha==PlotIndex[3], ], aes(MPMEstimates, STBIOMSha)) + geom_point() + geom_smooth() + xlim(0,600)+ ylim(0,600) + geom_abline(slope = 1, intercept = 0, col = 'red', lty = 2, lwd = 1)
+
+ggplot(data.mod[data.val$PlotSizeha==PlotIndex[4], ], aes(MPMEstimates, STBIOMSha)) + geom_point() + geom_smooth() + xlim(0,600)+ ylim(0,600) + geom_abline(slope = 1, intercept = 0, col = 'red', lty = 2, lwd = 1.5)
+
+ggplot(data.mod[data.val$PlotSizeha==PlotIndex[5], ], aes(MPMEstimates, STBIOMSha)) + geom_point() + geom_smooth() + xlim(0,600)+ ylim(0,600) + geom_abline(slope = 1, intercept = 0, col = 'red', lty = 2, lwd = 1.5)
+
+ggplot(data.mod[data.val$PlotSizeha==PlotIndex[6], ], aes(MPMEstimates, STBIOMSha)) + geom_point() + geom_smooth() + xlim(0,600)+ ylim(0,600) + geom_abline(slope = 1, intercept = 0, col = 'red', lty = 2, lwd = 1.5)
+
 #########################################################################
 #########################################################################
 #########################################################################

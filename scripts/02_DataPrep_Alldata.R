@@ -15,7 +15,7 @@ library(tidyverse)
 library(dplyr)
 
 ### Source functions
-#source(file="functions.R")
+source(file="archive\\01_functions.R")
 
 ### Bring in data
 Kaibab <- read.csv("../Data/NKaibab07192017.csv", stringsAsFactors=FALSE)
@@ -176,7 +176,7 @@ AllData$logP90_pctAllOver3m <- log(AllData$Elev_P90+ 1) * log(AllData$Pct_all_re
 #dim(AllData)
 #colnames(AllData)[83:96]
 
-#corrgram(AllData[(AllData$Forest != 'Sitgreaves, P2' & AllData$Forest != 'Apache'), c(22,82, 83:96)], type="data", lower.panel=panel.shadeNtext, upper.panel=panel.signif, main="interaction terms")
+corrgram(AllData[(AllData$Forest != 'Sitgreaves, P2' & AllData$Forest != 'Apache'), c(22,82, 23, 48, 43, 45, 26,32)], type="data", lower.panel=panel.shadeNtext, upper.panel=panel.signif, main="interaction terms")
 
 ######################################################################
 ######################################################################
