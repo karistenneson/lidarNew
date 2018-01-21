@@ -41,19 +41,12 @@ data.val.ind <- data.val.ind[(data.val.ind$Elev_kurtosis < 50), ]
 # swap L2 for SD?
 
 # log
-BioMass.Mod.log <- bas.lm(logSTBIOMSha ~ poly(Elev_mode, 2) + poly(Elev_P01, 2) + poly(Elev_P10, 2) + poly(Elev_P30, 2) + poly(Elev_P60, 2) + poly(Elev_P90, 2) +  Elev_stddev +  Elev_kurtosis + Elev_skewness + Elev_MAD_median + Elev_MAD_mode + Elev_L3 + Elev_L4 + Elev_LCV + Elev_Lskewness + Elev_Lkurtosis + Pct_all_returns_above_ht + all_returns_above_ht_div_Total_first_returns_x_100 + pct_all_returns_above_mean + All_returns_above_mode_div_Total_first_returns_x_100 + #Elev_mode*Pct_all_returns_above_ht + Elev_P01*Pct_all_returns_above_ht+ Elev_P10*Pct_all_returns_above_ht+ Elev_P30*Pct_all_returns_above_ht+ Elev_P60*Pct_all_returns_above_ht+ Elev_P90*Pct_all_returns_above_ht + 
-                            mode_pctAllOver3m + P01_pctAllOver3m + P10_pctAllOver3m + P30_pctAllOver3m + P60_pctAllOver3m + P90_pctAllOver3m + 
-                            elevation + aspect + slope + NDVI_Amp + R3ERUlabel, data = data.mod, prior="hyper-g", alpha = 3, modelprior=tr.poisson(10,30), method="MCMC+BAS")
+# BioMass.Mod.log <- bas.lm(logSTBIOMSha ~ poly(Elev_mode, 2) + poly(Elev_P01, 2) + poly(Elev_P10, 2) + poly(Elev_P30, 2) + poly(Elev_P60, 2) + poly(Elev_P90, 2) +  Elev_stddev +  Elev_kurtosis + Elev_skewness + Elev_MAD_median + Elev_MAD_mode + Elev_L3 + Elev_L4 + Elev_LCV + Elev_Lskewness + Elev_Lkurtosis + Pct_all_returns_above_ht + all_returns_above_ht_div_Total_first_returns_x_100 + pct_all_returns_above_mean + All_returns_above_mode_div_Total_first_returns_x_100 + mode_pctAllOver3m + P01_pctAllOver3m + P10_pctAllOver3m + P30_pctAllOver3m + P60_pctAllOver3m + P90_pctAllOver3m + elevation + aspect + slope + NDVI_Amp + R3ERUlabel, data = data.mod, prior="hyper-g", alpha = 3, modelprior=tr.poisson(10,30), method="MCMC+BAS")
 
 # no transform
-BioMass.Mod <- bas.lm(STBIOMSha ~ poly(Elev_mode, 2) + poly(Elev_P01, 2) + poly(Elev_P10, 2) + poly(Elev_P30, 2) + poly(Elev_P60, 2) + poly(Elev_P90, 2) +   Elev_stddev +  Elev_skewness +Elev_kurtosis + Elev_MAD_median + Elev_MAD_mode + Elev_L3 + Elev_L4 + Elev_LCV + Elev_Lskewness + Elev_Lkurtosis + Pct_all_returns_above_ht + all_returns_above_ht_div_Total_first_returns_x_100 + pct_all_returns_above_mean + All_returns_above_mode_div_Total_first_returns_x_100 + + #Elev_mode*Pct_all_returns_above_ht + Elev_P01*Pct_all_returns_above_ht+ Elev_P10*Pct_all_returns_above_ht+ Elev_P30*Pct_all_returns_above_ht+ Elev_P60*Pct_all_returns_above_ht+ Elev_P90*Pct_all_returns_above_ht + 
-                      mode_pctAllOver3m + P01_pctAllOver3m + P10_pctAllOver3m + P30_pctAllOver3m + P60_pctAllOver3m + P90_pctAllOver3m + 
-                      elevation + aspect + slope + NDVI_Amp + R3ERUlabel,  data = data.mod, prior="hyper-g", alpha = 3, modelprior=tr.poisson(10,30), method="MCMC+BAS")
+# BioMass.Mod <- bas.lm(STBIOMSha ~ poly(Elev_mode, 2) + poly(Elev_P01, 2) + poly(Elev_P10, 2) + poly(Elev_P30, 2) + poly(Elev_P60, 2) + poly(Elev_P90, 2) +   Elev_stddev +  Elev_skewness +Elev_kurtosis + Elev_MAD_median + Elev_MAD_mode + Elev_L3 + Elev_L4 + Elev_LCV + Elev_Lskewness + Elev_Lkurtosis + Pct_all_returns_above_ht + all_returns_above_ht_div_Total_first_returns_x_100 + pct_all_returns_above_mean + All_returns_above_mode_div_Total_first_returns_x_100 + mode_pctAllOver3m + P01_pctAllOver3m + P10_pctAllOver3m + P30_pctAllOver3m + P60_pctAllOver3m + P90_pctAllOver3m + elevation + aspect + slope + NDVI_Amp + R3ERUlabel,  data = data.mod, prior="hyper-g", alpha = 3, modelprior=tr.poisson(10,30), method="MCMC+BAS")
 
-#StepModel <- lm(STBIOMSha ~ poly(Elev_mode, 2) + poly(Elev_P01, 2) + poly(Elev_P10, 2) + poly(Elev_P30, 2) + poly(Elev_P60, 2) + poly(Elev_P90, 2) +   Elev_stddev +  Elev_skewness +Elev_kurtosis + Elev_MAD_median + Elev_MAD_mode + Elev_L3 + Elev_L4 + Elev_LCV + Elev_Lskewness + Elev_Lkurtosis + Pct_all_returns_above_ht + all_returns_above_ht_div_Total_first_returns_x_100 + pct_all_returns_above_mean + All_returns_above_mode_div_Total_first_returns_x_100 + mode_pctAllOver3m + mode_pctAlloverModeDiv1st + P01_pctAllOver3m + P10_pctAllOver3m + Elev_P30:Pct_all_returns_above_ht + P60_pctAllOver3m + P90_pctAllOver3m + elevation + aspect + slope + NDVI_Amp + R3ERUlabel,  data = data.mod)
-
-#null <- lm(STBIOMSha ~ 1, data = data.mod)
-#step(null, scope = list(upper = StepModel), direction ='both')
+# correct specification of interaction is colinear with correct specification of quadratic; so that BMA model set up can't be solved. So I took it out - Elev_mode*Pct_all_returns_above_ht + Elev_P01*Pct_all_returns_above_ht+ Elev_P10*Pct_all_returns_above_ht+ Elev_P30*Pct_all_returns_above_ht+ Elev_P60*Pct_all_returns_above_ht+ Elev_P90*Pct_all_returns_above_ht + 
 
 #################################################################### 
 ## Median Models:
@@ -67,6 +60,13 @@ BioMass.Mod.log$namesx[HPM$bestmodel+1][-1]
 HPM <- predict(BioMass.Mod, estimator="HPM")
 BioMass.Mod$namesx[HPM$bestmodel+1][-1]
 
+#################################################################### 
+## step test comparison
+#StepModel <- lm(STBIOMSha ~ poly(Elev_mode, 2) + poly(Elev_P01, 2) + poly(Elev_P10, 2) + poly(Elev_P30, 2) + poly(Elev_P60, 2) + poly(Elev_P90, 2) +   Elev_stddev +  Elev_skewness +Elev_kurtosis + Elev_MAD_median + Elev_MAD_mode + Elev_L3 + Elev_L4 + Elev_LCV + Elev_Lskewness + Elev_Lkurtosis + Pct_all_returns_above_ht + all_returns_above_ht_div_Total_first_returns_x_100 + pct_all_returns_above_mean + All_returns_above_mode_div_Total_first_returns_x_100 + mode_pctAllOver3m + mode_pctAlloverModeDiv1st + P01_pctAllOver3m + P10_pctAllOver3m + Elev_P30:Pct_all_returns_above_ht + P60_pctAllOver3m + P90_pctAllOver3m + elevation + aspect + slope + NDVI_Amp + R3ERUlabel,  data = data.mod)
+
+#null <- lm(STBIOMSha ~ 1, data = data.mod)
+#step(null, scope = list(upper = StepModel), direction ='both')
+
 ####################################################
 ####################################################
 MedianBASModel_log <- lm(logSTBIOMSha ~ Elev_P30+
@@ -79,12 +79,6 @@ MedianBASModel_log <- lm(logSTBIOMSha ~ Elev_P30+
                          slope+
                          NDVI_Amp,  
                              data = data.mod)
-
-ols_step_forward(MedianBASModel_log)
-
-null <- lm(logSTBIOMSha ~ 1, data = data.mod)
-step(MedianBASModel_log, scope = list(lower = null, upper = MedianBASModel_log), direction ='forward')
-step(null, scope = list(upper = MedianBASModel_log), direction ='both')
 
 ##
 MedianBASModel <- lm(STBIOMSha ~ poly(Elev_P60,2) +
@@ -101,11 +95,6 @@ MedianBASModel <- lm(STBIOMSha ~ poly(Elev_P60,2) +
                        P60_pctAllOver3m,  
                      data = data.mod)
 
-ols_step_forward(MedianBASModel)
-
-null <- lm(STBIOMSha ~ 1, data = data.mod)
-step(MedianBASModel, scope = list(lower = null, upper = MedianBASModel), direction ='forward')
-step(null, scope = list(upper = MedianBASModel), direction ='both')
 #################################
 ## summary stats
 summary(MedianBASModel_log)
@@ -147,6 +136,20 @@ data.val$BMASqResidual <- (data.val$BMAResidual)^2
 data.val.ind$BMASqResidual <- (data.val.ind$BMAResidual)^2
 
 ############################
+## MPM with log transform
+data.mod$lnMPMEstimates <- exp(predict(MedianBASModel_log, se.fit = F))
+data.val$lnMPMEstimates <- exp(predict(MedianBASModel_log, newdata = data.val, se.fit = F))
+data.val.ind$lnMPMEstimates <- exp(predict(MedianBASModel_log, newdata = data.val.ind, se.fit = F))
+
+data.mod$lnMPMResidual <- data.mod$STBIOMSha - data.mod$MPMEstimates 
+data.val$lnMPMResidual <- data.val$STBIOMSha - data.val$MPMEstimates 
+data.val.ind$lnMPMResidual <- data.val.ind$STBIOMSha - data.val.ind$MPMEstimates 
+
+data.mod$lnMPMSqResidual <- (data.mod$MPMResidual)^2
+data.val$lnMPMSqResidual <- (data.val$MPMResidual)^2
+data.val.ind$lnMPMSqResidual <- (data.val.ind$MPMResidual)^2
+
+############################
 ## MPM with no transform
 data.mod$MPMEstimates <- predict(MedianBASModel, se.fit = F)
 data.val$MPMEstimates <- predict(MedianBASModel, newdata = data.val, se.fit = F)
@@ -159,7 +162,6 @@ data.val.ind$MPMResidual <- data.val.ind$STBIOMSha - data.val.ind$MPMEstimates
 data.mod$MPMSqResidual <- (data.mod$MPMResidual)^2
 data.val$MPMSqResidual <- (data.val$MPMResidual)^2
 data.val.ind$MPMSqResidual <- (data.val.ind$MPMResidual)^2
-
 ########################################################
 ########################################################
 ## export data and clear memory
@@ -173,6 +175,6 @@ data.val.ind$MPMSqResidual <- (data.val.ind$MPMResidual)^2
 ########################################################
 ########################################################
 ## run performance calculations with this script:
-## 04_ModelAssessment.R
+## Table_7_RMSE_Bias.R
 ########################################################
 ########################################################

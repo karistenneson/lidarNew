@@ -27,136 +27,152 @@ data.val.ind <- read.csv('Data\\datavalindNoZeroModelFits.csv')
 
 ########################################################
 ########################################################
-## run calculations on MPM
+## run calculations on MPM predictions
 ########################################################
 ########################################################
-## model data
-
-data.svy.mod.s <- svydesign(ids = ~1, data = data.mod)
-data.svy.mod.p <- svydesign(ids = ~1, data = data.mod, fpc = data.mod$fpc, strata = data.mod$Stratum)
-
-sites <- c('Kaibab Plateau, AZ', 'Coconino NF, 4FRI, AZ', 'Tonto NF, 4FRI, AZ', 'Apache-Sitgreaves NF, 4FRI, AZ, Phase 1', 'Southwest Jemez Mountains, NM')
-MCD <- 'Model Construction Data'
-
-# All sites
-MCD2 <- c(MCD, '&', signif(sqrt(svymean(~MPMSqResidual, data.svy.mod.p))[1],4), #RMSE
-          '&', signif(100*sqrt(svymean(~MPMSqResidual, data.svy.mod.p))/(svymean(~STBIOMSha, data.svy.mod.p))[1], 4), #RMSE
-          '&', signif(svymean(~MPMResidual, data.svy.mod.p)[1], 4), #Bias
-          '&', signif(svymean(~MPMResidual, data.svy.mod.p)[1]/(svymean(~STBIOMSha, data.svy.mod.p))[1],4), #%Bias
-          '&', signif(sqrt(svymean(~MPMSqResidual, data.svy.mod.s))[1],4), #RMSE
-          '&', signif(100*sqrt(svymean(~MPMSqResidual, data.svy.mod.s))/(svymean(~STBIOMSha, data.svy.mod.s))[1], 4), #RMSE
-          '&', signif(svymean(~MPMResidual, data.svy.mod.s)[1], 4), #Bias
-          '&', signif(svymean(~MPMResidual, data.svy.mod.s)[1]/(svymean(~STBIOMSha, data.svy.mod.s))[1],4) #%Bias
+## Table 5.
+lMPM <- c('lMPM', signif(sqrt(mean(data.mod$lnMPMSqResidual)),4), '&', #RMSE
+         signif(100*      sqrt(mean(data.mod$lnMPMSqResidual))/(mean(data.mod$lnMPMEstimates)), 5),'&', #%RMSE
+         signif(mean(data.mod$lnMPMResidual), 4), '&',#Bias
+         signif(mean(data.mod$lnMPMResidual)/(mean(data.mod$lnMPMEstimates)),4),'&\\\\'
 )
 
-# Individual sites
-frame <- cbind(sites, 
-#RMSE
-rep('&',length(sites)), signif(sqrt(svyby(~MPMSqResidual, ~Forest, data.svy.mod.p, svymean)[,2]),4), 
-#%RMSE
-rep('&',length(sites)), signif(signif(100 * (sqrt(svyby(~MPMSqResidual, ~Forest, data.svy.mod.p, svymean)[,2]) / svymean(~STBIOMSha, data.svy.mod.p)[1]), 4), 4), 
-#Bias
-rep('&',length(sites)), signif(svyby(~MPMResidual, ~Forest, data.svy.mod.p, svymean)[2],2), 
-#%Bias
-rep('&',length(sites)), signif(100*svyby(~MPMResidual, ~Forest, data.svy.mod.p, svymean)[2]/svymean(~STBIOMSha, data.svy.mod.p)[1], 4),
-### pop vs sample splitter column
-rep('& ',length(sites)),
-#RMSE
-rep('&',length(sites)), signif(sqrt(svyby(~MPMSqResidual, ~Forest, data.svy.mod.s, svymean)[,2]),4), 
-#%RMSE
-rep('&',length(sites)), signif(signif(100 * (sqrt(svyby(~MPMSqResidual, ~Forest, data.svy.mod.s, svymean)[,2]) / svymean(~STBIOMSha, data.svy.mod.s)[1]), 4), 4), 
-#Bias
-rep('&',length(sites)), signif(svyby(~MPMResidual, ~Forest, data.svy.mod.s, svymean)[2],2), 
-#%Bias
-rep('&',length(sites)), signif(100*svyby(~MPMResidual, ~Forest, data.svy.mod.s, svymean)[2]/svymean(~STBIOMSha, data.svy.mod.s)[1], 4), rep('\\\\', length(sites)))
-colnames(frame)<-c('site', 'div', 'rmsepop', 'div','Pctrmsepop','div', 'biaspop','div', 'Pctbiaspop','div','rmsesmp','div', 'Pctrmsesmp', 'div','biassmp','div', 'Pctbiassmp', 'rowEnd')
-write.csv(frame, file = 'Manuscript_tables\\modelErrors.csv', row.names = F)
-
-########################################################
-##############################################################################################
-########################################################
-## validation data
-data.svy.val.s <- svydesign(ids = ~1, data = data.val)
-
-data.val$Stratum <- as.character(data.val$Stratum)
-data.svy.val.p <- svydesign(ids = ~1, data = data.val, fpc = data.val$fpc, strata = data.val$Stratum)
-
-sites <- c('Kaibab Plateau, AZ', 'Coconino NF, 4FRI, AZ', 'Tonto NF, 4FRI, AZ', 'Apache-Sitgreaves NF, 4FRI, AZ, Phase 1', 'Southwest Jemez Mountains, NM')
-MVD <- 'Model Development Validation Data'
-
-# All sites
-MVD2 <- c(MVD, '&', '-', #RMSE
-          '&', '-', #RMSE
-          '&', '-', #Bias
-          '&', '-', #%Bias
-          '&_','&', signif(sqrt(svymean(~MPMSqResidual, data.svy.val.s))[1],4), #RMSE
-          '&', signif(100*sqrt(svymean(~MPMSqResidual, data.svy.val.s))/(svymean(~STBIOMSha, data.svy.val.s))[1], 4), #RMSE
-          '&', signif(svymean(~MPMResidual, data.svy.val.s)[1], 4), #Bias
-          '&', signif(svymean(~MPMResidual, data.svy.val.s)[1]/(svymean(~STBIOMSha, data.svy.val.s))[1],4), '\\\\' #%Bias
+lBMA <- c('lBMA', signif(sqrt(mean(data.mod$lnBMASqResidual)),4), '&', #RMSE
+         signif(100*      sqrt(mean(data.mod$lnBMASqResidual))/(mean(data.mod$lnBMAEstimates)), 5),'&', #%RMSE
+         signif(mean(data.mod$lnBMAResidual), 4), '&',#Bias
+         signif(mean(data.mod$lnBMAResidual)/(mean(data.mod$lnBMAEstimates)),4),'&\\\\'
 )
 
-MVD2
-write.csv(MVD2, file = 'Manuscript_tables\\modelErrorsvalPopAll.csv', row.names = F)
-# Individual sites
-frame <- cbind(sites, 
-               #RMSE
-               rep('&',length(sites)), signif(sqrt(svyby(~MPMSqResidual, ~Forest, data.svy.val.p, svymean)[,2]),4), 
-               #%RMSE
-               rep('&',length(sites)), signif(signif(100 * (sqrt(svyby(~MPMSqResidual, ~Forest, data.svy.val.p, svymean)[,2]) / svymean(~STBIOMSha, data.svy.val.p)[1]), 4), 4), 
-               #Bias
-               rep('&',length(sites)), signif(svyby(~MPMResidual, ~Forest, data.svy.val.p, svymean)[2],2), 
-               #%Bias
-               rep('&',length(sites)), signif(100*svyby(~MPMResidual, ~Forest, data.svy.val.p, svymean)[2]/svymean(~STBIOMSha, data.svy.val.p)[1], 4),
-               ### pop vs sample splitter column
-               rep('& ',length(sites)),
-               #RMSE
-               rep('&',length(sites)), signif(sqrt(svyby(~MPMSqResidual, ~Forest, data.svy.val.s, svymean)[,2]),4), 
-               #%RMSE
-               rep('&',length(sites)), signif(signif(100 * (sqrt(svyby(~MPMSqResidual, ~Forest, data.svy.val.s, svymean)[,2]) / svymean(~STBIOMSha, data.svy.val.s)[1]), 4), 4), 
-               #Bias
-               rep('&',length(sites)), signif(svyby(~MPMResidual, ~Forest, data.svy.val.s, svymean)[2],2), 
-               #%Bias
-               rep('&',length(sites)), signif(100*svyby(~MPMResidual, ~Forest, data.svy.val.s, svymean)[2]/svymean(~STBIOMSha, data.svy.val.s)[1], 4), rep('\\\\', length(sites)))
-colnames(frame)<-c('site', 'div', 'rmsepop', 'div','Pctrmsepop','div', 'biaspop','div', 'Pctbiaspop','div','rmsesmp','div', 'Pctrmsesmp', 'div','biassmp','div', 'Pctbiassmp', 'rowEnd')
-frame
-write.csv(frame, file = 'Manuscript_tables\\modelErrorsval.csv', row.names = F)
+MPM <- c('MPM', signif(sqrt(mean(data.mod$MPMSqResidual)),4), '&', #RMSE
+                            signif(100*      sqrt(mean(data.mod$MPMSqResidual))/(mean(data.mod$MPMEstimates)), 5),'&', #%RMSE
+                            signif(mean(data.mod$MPMResidual), 4), '&',#Bias
+                            signif(mean(data.mod$MPMResidual)/(mean(data.mod$MPMEstimates)),4),'&\\\\'
+)
 
-########################################################
-##############################################################################################
-########################################################
-## Transferability validation data
-data.svy.val.ind.s <- svydesign(ids = ~1, data = data.val.ind)
-data.svy.val.ind.p <- svydesign(ids = ~1, data = data.val.ind, fpc = data.val.ind$fpc, strata = data.val.ind$Stratum)
+BMA <- c('BMA', signif(sqrt(mean(data.mod$BMASqResidual)),4), '&', #RMSE
+         signif(100*      sqrt(mean(data.mod$BMASqResidual))/(mean(data.mod$BMAEstimates)), 5),'&', #%RMSE
+         signif(mean(data.mod$BMAResidual), 4), '&',#Bias
+         signif(mean(data.mod$BMAResidual)/(mean(data.mod$BMAEstimates)),4),'& \\\\'
+)
 
-sites <- c('Apache-Sitgreaves NF, 4FRI, AZ, Phase 2', 'Apache-Sitgreaves NF, 4FRI, AZ, Phase 3')
-
-# Individual sites
-frame <- cbind(sites, 
-               #RMSE
-               rep('&',length(sites)), signif(sqrt(svyby(~MPMSqResidual, ~Forest, data.svy.val.ind.p, svymean)[,2]),4), 
-               #%RMSE
-               rep('&',length(sites)), signif(signif(100 * (sqrt(svyby(~MPMSqResidual, ~Forest, data.svy.val.ind.p, svymean)[,2]) / svymean(~STBIOMSha, data.svy.val.ind.p)[1]), 4), 4), 
-               #Bias
-               rep('&',length(sites)), signif(svyby(~MPMResidual, ~Forest, data.svy.val.ind.p, svymean)[2],2), 
-               #%Bias
-               rep('&',length(sites)), signif(100*svyby(~MPMResidual, ~Forest, data.svy.val.ind.p, svymean)[2]/svymean(~STBIOMSha, data.svy.val.ind.p)[1], 4),
-               ### pop vs sample splitter column
-               rep('& ',length(sites)),
-               #RMSE
-               rep('&',length(sites)), signif(sqrt(svyby(~MPMSqResidual, ~Forest, data.svy.val.ind.s, svymean)[,2]),4), 
-               #%RMSE
-               rep('&',length(sites)), signif(signif(100 * (sqrt(svyby(~MPMSqResidual, ~Forest, data.svy.val.ind.s, svymean)[,2]) / svymean(~STBIOMSha, data.svy.val.ind.s)[1]), 4), 4), 
-               #Bias
-               rep('&',length(sites)), signif(svyby(~MPMResidual, ~Forest, data.svy.val.ind.s, svymean)[2],2), 
-               #%Bias
-               rep('&',length(sites)), signif(100*svyby(~MPMResidual, ~Forest, data.svy.val.ind.s, svymean)[2]/svymean(~STBIOMSha, data.svy.val.ind.s)[1], 4), rep('\\\\', length(sites)))
-colnames(frame)<-c('site', 'div', 'rmsepop', 'div','Pctrmsepop','div', 'biaspop','div', 'Pctbiaspop','div','rmsesmp','div', 'Pctrmsesmp', 'div','biassmp','div', 'Pctbiassmp', 'rowEnd')
-frame
-write.csv(frame, file = 'Manuscript_tables\\modelErrorsvalind.csv', row.names = F)
-
+Table5<-rbind(t(lMPM),t(lBMA),t(MPM),t(BMA))
+write.csv(Table5, 'Manuscript_tables\\Table5.csv', row.names = F)
 ########################################################
 ########################################################
-## run calculations on BMA object
+## run calculations on best model - MPM predictions
+########################################################
+########################################################
+## Table 7.
+frame <- data.frame(matrix(0, nrow = 14, ncol = 12))
+colnames(frame)<-c('site', 'valOrMod','n','div','rmsesmp','div', 'Pctrmsesmp', 'div','biassmp','div', 'Pctbiassmp', 'rowEnd')
+
+## latex table syntax
+frame[ ,c(4,6,8,10)]<-rep('&',dim(frame)[1])  
+frame[ ,dim(frame)[2]]<-rep('\\\\',dim(frame)[1])  
+
+## site names
+frame[ ,1] <- c('Model Construction Data', '\\multirow{2}{*}{Kaibab Plateau, AZ}', '','\\multirow{2}{*}{Coconino NF, 4FRI, AZ}', '','\\multirow{2}{*}{Tonto NF, 4FRI, AZ}','', '\\multirow{2}{*}{Apache-Sitgreaves NF, 4FRI, AZ, Phase 1}','' ,'\\multirow{2}{*}{Southwest Jemez Mountains, NM}','',
+                'Transferability Validation Data', 
+                'Apache-Sitgreaves NF, 4FRI, AZ, Phase 2','Apache-Sitgreaves NF, 4FRI, AZ, Phase 3')
+
+## model or validation
+frame[ ,2] <- c('&Validation&', '&Validation&', '&Model&','&Validation&', '&Model&','&Validation&', '&Model&','&Validation&', '&Model&','&Validation&', '&Model&',
+                '&&', 
+                '&Validation&','&Validation&')
+
+## sample size
+frame[ ,3] <- c(length(data.val),
+                length(data.val$ID[data.val$Forest == 'NorthKaibab']),
+                length(data.mod$ID[data.mod$Forest == 'NorthKaibab']),
+                length(data.val$ID[data.val$Forest == 'Coconino']),
+                length(data.mod$ID[data.mod$Forest == 'Coconino']),
+                length(data.val$ID[data.val$Forest == 'Tonto']),
+                length(data.mod$ID[data.mod$Forest == 'Tonto']),
+                length(data.val$ID[data.val$Forest == 'Sitgreaves']),
+                length(data.mod$ID[data.mod$Forest == 'Sitgreaves']),
+                length(data.val$ID[data.val$Forest == 'SWJM']),
+                length(data.mod$ID[data.mod$Forest == 'SWJM']),
+          
+                NA,
+                length(data.val.ind$ID[data.val.ind$Forest == 'Sitgreaves, P2']),
+                length(data.val.ind$ID[data.val.ind$Forest == 'Apache']))
+
+# All sites, model val
+frame[1 , c(5,7,9,11)] <- c(signif(sqrt(mean(data.val$MPMSqResidual)),4), #RMSE
+                  signif(100*      sqrt(mean(data.val$MPMSqResidual))/(mean(data.val$MPMEstimates)), 5), #%RMSE
+                  signif(mean(data.val$MPMResidual), 4), #Bias
+                  signif(mean(data.val$MPMResidual)/(mean(data.val$MPMEstimates)),4)
+)
+
+# Individual sites, model validation data
+MSS <- aggregate(data.val[, 'MPMSqResidual'], list(data.val$Forest), mean)
+MSS$RMSE <- sqrt(MSS[,2])
+MSS$pctRMSE <- 100*sqrt(MSS[,2])/aggregate(data.val[, 'MPMEstimates'], list(data.val$Forest), mean)[,2]
+fixedMat<-MSS[c(2, 1, 5, 3, 4),]
+frame[c(2,4,6,8,10), 5] <- signif(fixedMat$RMSE, 4)
+frame[c(2,4,6,8,10), 7] <- signif(fixedMat$pctRMSE, 4)
+
+# Individual sites, model data
+MSSmod <- aggregate(data.mod[, 'MPMSqResidual'], list(data.mod$Forest), mean)
+MSSmod$RMSE <- sqrt(MSSmod[,2])
+MSSmod$pctRMSE <- 100*sqrt(MSSmod[,2])/aggregate(data.mod[, 'MPMEstimates'], list(data.mod$Forest), mean)[,2]
+fixedMatmod<-MSSmod[c(2, 1, 5, 3, 4),]
+frame[c(3,5,7,9,11), 5] <- signif(fixedMatmod$RMSE,4)
+frame[c(3,5,7,9,11), 7] <- signif(fixedMatmod$pctRMSE,4)
+
+# Individual sites, transfer val data
+MSStv <- aggregate(data.val.ind[, 'MPMSqResidual'], list(data.val.ind$Forest), mean)
+MSStv$RMSE <- sqrt(MSStv[,2])
+MSStv$pctRMSE <- 100*sqrt(MSStv[,2])/aggregate(data.val.ind[, 'MPMEstimates'], list(data.val.ind$Forest), mean)[,2]
+fixedMattv<-MSStv[c(2, 1),]
+frame[c(13,14), 5] <- signif(fixedMattv$RMSE,4)
+frame[c(13,14), 7] <- signif(fixedMattv$pctRMSE,4)
+
+### Bias
+# Individual sites, model validation data
+MS <- aggregate(data.val[, 'MPMResidual'], list(data.val$Forest), mean)
+MS$Bias <- MS[,2]
+MS$Aveyhat <- aggregate(data.val[, 'MPMEstimates'], list(data.val$Forest), mean)[,2]
+MS$pctBias <- 100*MS$Bias/MS$Aveyhat
+fixedMatB<-MS[c(2, 1, 5, 3, 4),]
+frame[c(2,4,6,8,10), 9] <- signif(fixedMatB$Bias, 4)
+frame[c(2,4,6,8,10), 11] <- signif(fixedMatB$pctBias, 4)
+
+# Individual sites, model data
+MSmod <- aggregate(data.mod[, 'MPMResidual'], list(data.mod$Forest), mean)
+MSmod$Bias <- MSmod[,2]
+MSmod$Aveyhat <- aggregate(data.mod[, 'MPMEstimates'], list(data.mod$Forest), mean)[,2]
+MSmod$pctBias <- 100*MSmod$Bias/MSmod$Aveyhat
+fixedMatBmod<-MSmod[c(2, 1, 5, 3, 4),]
+frame[c(3,5,7,9,11), 9] <- signif(fixedMatBmod$Bias, 4)
+frame[c(3,5,7,9,11), 11] <- signif(fixedMatBmod$pctBias, 4)
+
+# Individual sites, transfer val data
+MStv <- aggregate(data.val.ind[, 'MPMResidual'], list(data.val.ind$Forest), mean)
+MStv$Bias <- MStv[,2]
+MStv$Aveyhat <- aggregate(data.val.ind[, 'MPMEstimates'], list(data.val.ind$Forest), mean)[,2]
+MStv$pctBias <- 100*MStv$Bias/MStv$Aveyhat
+fixedMatBtv<-MStv[c(2, 1),]
+frame[c(13,14), 9] <- signif(fixedMatBtv$Bias, 4)
+frame[c(13,14), 11] <- signif(fixedMatBtv$pctBias, 4)
+
+write.csv(frame, 'Manuscript_tables\\Table7.csv', row.names = F)
+
+########################################################
+########################################################
+########################################################
+########################################################
+########################################################
+########################################################
+########################################################
+########################################################
+########################################################
+########################################################
+########################################################
+########################################################
+########################################################
+########################################################
+## sample statistics below
 ########################################################
 ########################################################
 ## model data
@@ -337,6 +353,149 @@ svyby(~STBIOMSha, ~Forest, data.svy.val.ind, svymean)
 
 #svymean(~elevation, data.svy.val.ind)
 svyby(~elevation, ~Forest, data.svy.val.ind, svymean)
+
+
+########################################################
+########################################################
+########################################################
+########################################################
+########################################################
+########################################################
+## Previous table: run calculations on BMA object
+########################################################
+########################################################
+########################################################
+########################################################
+########################################################
+########################################################
+## model data
+
+data.svy.mod.s <- svydesign(ids = ~1, data = data.mod)
+#data.svy.mod.p <- svydesign(ids = ~1, data = data.mod, fpc = data.mod$fpc, strata = data.mod$Stratum)
+
+sites <- c('Kaibab Plateau, AZ', 'Coconino NF, 4FRI, AZ', 'Tonto NF, 4FRI, AZ', 'Apache-Sitgreaves NF, 4FRI, AZ, Phase 1', 'Southwest Jemez Mountains, NM')
+MCD <- 'Model Construction Data'
+
+# All sites
+MCD2 <- c(MCD, '&', signif(sqrt(svymean(~MPMSqResidual, data.svy.mod.p))[1],4), #RMSE
+          '&', signif(100*sqrt(svymean(~MPMSqResidual, data.svy.mod.p))/(svymean(~STBIOMSha, data.svy.mod.p))[1], 4), #RMSE
+          '&', signif(svymean(~MPMResidual, data.svy.mod.p)[1], 4), #Bias
+          '&', signif(svymean(~MPMResidual, data.svy.mod.p)[1]/(svymean(~STBIOMSha, data.svy.mod.p))[1],4), #%Bias
+          '&', signif(sqrt(svymean(~MPMSqResidual, data.svy.mod.s))[1],4), #RMSE
+          '&', signif(100*sqrt(svymean(~MPMSqResidual, data.svy.mod.s))/(svymean(~STBIOMSha, data.svy.mod.s))[1], 5), #RMSE
+          '&', signif(svymean(~MPMResidual, data.svy.mod.s)[1], 4), #Bias
+          '&', signif(svymean(~MPMResidual, data.svy.mod.s)[1]/(svymean(~STBIOMSha, data.svy.mod.s))[1],4), '\\\\' #%Bias
+)
+
+MCD3<-rbind(c('site', 'div', 'rmsepop', 'div','Pctrmsepop','div', 'biaspop','div', 'Pctbiaspop','div','rmsesmp','div', 'Pctrmsesmp', 'div','biassmp','div', 'Pctbiassmp', 'rowEnd'), t(MCD2))
+write.csv(MCD3, file = 'Manuscript_tables\\MPMmodelErrorsAll.csv', row.names = F)
+
+# Individual sites
+frame <- cbind(sites, 
+               #RMSE
+               #rep('&',length(sites)), signif(sqrt(svyby(~MPMSqResidual, ~Forest, data.svy.mod.p, svymean)[,2]),4), 
+               #%RMSE
+               #rep('&',length(sites)), signif(signif(100 * (sqrt(svyby(~MPMSqResidual, ~Forest, data.svy.mod.p, svymean)[,2]) / svymean(~STBIOMSha, data.svy.mod.p)[1]), 4), 4), 
+               #Bias
+               #rep('&',length(sites)), signif(svyby(~MPMResidual, ~Forest, data.svy.mod.p, svymean)[2],2), 
+               #%Bias
+               #rep('&',length(sites)), signif(100*svyby(~MPMResidual, ~Forest, data.svy.mod.p, svymean)[2]/svymean(~STBIOMSha, data.svy.mod.p)[1], 4),
+               ### pop vs sample splitter column
+               #rep('& ',length(sites)),
+               #RMSE
+               rep('&',length(sites)), signif(sqrt(svyby(~MPMSqResidual, ~Forest, data.svy.mod.s, svymean)[,2]),4), 
+               #%RMSE
+               rep('&',length(sites)), signif(signif(100 * (sqrt(svyby(~MPMSqResidual, ~Forest, data.svy.mod.s, svymean)[,2]) / svymean(~STBIOMSha, data.svy.mod.s)[1]), 4), 4), 
+               #Bias
+               rep('&',length(sites)), signif(svyby(~MPMResidual, ~Forest, data.svy.mod.s, svymean)[2],2), 
+               #%Bias
+               rep('&',length(sites)), signif(100*svyby(~MPMResidual, ~Forest, data.svy.mod.s, svymean)[2]/svymean(~STBIOMSha, data.svy.mod.s)[1], 4), rep('\\\\', length(sites)))
+
+colnames(frame)<-c('site', #'div', 'rmsepop', 'div','Pctrmsepop','div', 'biaspop','div', 'Pctbiaspop',
+                   'div','rmsesmp','div', 'Pctrmsesmp', 'div','biassmp','div', 'Pctbiassmp', 'rowEnd')
+write.csv(frame, file = 'Manuscript_tables\\modelErrors.csv', row.names = F)
+
+########################################################
+##############################################################################################
+########################################################
+## validation data
+data.svy.val.s <- svydesign(ids = ~1, data = data.val)
+
+data.val$Stratum <- as.character(data.val$Stratum)
+data.svy.val.p <- svydesign(ids = ~1, data = data.val, fpc = data.val$fpc, strata = data.val$Stratum)
+
+sites <- c('Kaibab Plateau, AZ', 'Coconino NF, 4FRI, AZ', 'Tonto NF, 4FRI, AZ', 'Apache-Sitgreaves NF, 4FRI, AZ, Phase 1', 'Southwest Jemez Mountains, NM')
+MVD <- 'Model Development Validation Data'
+
+# All sites
+MVD2 <- c(MVD, '&', '-', #RMSE
+          '&', '-', #RMSE
+          '&', '-', #Bias
+          '&', '-', #%Bias
+          '&_','&', signif(sqrt(svymean(~MPMSqResidual, data.svy.val.s))[1],4), #RMSE
+          '&', signif(100*sqrt(svymean(~MPMSqResidual, data.svy.val.s))/(svymean(~STBIOMSha, data.svy.val.s))[1], 4), #RMSE
+          '&', signif(svymean(~MPMResidual, data.svy.val.s)[1], 4), #Bias
+          '&', signif(svymean(~MPMResidual, data.svy.val.s)[1]/(svymean(~STBIOMSha, data.svy.val.s))[1],4), '\\\\' #%Bias
+)
+
+MVD2
+write.csv(MVD2, file = 'Manuscript_tables\\modelErrorsvalPopAll.csv', row.names = F)
+# Individual sites
+frame <- cbind(sites, 
+               #RMSE
+               rep('&',length(sites)), signif(sqrt(svyby(~MPMSqResidual, ~Forest, data.svy.val.p, svymean)[,2]),4), 
+               #%RMSE
+               rep('&',length(sites)), signif(signif(100 * (sqrt(svyby(~MPMSqResidual, ~Forest, data.svy.val.p, svymean)[,2]) / svymean(~STBIOMSha, data.svy.val.p)[1]), 4), 4), 
+               #Bias
+               rep('&',length(sites)), signif(svyby(~MPMResidual, ~Forest, data.svy.val.p, svymean)[2],2), 
+               #%Bias
+               rep('&',length(sites)), signif(100*svyby(~MPMResidual, ~Forest, data.svy.val.p, svymean)[2]/svymean(~STBIOMSha, data.svy.val.p)[1], 4),
+               ### pop vs sample splitter column
+               rep('& ',length(sites)),
+               #RMSE
+               rep('&',length(sites)), signif(sqrt(svyby(~MPMSqResidual, ~Forest, data.svy.val.s, svymean)[,2]),4), 
+               #%RMSE
+               rep('&',length(sites)), signif(signif(100 * (sqrt(svyby(~MPMSqResidual, ~Forest, data.svy.val.s, svymean)[,2]) / svymean(~STBIOMSha, data.svy.val.s)[1]), 4), 4), 
+               #Bias
+               rep('&',length(sites)), signif(svyby(~MPMResidual, ~Forest, data.svy.val.s, svymean)[2],2), 
+               #%Bias
+               rep('&',length(sites)), signif(100*svyby(~MPMResidual, ~Forest, data.svy.val.s, svymean)[2]/svymean(~STBIOMSha, data.svy.val.s)[1], 4), rep('\\\\', length(sites)))
+colnames(frame)<-c('site', 'div', 'rmsepop', 'div','Pctrmsepop','div', 'biaspop','div', 'Pctbiaspop','div','rmsesmp','div', 'Pctrmsesmp', 'div','biassmp','div', 'Pctbiassmp', 'rowEnd')
+frame
+write.csv(frame, file = 'Manuscript_tables\\modelErrorsval.csv', row.names = F)
+
+########################################################
+##############################################################################################
+########################################################
+## Transferability validation data
+data.svy.val.ind.s <- svydesign(ids = ~1, data = data.val.ind)
+data.svy.val.ind.p <- svydesign(ids = ~1, data = data.val.ind, fpc = data.val.ind$fpc, strata = data.val.ind$Stratum)
+
+sites <- c('Apache-Sitgreaves NF, 4FRI, AZ, Phase 2', 'Apache-Sitgreaves NF, 4FRI, AZ, Phase 3')
+
+# Individual sites
+frame <- cbind(sites, 
+               #RMSE
+               rep('&',length(sites)), signif(sqrt(svyby(~MPMSqResidual, ~Forest, data.svy.val.ind.p, svymean)[,2]),4), 
+               #%RMSE
+               rep('&',length(sites)), signif(signif(100 * (sqrt(svyby(~MPMSqResidual, ~Forest, data.svy.val.ind.p, svymean)[,2]) / svymean(~STBIOMSha, data.svy.val.ind.p)[1]), 4), 4), 
+               #Bias
+               rep('&',length(sites)), signif(svyby(~MPMResidual, ~Forest, data.svy.val.ind.p, svymean)[2],2), 
+               #%Bias
+               rep('&',length(sites)), signif(100*svyby(~MPMResidual, ~Forest, data.svy.val.ind.p, svymean)[2]/svymean(~STBIOMSha, data.svy.val.ind.p)[1], 4),
+               ### pop vs sample splitter column
+               rep('& ',length(sites)),
+               #RMSE
+               rep('&',length(sites)), signif(sqrt(svyby(~MPMSqResidual, ~Forest, data.svy.val.ind.s, svymean)[,2]),4), 
+               #%RMSE
+               rep('&',length(sites)), signif(signif(100 * (sqrt(svyby(~MPMSqResidual, ~Forest, data.svy.val.ind.s, svymean)[,2]) / svymean(~STBIOMSha, data.svy.val.ind.s)[1]), 4), 4), 
+               #Bias
+               rep('&',length(sites)), signif(svyby(~MPMResidual, ~Forest, data.svy.val.ind.s, svymean)[2],2), 
+               #%Bias
+               rep('&',length(sites)), signif(100*svyby(~MPMResidual, ~Forest, data.svy.val.ind.s, svymean)[2]/svymean(~STBIOMSha, data.svy.val.ind.s)[1], 4), rep('\\\\', length(sites)))
+colnames(frame)<-c('site', 'div', 'rmsepop', 'div','Pctrmsepop','div', 'biaspop','div', 'Pctbiaspop','div','rmsesmp','div', 'Pctrmsesmp', 'div','biassmp','div', 'Pctbiassmp', 'rowEnd')
+frame
+write.csv(frame, file = 'Manuscript_tables\\modelErrorsvalind.csv', row.names = F)
 
 
 ########################################################

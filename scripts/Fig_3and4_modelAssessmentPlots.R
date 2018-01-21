@@ -52,6 +52,12 @@ ForIndex <- unique(data.val$Forest)
 startSeq<- 0
 FinSeq <- 700
 plotInt <- 200
+
+labelstart <- 10
+labelstartR <- 10
+labelend <- 625
+labelendR <- 575
+
 OneOnelty <- 1
 OneOnelwd <- 1
 OneOneCol <- 'black'
@@ -67,14 +73,16 @@ trendColPop <- 'orange'
 ## plots
 #png(file="scatterplotObPred.png",width=800,height=1200,res=120)
 #pdf(file="scatterplotObPred.pdf", width=6, height=12, family = "Helvetica")
-dev.new(width=7, height=16)
+#dev.new(width=7, height=16)
 dev.new(width=16, height=16)
+
 #par(mfrow=c(3, 3), mar=c(0.6, 0.6, 1.5, 0.5), oma=c(3.3, 3.3, 0, 2), mgp=c(2.25, 1, 0))
 par(mfrow=c(3, 3), mar=c(0.6, 0.6, 0.6, 0.5),
     oma=c(3.3, 3.3, 0, 2), mgp=c(2.25, 1, 0))
 #par(mar=c(5,3,2,2)+0.1)
+
 #all 
-plot(STBIOMSha ~ MPMEstimates, data = data.mod, xlim = c(0,625), ylim = c(0,625), col = 'white', las=1, xaxt="n")#, main = 'a)')
+plot(STBIOMSha ~ MPMEstimates, data = data.mod, xlim = c(0,635), ylim = c(0,635), col = 'white', las=1, xaxt="n")#, main = 'a)')
 abline(h = seq(from = startSeq, to =FinSeq, by = plotInt), col = 'light grey')
 abline(v = seq(from = startSeq, to =FinSeq, by = plotInt), col = 'light grey')
 points(STBIOMSha ~ MPMEstimates, data = data.mod, pch = 19, cex = .75, col = 'gray')
@@ -82,11 +90,14 @@ points(STBIOMSha ~ MPMEstimates, data = data.val, pch = 19, cex = .75, col = 'bl
 abline(a=0, b=1, col = OneOneCol, lwd = OneOnelwd, lty = OneOnelty)
 abline(lm(STBIOMSha ~ 0 + MPMEstimates, data = data.val), col = trendCol, lwd = trendlwd, lty = trendlwd)
 mtext("Field AGB (Mg/ha)", 2, outer=FALSE, line=2.75, xpd=NA, cex = 0.75)
-text(10, 600, c('A. All Mod. Const. Data'), adj=c(0,0.5))
-#legend('bottomright', c('model construction','validation'), col = c('gray', 'black'), pch = #c(19, 19),        pt.bg = c('black', 'gray'), bty = 'n')
+text(labelstart, labelend, c('A. All Model Const.'), adj=c(0,0.5))
+
+test<-summary(lm(STBIOMSha ~ MPMEstimates, data = data.val))
+text(labelstartR, labelendR, paste("Field =",signif(test$coefficients[1],3),"* Pred."), adj=c(0,0.5))
+
 
 # Kaibab
-plot(STBIOMSha ~ MPMEstimates, data = data.mod[data.mod$Forest==ForIndex[4], ], xlim = c(0,625), ylim = c(0,625), col = 'white', las=1, yaxt="n", xaxt="n")
+plot(STBIOMSha ~ MPMEstimates, data = data.mod[data.mod$Forest==ForIndex[4], ], xlim = c(0,635), ylim = c(0,635), col = 'white', las=1, yaxt="n", xaxt="n")
 abline(h = seq(from = startSeq, to =FinSeq, by = plotInt), col = 'light grey')
 abline(v = seq(from = startSeq, to =FinSeq, by = plotInt), col = 'light grey')
 #axis(2, labels=FALSE)
@@ -97,11 +108,13 @@ abline(a=0, b=1, col = OneOneCol, lwd = OneOnelwd, lty = OneOnelty)
 abline(lm(STBIOMSha ~ 0 + MPMEstimates, data = data.val[data.val$Forest==ForIndex[4], ]), col = trendCol, lwd = trendlwd, lty = trendlwd)
 svySlopeNK <- summary(svyglm(STBIOMSha ~ 0 + MPMEstimates, design = data.svy.val.NK))
 abline(a = 0, b = svySlopeNK$coefficients[1], col = trendColPop, lwd = trendlwdPop, lty = trendlwdPop)
-text(10, 600, c('B. Kaibab Plateau'), adj=c(0,0.5))
+text(labelstart, labelend, c('B. Kaibab Plateau'), adj=c(0,0.5))
+test<-summary(lm(STBIOMSha ~ 0 + MPMEstimates, data = data.val[data.val$Forest==ForIndex[4], ]))
+text(labelstartR, labelendR, paste("Field =",signif(test$coefficients[1],3),"* Pred."), adj=c(0,0.5))
 #legend('topleft', c('B'), col = c('black'), bty = 'n')
 
 # Coco
-plot(STBIOMSha ~ MPMEstimates, data = data.mod[data.mod$Forest==ForIndex[1], ], xlim = c(0,625), ylim = c(0,625), col = 'white', las=1, xaxt="n", yaxt="n")
+plot(STBIOMSha ~ MPMEstimates, data = data.mod[data.mod$Forest==ForIndex[1], ], xlim = c(0,635), ylim = c(0,635), col = 'white', las=1, xaxt="n", yaxt="n")
 abline(h = seq(from = startSeq, to =FinSeq, by = plotInt), col = 'light grey')
 abline(v = seq(from = startSeq, to =FinSeq, by = plotInt), col = 'light grey')
 points(STBIOMSha ~ MPMEstimates, data = data.mod[data.mod$Forest==ForIndex[1], ], pch = 19, cex = .75, col = 'gray')
@@ -112,11 +125,13 @@ abline(a=0, b=1, col = OneOneCol, lwd = OneOnelwd, lty = OneOnelty)
 svySlopeCoco <- summary(svyglm(STBIOMSha ~ 0 + MPMEstimates, design = data.svy.val.Coco))
 abline(a = 0, b = svySlopeCoco$coefficients[1], col = trendColPop, lwd = trendlwdPop, lty = trendlwdPop)
 abline(lm(STBIOMSha ~ 0 + MPMEstimates, data = data.val[data.val$Forest==ForIndex[1], ]), col = trendCol, lwd = trendlwd, lty = trendlwd)
-text(10, 600, c('C. Coconino NF'), adj=c(0,0.5))
+text(labelstart, labelend, c('C. Coconino NF'), adj=c(0,0.5))
+test<-summary(lm(STBIOMSha ~ 0 + MPMEstimates, data = data.val[data.val$Forest==ForIndex[1], ]))
+text(labelstartR, labelendR, paste("Field =",signif(test$coefficients[1],3),"* Pred."), adj=c(0,0.5))
 #legend('topleft', c('C'), col = c('black'), bty = 'n')
 
 # Tonto
-plot(STBIOMSha ~ MPMEstimates, data = data.mod[data.mod$Forest==ForIndex[3], ], xlim = c(0,625), ylim = c(0,625), col = 'white', las=1, xaxt="n")
+plot(STBIOMSha ~ MPMEstimates, data = data.mod[data.mod$Forest==ForIndex[3], ], xlim = c(0,635), ylim = c(0,635), col = 'white', las=1, xaxt="n")
 #axis(2, labels=FALSE)
 abline(h = seq(from = startSeq, to =FinSeq, by = plotInt), col = 'light grey')
 abline(v = seq(from = startSeq, to =FinSeq, by = plotInt), col = 'light grey')
@@ -128,12 +143,15 @@ svySlopeTonto <- summary(svyglm(STBIOMSha ~ 0 + MPMEstimates, design = data.svy.
 abline(a = 0, b = svySlopeTonto$coefficients[1], col = trendColPop, lwd = trendlwdPop, lty = trendlwdPop)
 abline(lm(STBIOMSha ~ 0 + MPMEstimates, data = data.val[data.val$Forest==ForIndex[3], ]), col = trendCol, lwd = trendlwd, lty = trendlwd)
 mtext("Field AGB (Mg/ha)", 2, outer=FALSE, line=2.75, xpd=NA, cex = 0.75)
-text(10, 600, c('D. Tonto NF'), adj=c(0,0.5))
+text(labelstart, labelend, c('D. Tonto NF'), adj=c(0,0.5))
+test<-summary(lm(STBIOMSha ~ 0 + MPMEstimates, data = data.val[data.val$Forest==ForIndex[3], ]))
+text(labelstartR, labelendR, paste("Field =",signif(test$coefficients[1],3),"* Pred."), adj=c(0,0.5))
+
 #legend('topleft', c('D'), col = c('black'), bty = 'n')
 
 
 # Sit
-plot(STBIOMSha ~ MPMEstimates, data = data.mod[data.mod$Forest==ForIndex[2], ], xlim = c(0,625), ylim = c(0,625), col = 'white',  las=1, xaxt="n", yaxt="n")
+plot(STBIOMSha ~ MPMEstimates, data = data.mod[data.mod$Forest==ForIndex[2], ], xlim = c(0,635), ylim = c(0,635), col = 'white',  las=1, xaxt="n", yaxt="n")
 abline(h = seq(from = startSeq, to =FinSeq, by = plotInt), col = 'light grey')
 abline(v = seq(from = startSeq, to =FinSeq, by = plotInt), col = 'light grey')
 points(STBIOMSha ~ MPMEstimates, data = data.mod[data.mod$Forest==ForIndex[2], ], pch = 19, cex = .75, col = 'gray')
@@ -143,11 +161,14 @@ abline(a=0, b=1, col = OneOneCol, lwd = OneOnelwd, lty = OneOnelty)
 svySlopeSit <- summary(svyglm(STBIOMSha ~ 0 + MPMEstimates, design = data.svy.val.Sit))
 abline(a = 0, b = svySlopeSit$coefficients[1], col = trendColPop, lwd = trendlwdPop, lty = trendlwdPop)
 abline(lm(STBIOMSha ~ 0 + MPMEstimates, data = data.val[data.val$Forest==ForIndex[2], ]), col = trendCol, lwd = trendlwd, lty = trendlwd)
-text(10, 600, c('E. AS NF, Stage 1'), adj=c(0,0.5))
+text(labelstart, labelend, c('E. AS NF, Stage 1'), adj=c(0,0.5))
+test<-summary(lm(STBIOMSha ~ 0 + MPMEstimates, data = data.val[data.val$Forest==ForIndex[2], ]))
+text(labelstartR, labelendR, paste("Field =",signif(test$coefficients[1],3),"* Pred."), adj=c(0,0.5))
+
 #legend('topleft', c('E'), col = c('black'), bty = 'n')
 
 # SWJM
-plot(STBIOMSha ~ MPMEstimates, data = data.mod[data.mod$Forest==ForIndex[5], ], xlim = c(0,625), ylim = c(0,625), col = 'white', 
+plot(STBIOMSha ~ MPMEstimates, data = data.mod[data.mod$Forest==ForIndex[5], ], xlim = c(0,635), ylim = c(0,635), col = 'white', 
      las=1, yaxt="n")
 #axis(2, labels=FALSE)
 abline(h = seq(from = startSeq, to =FinSeq, by = plotInt), col = 'light grey')
@@ -161,56 +182,73 @@ svySlopeSWJM <- summary(svyglm(STBIOMSha ~ 0 + MPMEstimates, design = data.svy.v
 abline(a = 0, b = svySlopeSWJM$coefficients[1], col = trendColPop, lwd = trendlwdPop, lty = trendlwdPop)
 abline(lm(STBIOMSha ~ 0 + MPMEstimates, data = data.val[data.val$Forest==ForIndex[5], ]), col = trendCol, lwd = trendlwd, lty = trendlwd)
 mtext("Predicted AGB (Mg/ha)", 1, outer=FALSE, line=2.75, xpd=NA, cex = 0.75)
-text(10, 600, c('F. SW Jemez Mountains'), adj=c(0,0.5))
+text(labelstart, labelend, c('F. SW Jemez Mountains'), adj=c(0,0.5))
+test<-summary(lm(STBIOMSha ~ 0 + MPMEstimates, data = data.val[data.val$Forest==ForIndex[5], ]))
+text(labelstartR, labelendR, paste("Field =",signif(test$coefficients[1],3),"* Pred."), adj=c(0,0.5))
 #legend('topleft', c('F'), col = c('black'), bty = 'n')
 
 ForIndexVal <- unique(data.val.ind$Forest)
 # Sit2
-plot(STBIOMSha ~ MPMEstimates, data = data.val.ind[data.val.ind$Forest==ForIndexVal[2], ], xlim = c(0,625), ylim = c(0,625), col = 'white', ylab = '', las=1)
+plot(STBIOMSha ~ MPMEstimates, data = data.val.ind[data.val.ind$Forest==ForIndexVal[2], ], xlim = c(0,635), ylim = c(0,635), col = 'white', ylab = '', las=1)
 abline(h = seq(from = startSeq, to =FinSeq, by = plotInt), col = 'light grey')
 abline(v = seq(from = startSeq, to =FinSeq, by = plotInt), col = 'light grey')
 points(STBIOMSha ~ MPMEstimates, data = data.mod[data.val.ind$Forest==ForIndexVal[2], ], pch = 19, cex = .75, col = 'black')
 abline(a=0, b=1, col = OneOneCol, lwd = OneOnelwd, lty = OneOnelty)
-svySlopeSit2 <- summary(svyglm(STBIOMSha ~ 0 + MPMEstimates, design = data.svy.val.Sit2))
-abline(a = 0, b = svySlopeSit2$coefficients[1], col = trendColPop, lwd = trendlwdPop, lty = trendlwdPop)
+svySlopeSit2 <- summary(svyglm(STBIOMSha ~ MPMEstimates, design = data.svy.val.Sit2))
+abline(a = svySlopeSit2$coefficients[1], b = svySlopeSit2$coefficients[2], col = trendColPop, lwd = trendlwdPop, lty = trendlwdPop)
 abline(lm(STBIOMSha ~ 0 + MPMEstimates, data = data.val.ind[data.val.ind$Forest==ForIndexVal[2], ]), col = trendCol, lwd = trendlwd, lty = trendlwd)
 mtext("Field AGB (Mg/ha)", 2, outer=FALSE, line=2.75, xpd=NA, cex = 0.75)
 mtext("Predicted AGB (Mg/ha)", 1, outer=FALSE, line=2.75, xpd=NA, cex = 0.75)
-text(10, 600, c('G. AS NF, Stage 2'), adj=c(0,0.5))
+text(labelstart, labelend, c('G. AS NF, Stage 2'), adj=c(0,0.5))
+test<-summary(lm(STBIOMSha ~ MPMEstimates, data = data.val.ind[data.val.ind$Forest==ForIndexVal[2], ]))
+text(labelstartR, labelendR, paste("Field =",signif(test$coefficients[2],3),"* Pred.",signif(test$coefficients[1],3)), adj=c(0,0.5))
 #legend('topleft', c('G'), col = c('black'), bty = 'n')
 
 # Sit3
-plot(STBIOMSha ~ MPMEstimates, data = data.val.ind[data.val.ind$Forest==ForIndexVal[1], ], xlim = c(0,625), ylim = c(0,625), col = 'white', las=1, yaxt="n")
+plot(STBIOMSha ~ MPMEstimates, data = data.val.ind[data.val.ind$Forest==ForIndexVal[1], ], xlim = c(0,635), ylim = c(0,635), col = 'white', las=1, yaxt="n")
 #axis(2, labels=FALSE)
 abline(h = seq(from = startSeq, to =FinSeq, by = plotInt), col = 'light grey')
 abline(v = seq(from = startSeq, to =FinSeq, by = plotInt), col = 'light grey')
 axis(4, las = 1)
 points(STBIOMSha ~ MPMEstimates, data = data.val.ind[data.val.ind$Forest==ForIndexVal[1], ], pch = 19, cex = .75, col = 'black', bg= 'black')
 abline(a=0, b=1, col = OneOneCol, lwd = OneOnelwd, lty = OneOnelty)
-svySlopeSit3 <- summary(svyglm(STBIOMSha ~ 0 + MPMEstimates, design = data.svy.val.Sit3))
-abline(a = 0, b = svySlopeSit3$coefficients[1], col = trendColPop, lwd = trendlwdPop, lty = trendlwdPop)
-abline(lm(STBIOMSha ~ 0 + MPMEstimates, data = data.val.ind[data.val.ind$Forest==ForIndexVal[1], ]), col = trendCol, lwd = trendlwd, lty = trendlwd)
+svySlopeSit3 <- summary(svyglm(STBIOMSha ~ MPMEstimates, design = data.svy.val.Sit3))
+abline(a = svySlopeSit3$coefficients[1], b = svySlopeSit3$coefficients[2], col = trendColPop, lwd = trendlwdPop, lty = trendlwdPop)
+abline(lm(STBIOMSha ~ MPMEstimates, data = data.val.ind[data.val.ind$Forest==ForIndexVal[1], ]), col = trendCol, lwd = trendlwd, lty = trendlwd)
 mtext("Predicted AGB (Mg/ha)", 1, outer=FALSE, line=2.75, xpd=NA, cex = 0.75)
-text(10, 600, c('H. AS NF, Stage 3'), adj=c(0,0.5))
+text(labelstart, labelend, c('H. AS NF, Stage 3'), adj=c(0,0.5))
+test<-summary(lm(STBIOMSha ~ MPMEstimates, data = data.val.ind[data.val.ind$Forest==ForIndexVal[1], ]))
+text(labelstartR, labelendR, paste("Field =",signif(test$coefficients[2],3),"* Pred.",signif(test$coefficients[1],3)), adj=c(0,0.5))
 #legend('topleft', c('H'), col = c('black'), bty = 'n')
 
 #all 
-plot(STBIOMSha ~ MPMEstimates, data = data.mod, xlim = c(0,625), ylim = c(0,625), col = 'white', 
-     ylab = 'Field AGB (Mg/ha)', xlab = '', las=1,yaxt="n", xaxt="n", frame.plot = F)
+plot(STBIOMSha ~ MPMEstimates, data = data.mod, xlim = c(0,635), ylim = c(0,635), col = 'white', xlab = '', las=1,yaxt="n", xaxt="n", frame.plot = F)
 legend('bottomright', c('model construction','validation', 'sample trendline', 'pop. trendline', '1:1'), 
        col = c('gray', 'black', trendCol,trendColPop, OneOneCol), 
        pch = c(19, 19, NA, NA, NA),  pt.bg = c('black', 'gray'), bty = 'n', 
        lty = c(NA, NA, trendlty,trendltyPop, OneOnelty), lwd = c(NA, NA, trendlwd,trendlwdPop, OneOnelwd), 
-       cex = 1.2)
+       cex = 1.1)
 
 
 #dev.off()
+summary(lm(STBIOMSha ~ MPMEstimates, data = data.val[data.val$Forest==ForIndex[4], ]))
+summary(lm(STBIOMSha ~ MPMEstimates, data = data.val[data.val$Forest==ForIndex[1], ]))
+summary(lm(STBIOMSha ~ MPMEstimates, data = data.val[data.val$Forest==ForIndex[3], ]))
+summary(lm(STBIOMSha ~ MPMEstimates, data = data.val[data.val$Forest==ForIndex[2], ]))
+summary(lm(STBIOMSha ~ MPMEstimates, data = data.val[data.val$Forest==ForIndex[5], ]))
+
+summary(lm(STBIOMSha ~ MPMEstimates, data = data.val.ind[data.val.ind$Forest==ForIndexVal[1], ]))
+summary(lm(STBIOMSha ~ MPMEstimates, data = data.val.ind[data.val.ind$Forest==ForIndexVal[2], ]))
+#########################################################################
 summary(lm(STBIOMSha ~ 0 + MPMEstimates, data = data.val[data.val$Forest==ForIndex[4], ]))
 summary(lm(STBIOMSha ~ 0 + MPMEstimates, data = data.val[data.val$Forest==ForIndex[1], ]))
 summary(lm(STBIOMSha ~ 0 + MPMEstimates, data = data.val[data.val$Forest==ForIndex[3], ]))
 summary(lm(STBIOMSha ~ 0 + MPMEstimates, data = data.val[data.val$Forest==ForIndex[2], ]))
 summary(lm(STBIOMSha ~ 0 + MPMEstimates, data = data.val[data.val$Forest==ForIndex[5], ]))
-#########################################################################
+
+test<-summary(lm(STBIOMSha ~ 0 + MPMEstimates, data = data.val[data.val$Forest==ForIndex[5], ]))
+test$coefficients
+paste("Field AGB =",signif(test$coefficients[1],3),"* Pred. AGB")
 #########################################################################
 #########################################################################
 #########################################################################
@@ -252,7 +290,7 @@ dev.new(width=7, height=16)
 par(mfrow=c(3, 2), mar=c(0.6, 0.6, 1.5, 0.5), oma=c(3.3, 3.3, 0, 2), mgp=c(2.25, 1, 0))
 #par(mar=c(5,3,2,2)+0.1)
 #.02 
-plot(STBIOMSha ~ MPMEstimates, data = data.mod[data.mod$PlotSizeha==PlotIndex[1], ], xlim = c(0,625), ylim = c(0,625), col = 'white', 
+plot(STBIOMSha ~ MPMEstimates, data = data.mod[data.mod$PlotSizeha==PlotIndex[1], ], xlim = c(0,635), ylim = c(0,635), col = 'white', 
      ylab = 'Field AGB (Mg/ha)', xlab = '', las=1, xaxt="n")#, main = 'a)')
 axis(1, labels=FALSE)
 points(STBIOMSha ~ MPMEstimates, data = data.mod[data.mod$PlotSizeha==PlotIndex[1], ], pch = 19, cex = .75, col = 'gray')
@@ -260,13 +298,13 @@ points(STBIOMSha ~ MPMEstimates, data = data.val[data.val$PlotSizeha==PlotIndex[
 points(STBIOMSha ~ MPMEstimates, data = data.val.ind[data.val.ind$PlotSizeha==PlotIndex[1], ], pch = 19, cex = .75, col = 'black', bg= 'black')
 abline(a=0, b=1, col = 'red', lwd = 2, lty = 5)
 mtext("Field AGB (Mg/ha)", 2, outer=FALSE, line=2.75, xpd=NA, cex = 0.75)
-text(10, 600, paste('A. plot size =', PlotIndex[1], 'ha'), adj=c(0,0.5))
+text(labelstart, labelend, paste('A. plot size =', PlotIndex[1], 'ha'), adj=c(0,0.5))
 text(45, 550, paste('n =', lengthVec[1]), adj=c(0,0.5))
 #legend('topleft', c('A'), col = c('black'), bty = 'n')
 legend('bottomright', c('model construction','validation'), col = c('gray', 'black'), pch = c(19, 19),        pt.bg = c('black', 'gray'), bty = 'n')
 
 # .03333
-plot(STBIOMSha ~ MPMEstimates, data = data.mod[data.mod$PlotSizeha==PlotIndex[2], ], xlim = c(0,625), ylim = c(0,625), col = 'white', 
+plot(STBIOMSha ~ MPMEstimates, data = data.mod[data.mod$PlotSizeha==PlotIndex[2], ], xlim = c(0,635), ylim = c(0,635), col = 'white', 
      las=1, yaxt="n", xaxt="n")
 #axis(2, labels=FALSE)
 axis(1, labels=FALSE)
@@ -275,12 +313,12 @@ points(STBIOMSha ~ MPMEstimates, data = data.mod[data.mod$PlotSizeha==PlotIndex[
 points(STBIOMSha ~ MPMEstimates, data = data.val[data.val$PlotSizeha==PlotIndex[2], ], pch = 19, cex = .75, col = 'black', bg= 'black')
 points(STBIOMSha ~ MPMEstimates, data = data.val.ind[data.val.ind$PlotSizeha==PlotIndex[2], ], pch = 19, cex = .75, col = 'black', bg= 'black')
 abline(a=0, b=1, col = 'red', lwd = 2, lty = 5)
-text(10, 600, paste('B. plot size =', PlotIndex[2], 'ha'), adj=c(0,0.5))
+text(labelstart, labelend, paste('B. plot size =', PlotIndex[2], 'ha'), adj=c(0,0.5))
 text(45, 550, paste('n =', lengthVec[2]), adj=c(0,0.5))
 #legend('topleft', c('B'), col = c('black'), bty = 'n')
 
 # .05
-plot(STBIOMSha ~ MPMEstimates, data = data.mod[data.mod$PlotSizeha==PlotIndex[3], ], xlim = c(0,625), ylim = c(0,625), col = 'white', 
+plot(STBIOMSha ~ MPMEstimates, data = data.mod[data.mod$PlotSizeha==PlotIndex[3], ], xlim = c(0,635), ylim = c(0,635), col = 'white', 
      ylab = 'Field AGB (Mg/ha)', las=1, xaxt="n")
 points(STBIOMSha ~ MPMEstimates, data = data.mod[data.mod$PlotSizeha==PlotIndex[3], ], pch = 19, cex = .75, col = 'gray')
 points(STBIOMSha ~ MPMEstimates, data = data.val[data.val$PlotSizeha==PlotIndex[3], ], pch = 19, cex = .75, col = 'black', bg= 'black')
@@ -288,12 +326,12 @@ points(STBIOMSha ~ MPMEstimates, data = data.val.ind[data.val.ind$PlotSizeha==Pl
 axis(1, labels=FALSE)
 mtext("Field AGB (Mg/ha)", 2, outer=FALSE, line=2.75, xpd=NA, cex = 0.75)
 abline(a=0, b=1, col = 'red', lwd = 2, lty = 5)
-text(10, 600, paste('C. plot size =', PlotIndex[3], 'ha'), adj=c(0,0.5))
+text(labelstart, labelend, paste('C. plot size =', PlotIndex[3], 'ha'), adj=c(0,0.5))
 text(45, 550, paste('n =', lengthVec[3]), adj=c(0,0.5))
 #legend('topleft', c('C'), col = c('black'), bty = 'n')
 
 # .06666666
-plot(STBIOMSha ~ MPMEstimates, data = data.mod[data.mod$PlotSizeha==PlotIndex[4], ], xlim = c(0,625), ylim = c(0,625), col = 'white', 
+plot(STBIOMSha ~ MPMEstimates, data = data.mod[data.mod$PlotSizeha==PlotIndex[4], ], xlim = c(0,635), ylim = c(0,635), col = 'white', 
      las=1, yaxt="n", xaxt="n")
 #axis(2, labels=FALSE)
 axis(1, labels=FALSE)
@@ -302,12 +340,12 @@ points(STBIOMSha ~ MPMEstimates, data = data.mod[data.mod$PlotSizeha==PlotIndex[
 points(STBIOMSha ~ MPMEstimates, data = data.val[data.val$PlotSizeha==PlotIndex[4], ], pch = 19, cex = .75, col = 'black', bg= 'black')
 points(STBIOMSha ~ MPMEstimates, data = data.val.ind[data.val.ind$PlotSizeha==PlotIndex[4], ], pch = 19, cex = .75, col = 'black', bg= 'black')
 abline(a=0, b=1, col = 'red', lwd = 2, lty = 5)
-text(10, 600, paste('D. plot size =', PlotIndex[4], 'ha'), adj=c(0,0.5))
+text(labelstart, labelend, paste('D. plot size =', PlotIndex[4], 'ha'), adj=c(0,0.5))
 text(45, 550, paste('n =', lengthVec[4]), adj=c(0,0.5))
 #legend('topleft', c('D'), col = c('black'), bty = 'n')
 
 # 0.1
-plot(STBIOMSha ~ MPMEstimates, data = data.val.ind[data.val.ind$PlotSizeha==PlotIndex[5], ], xlim = c(0,625), ylim = c(0,625), col = 'white', 
+plot(STBIOMSha ~ MPMEstimates, data = data.val.ind[data.val.ind$PlotSizeha==PlotIndex[5], ], xlim = c(0,635), ylim = c(0,635), col = 'white', 
      xlab = 'Predicted AGB (Mg/ha)', ylab = 'Field AGB (Mg/ha)', las=1)
 points(STBIOMSha ~ MPMEstimates, data = data.mod[data.mod$PlotSizeha==PlotIndex[5], ], pch = 19, cex = .75, col = 'gray')
 points(STBIOMSha ~ MPMEstimates, data = data.val[data.val$PlotSizeha==PlotIndex[5], ], pch = 19, cex = .75, col = 'black', bg= 'black')
@@ -315,12 +353,12 @@ points(STBIOMSha ~ MPMEstimates, data = data.val.ind[data.val.ind$PlotSizeha==Pl
 abline(a=0, b=1, col = 'red', lwd = 2, lty = 5)
 mtext("Field AGB (Mg/ha)", 2, outer=FALSE, line=2.75, xpd=NA, cex = 0.75)
 mtext("Predicted AGB (Mg/ha)", 1, outer=FALSE, line=2.75, xpd=NA, cex = 0.75)
-text(10, 600, paste('E. plot size =', PlotIndex[5], 'ha'), adj=c(0,0.5))
+text(labelstart, labelend, paste('E. plot size =', PlotIndex[5], 'ha'), adj=c(0,0.5))
 text(45, 550, paste('n =', lengthVec[5]), adj=c(0,0.5))
 #legend('topleft', c('E'), col = c('black'), bty = 'n')
 
 # 0.2
-plot(STBIOMSha ~ MPMEstimates, data = data.val.ind[data.val.ind$PlotSizeha==PlotIndex[6], ], xlim = c(0,625), ylim = c(0,625), col = 'white', 
+plot(STBIOMSha ~ MPMEstimates, data = data.val.ind[data.val.ind$PlotSizeha==PlotIndex[6], ], xlim = c(0,635), ylim = c(0,635), col = 'white', 
      xlab = 'Predicted AGB (Mg/ha)', las=1, yaxt="n")
 #axis(2, labels=FALSE)
 axis(4, las = 1)
@@ -329,7 +367,7 @@ points(STBIOMSha ~ MPMEstimates, data = data.val[data.val$PlotSizeha==PlotIndex[
 points(STBIOMSha ~ MPMEstimates, data = data.val.ind[data.val.ind$PlotSizeha==PlotIndex[6], ], pch = 19, cex = .75, col = 'black', bg= 'black')
 abline(a=0, b=1, col = 'red', lwd = 2, lty = 5)
 mtext("Predicted AGB (Mg/ha)", 1, outer=FALSE, line=2.75, xpd=NA, cex = 0.75)
-text(10, 600, paste('F. plot size =', PlotIndex[6], 'ha'), adj=c(0,0.5))
+text(labelstart, labelend, paste('F. plot size =', PlotIndex[6], 'ha'), adj=c(0,0.5))
 text(45, 550, paste('n =', lengthVec[6]), adj=c(0,0.5))
 #legend('topleft', c('F'), col = c('black'), bty = 'n')
 
