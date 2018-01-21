@@ -41,10 +41,19 @@ data.val.ind <- data.val.ind[(data.val.ind$Elev_kurtosis < 50), ]
 # swap L2 for SD?
 
 # log
-BioMass.Mod.log <- bas.lm(logSTBIOMSha ~ poly(Elev_mode, 2) + poly(Elev_P01, 2) + poly(Elev_P10, 2) + poly(Elev_P30, 2) + poly(Elev_P60, 2) + poly(Elev_P90, 2) +  Elev_stddev +  Elev_kurtosis + Elev_skewness + Elev_MAD_median + Elev_MAD_mode + Elev_L3 + Elev_L4 + Elev_LCV + Elev_Lskewness + Elev_Lkurtosis + Pct_all_returns_above_ht + all_returns_above_ht_div_Total_first_returns_x_100 + pct_all_returns_above_mean + All_returns_above_mode_div_Total_first_returns_x_100 + mode_pctAllOver3m + mode_pctAlloverModeDiv1st + P01_pctAllOver3m + P10_pctAllOver3m + P30_pctAllOver3m + P60_pctAllOver3m + P90_pctAllOver3m + elevation + aspect + slope + NDVI_Amp + R3ERUlabel, data = data.mod, prior="hyper-g", alpha = 3, modelprior=tr.poisson(10,30), method="MCMC+BAS")
+BioMass.Mod.log <- bas.lm(logSTBIOMSha ~ poly(Elev_mode, 2) + poly(Elev_P01, 2) + poly(Elev_P10, 2) + poly(Elev_P30, 2) + poly(Elev_P60, 2) + poly(Elev_P90, 2) +  Elev_stddev +  Elev_kurtosis + Elev_skewness + Elev_MAD_median + Elev_MAD_mode + Elev_L3 + Elev_L4 + Elev_LCV + Elev_Lskewness + Elev_Lkurtosis + Pct_all_returns_above_ht + all_returns_above_ht_div_Total_first_returns_x_100 + pct_all_returns_above_mean + All_returns_above_mode_div_Total_first_returns_x_100 + #Elev_mode*Pct_all_returns_above_ht + Elev_P01*Pct_all_returns_above_ht+ Elev_P10*Pct_all_returns_above_ht+ Elev_P30*Pct_all_returns_above_ht+ Elev_P60*Pct_all_returns_above_ht+ Elev_P90*Pct_all_returns_above_ht + 
+                            mode_pctAllOver3m + P01_pctAllOver3m + P10_pctAllOver3m + P30_pctAllOver3m + P60_pctAllOver3m + P90_pctAllOver3m + 
+                            elevation + aspect + slope + NDVI_Amp + R3ERUlabel, data = data.mod, prior="hyper-g", alpha = 3, modelprior=tr.poisson(10,30), method="MCMC+BAS")
 
 # no transform
-BioMass.Mod <- bas.lm(STBIOMSha ~ poly(Elev_mode, 2) + poly(Elev_P01, 2) + poly(Elev_P10, 2) + poly(Elev_P30, 2) + poly(Elev_P60, 2) + poly(Elev_P90, 2) +   Elev_stddev +  Elev_skewness +Elev_kurtosis + Elev_MAD_median + Elev_MAD_mode + Elev_L3 + Elev_L4 + Elev_LCV + Elev_Lskewness + Elev_Lkurtosis + Pct_all_returns_above_ht + all_returns_above_ht_div_Total_first_returns_x_100 + pct_all_returns_above_mean + All_returns_above_mode_div_Total_first_returns_x_100 + mode_pctAllOver3m + mode_pctAlloverModeDiv1st + P01_pctAllOver3m + P10_pctAllOver3m + P30_pctAllOver3m + P60_pctAllOver3m + P90_pctAllOver3m + elevation + aspect + slope + NDVI_Amp + R3ERUlabel,  data = data.mod, prior="hyper-g", alpha = 3, modelprior=tr.poisson(10,30), method="MCMC+BAS")
+BioMass.Mod <- bas.lm(STBIOMSha ~ poly(Elev_mode, 2) + poly(Elev_P01, 2) + poly(Elev_P10, 2) + poly(Elev_P30, 2) + poly(Elev_P60, 2) + poly(Elev_P90, 2) +   Elev_stddev +  Elev_skewness +Elev_kurtosis + Elev_MAD_median + Elev_MAD_mode + Elev_L3 + Elev_L4 + Elev_LCV + Elev_Lskewness + Elev_Lkurtosis + Pct_all_returns_above_ht + all_returns_above_ht_div_Total_first_returns_x_100 + pct_all_returns_above_mean + All_returns_above_mode_div_Total_first_returns_x_100 + + #Elev_mode*Pct_all_returns_above_ht + Elev_P01*Pct_all_returns_above_ht+ Elev_P10*Pct_all_returns_above_ht+ Elev_P30*Pct_all_returns_above_ht+ Elev_P60*Pct_all_returns_above_ht+ Elev_P90*Pct_all_returns_above_ht + 
+                      mode_pctAllOver3m + P01_pctAllOver3m + P10_pctAllOver3m + P30_pctAllOver3m + P60_pctAllOver3m + P90_pctAllOver3m + 
+                      elevation + aspect + slope + NDVI_Amp + R3ERUlabel,  data = data.mod, prior="hyper-g", alpha = 3, modelprior=tr.poisson(10,30), method="MCMC+BAS")
+
+#StepModel <- lm(STBIOMSha ~ poly(Elev_mode, 2) + poly(Elev_P01, 2) + poly(Elev_P10, 2) + poly(Elev_P30, 2) + poly(Elev_P60, 2) + poly(Elev_P90, 2) +   Elev_stddev +  Elev_skewness +Elev_kurtosis + Elev_MAD_median + Elev_MAD_mode + Elev_L3 + Elev_L4 + Elev_LCV + Elev_Lskewness + Elev_Lkurtosis + Pct_all_returns_above_ht + all_returns_above_ht_div_Total_first_returns_x_100 + pct_all_returns_above_mean + All_returns_above_mode_div_Total_first_returns_x_100 + mode_pctAllOver3m + mode_pctAlloverModeDiv1st + P01_pctAllOver3m + P10_pctAllOver3m + Elev_P30:Pct_all_returns_above_ht + P60_pctAllOver3m + P90_pctAllOver3m + elevation + aspect + slope + NDVI_Amp + R3ERUlabel,  data = data.mod)
+
+#null <- lm(STBIOMSha ~ 1, data = data.mod)
+#step(null, scope = list(upper = StepModel), direction ='both')
 
 #################################################################### 
 ## Median Models:
@@ -84,6 +93,13 @@ MedianBASModel <- lm(STBIOMSha ~ poly(Elev_P60,2) +
                      P30_pctAllOver3m +
                      P60_pctAllOver3m,  
                          data = data.mod)
+
+MedianBASModel <- lm(STBIOMSha ~ poly(Elev_P60,2) +
+                       Elev_MAD_median +
+                       all_returns_above_ht_div_Total_first_returns_x_100 +
+                       Elev_P30*Pct_all_returns_above_ht +
+                       P60_pctAllOver3m,  
+                     data = data.mod)
 
 ols_step_forward(MedianBASModel)
 
