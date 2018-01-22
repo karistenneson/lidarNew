@@ -40,6 +40,9 @@ data.val.ind <- data.val.ind[(data.val.ind$Elev_kurtosis < 50), ]
 # ? add P05? -- same with or without.
 # swap L2 for SD?
 
+# log log
+BioMass.Mod.log.log <- bas.lm(logSTBIOMSha ~ log(Elev_mode) + log(Elev_P01) + log(Elev_P10) + log(Elev_P30) + log(Elev_P60) + log(Elev_P90) +  Elev_stddev +  Elev_kurtosis + Elev_skewness + Elev_MAD_median + Elev_MAD_mode + Elev_L3 + Elev_L4 + Elev_LCV + Elev_Lskewness + Elev_Lkurtosis + Pct_all_returns_above_ht + all_returns_above_ht_div_Total_first_returns_x_100 + pct_all_returns_above_mean + All_returns_above_mode_div_Total_first_returns_x_100 + mode_pctAllOver3m + P01_pctAllOver3m + P10_pctAllOver3m + P30_pctAllOver3m + P60_pctAllOver3m + P90_pctAllOver3m + elevation + aspect + slope + NDVI_Amp + R3ERUlabel, data = data.mod, prior="hyper-g", alpha = 3, modelprior=tr.poisson(10,30), method="MCMC+BAS")
+
 # log
 # BioMass.Mod.log <- bas.lm(logSTBIOMSha ~ poly(Elev_mode, 2) + poly(Elev_P01, 2) + poly(Elev_P10, 2) + poly(Elev_P30, 2) + poly(Elev_P60, 2) + poly(Elev_P90, 2) +  Elev_stddev +  Elev_kurtosis + Elev_skewness + Elev_MAD_median + Elev_MAD_mode + Elev_L3 + Elev_L4 + Elev_LCV + Elev_Lskewness + Elev_Lkurtosis + Pct_all_returns_above_ht + all_returns_above_ht_div_Total_first_returns_x_100 + pct_all_returns_above_mean + All_returns_above_mode_div_Total_first_returns_x_100 + mode_pctAllOver3m + P01_pctAllOver3m + P10_pctAllOver3m + P30_pctAllOver3m + P60_pctAllOver3m + P90_pctAllOver3m + elevation + aspect + slope + NDVI_Amp + R3ERUlabel, data = data.mod, prior="hyper-g", alpha = 3, modelprior=tr.poisson(10,30), method="MCMC+BAS")
 
@@ -50,10 +53,14 @@ data.val.ind <- data.val.ind[(data.val.ind$Elev_kurtosis < 50), ]
 
 #################################################################### 
 ## Median Models:
+BioMass.Mod.log.log$namesx[which(BioMass.Mod.log.log$probne0>0.5)][-1]
 BioMass.Mod.log$namesx[which(BioMass.Mod.log$probne0>0.5)][-1]
 BioMass.Mod$namesx[which(BioMass.Mod$probne0>0.5)][-1]
 
 # Highest Probability Model
+HPM <- predict(BioMass.Mod.log.log, estimator="HPM")
+BioMass.Mod.log.log$namesx[HPM$bestmodel+1][-1]
+
 HPM <- predict(BioMass.Mod.log, estimator="HPM")
 BioMass.Mod.log$namesx[HPM$bestmodel+1][-1]
 
@@ -69,6 +76,17 @@ BioMass.Mod$namesx[HPM$bestmodel+1][-1]
 
 ####################################################
 ####################################################
+MedianBASModel_log_log <- lm(logSTBIOMSha ~ log(Elev_P30)+
+                           log(Elev_P60)+
+                           log(Elev_P90)+
+                           Elev_MAD_median+
+                           Pct_all_returns_above_ht+
+                           P60_pctAllOver3m+
+                           P90_pctAllOver3m+
+                           elevation+
+                           slope,  
+                         data = data.mod)
+
 MedianBASModel_log <- lm(logSTBIOMSha ~ Elev_P30+
                          poly(Elev_P60,2)+
                          Elev_P90+
