@@ -19,6 +19,7 @@ library(tidyverse)
 library(dplyr)
 #library(robustbase)
 library(olsrr)
+library(car)
 
 ### data files with plots that have no biomass
 #data.mod.full <- read.csv('Data//datamod.csv')
@@ -99,12 +100,7 @@ MedianBASModel_log <- lm(logSTBIOMSha ~ Elev_P30+
                              data = data.mod)
 
 ##
-MedianBASModel <- lm(STBIOMSha ~ poly(Elev_P60,2) +
-                     Elev_MAD_median +
-                     all_returns_above_ht_div_Total_first_returns_x_100 +
-                     P30_pctAllOver3m +
-                     P60_pctAllOver3m,  
-                         data = data.mod)
+#MedianBASModel <- lm(STBIOMSha ~ poly(Elev_P60,2) + Elev_MAD_median + all_returns_above_ht_div_Total_first_returns_x_100 + P30_pctAllOver3m + P60_pctAllOver3m, data = data.mod)
 
 MedianBASModel <- lm(STBIOMSha ~ poly(Elev_P60,2) +
                        Elev_MAD_median +
@@ -112,6 +108,45 @@ MedianBASModel <- lm(STBIOMSha ~ poly(Elev_P60,2) +
                        Elev_P30*Pct_all_returns_above_ht +
                        P60_pctAllOver3m,  
                      data = data.mod)
+
+outlierTest(MedianBASModel)
+qqPlot(MedianBASModel, main="QQ Plot")
+leveragePlots(MedianBASModel)
+av.Plots(MedianBASModel)
+sqrt(vif(MedianBASModel)) >2 # problem
+test<-summary(MedianBASModel)
+PRSE<-100*(test$coefficients[,2]/test$coefficients[,1])
+
+MedianBASModel_nop60 <- lm(STBIOMSha ~ poly(Elev_P60,2) +
+                       Elev_MAD_median +
+                       all_returns_above_ht_div_Total_first_returns_x_100 +
+                       Elev_P30*Pct_all_returns_above_ht,  
+                     data = data.mod)
+
+test<-summary(MedianBASModel_nop60)
+sqrt(vif(MedianBASModel_nop60)) >2 # problem
+
+PRSE<-100*(test$coefficients[,2]/test$coefficients[,1])
+
+##########
+MedianBASModel_nop60nofirst <- lm(STBIOMSha ~ poly(Elev_P60,2) +
+                             Elev_MAD_median +
+                             Elev_P30*Pct_all_returns_above_ht,  
+                           data = data.mod)
+
+test<-summary(MedianBASModel_nop60nofirst)
+sqrt(vif(MedianBASModel_nop60nofirst)) >2 # problem
+
+PRSE<-100*(test$coefficients[,2]/test$coefficients[,1])
+
+
+outlierTest(MedianBASModel_nop60nofirst)
+qqPlot(MedianBASModel_nop60nofirst, main="QQ Plot")
+leveragePlots(MedianBASModel_nop60nofirst)
+av.Plots(MedianBASModel_nop60nofirst)
+sqrt(vif(MedianBASModel_nop60nofirst)) >2 # problem
+test<-summary(MedianBASModel_nop60nofirst)
+PRSE<-100*(test$coefficients[,2]/test$coefficients[,1])
 
 #################################
 ## summary stats
@@ -168,10 +203,9 @@ data.val$lnMPMSqResidual <- (data.val$MPMResidual)^2
 data.val.ind$lnMPMSqResidual <- (data.val.ind$MPMResidual)^2
 
 ############################
-## MPM with no transform
-data.mod$MPMEstimates <- predict(MedianBASModel, se.fit = F)
-data.val$MPMEstimates <- predict(MedianBASModel, newdata = data.val, se.fit = F)
-data.val.ind$MPMEstimates <- predict(MedianBASModel, newdata = data.val.ind, se.fit = F)
+data.mod$MPMEstimates <- predict(MedianBASModel_nop60nofirst, se.fit = F)
+data.val$MPMEstimates <- predict(MedianBASModel_nop60nofirst, newdata = data.val, se.fit = F)
+data.val.ind$MPMEstimates <- predict(MedianBASModel_nop60nofirst, newdata = data.val.ind, se.fit = F)
 
 data.mod$MPMResidual <- data.mod$STBIOMSha - data.mod$MPMEstimates 
 data.val$MPMResidual <- data.val$STBIOMSha - data.val$MPMEstimates 
@@ -180,6 +214,19 @@ data.val.ind$MPMResidual <- data.val.ind$STBIOMSha - data.val.ind$MPMEstimates
 data.mod$MPMSqResidual <- (data.mod$MPMResidual)^2
 data.val$MPMSqResidual <- (data.val$MPMResidual)^2
 data.val.ind$MPMSqResidual <- (data.val.ind$MPMResidual)^2
+
+## MPM with no transform
+data.mod$MPMOLDEstimates <- predict(MedianBASModel, se.fit = F)
+data.val$MPMOLDEstimates <- predict(MedianBASModel, newdata = data.val, se.fit = F)
+data.val.ind$MPMOLDEstimates <- predict(MedianBASModel, newdata = data.val.ind, se.fit = F)
+
+data.mod$MPMOLDResidual <- data.mod$STBIOMSha - data.mod$MPMEstimates 
+data.val$MPMOLDResidual <- data.val$STBIOMSha - data.val$MPMEstimates 
+data.val.ind$MPMOLDResidual <- data.val.ind$STBIOMSha - data.val.ind$MPMEstimates 
+
+data.mod$MPMOLDSqResidual <- (data.mod$MPMResidual)^2
+data.val$MPMOLDSqResidual <- (data.val$MPMResidual)^2
+data.val.ind$MPMOLDSqResidual <- (data.val.ind$MPMResidual)^2
 ########################################################
 ########################################################
 ## export data and clear memory

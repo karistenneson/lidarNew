@@ -232,7 +232,7 @@ ForIndexVal <- unique(data.val.ind$Forest)
 plot(STBIOMSha ~ MPMEstimates, data = data.val.ind[data.val.ind$Forest==ForIndexVal[2], ], xlim = c(0,755), ylim = c(0,755), col = 'white', ylab = '', las=1)
 abline(h = seq(from = startSeq, to =FinSeq, by = plotInt), col = 'light grey')
 abline(v = seq(from = startSeq, to =FinSeq, by = plotInt), col = 'light grey')
-points(STBIOMSha ~ MPMEstimates, data = data.mod[data.val.ind$Forest==ForIndexVal[2], ], pch = 19, cex = .75, col = 'black')
+points(STBIOMSha ~ MPMEstimates, data = data.val.ind[data.val.ind$Forest==ForIndexVal[2], ], pch = 19, cex = .75, col = 'black')
 abline(a=0, b=1, col = OneOneCol, lwd = OneOnelwd, lty = OneOnelty)
 
 modeldata<-data.val.ind[data.val.ind$Forest==ForIndexVal[2], ]

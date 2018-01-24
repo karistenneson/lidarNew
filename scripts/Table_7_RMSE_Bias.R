@@ -11,7 +11,6 @@
 
 ### Load required packages
 library(cvTools)
-library(BAS)
 library(corrgram)
 library(survey)
 options(survey.lonely.psu="certainty")
@@ -43,10 +42,10 @@ lBMA <- c('lBMA', signif(sqrt(mean(data.mod$lnBMASqResidual)),4), '&', #RMSE
          signif(mean(data.mod$lnBMAResidual)/(mean(data.mod$lnBMAEstimates)),4),'&\\\\'
 )
 
-MPM <- c('MPM', signif(sqrt(mean(data.mod$MPMSqResidual)),4), '&', #RMSE
-                            signif(100*      sqrt(mean(data.mod$MPMSqResidual))/(mean(data.mod$MPMEstimates)), 5),'&', #%RMSE
-                            signif(mean(data.mod$MPMResidual), 4), '&',#Bias
-                            signif(mean(data.mod$MPMResidual)/(mean(data.mod$MPMEstimates)),4),'&\\\\'
+MPM <- c('MPM', signif(sqrt(mean(data.mod$MPMOLDSqResidual)),4), '&', #RMSE
+                            signif(100*      sqrt(mean(data.mod$MPMOLDSqResidual))/(mean(data.mod$MPMOLDEstimates)), 5),'&', #%RMSE
+                            signif(mean(data.mod$MPMOLDResidual), 4), '&',#Bias
+                            signif(mean(data.mod$MPMOLDResidual)/(mean(data.mod$MPMOLDEstimates)),4),'&\\\\'
 )
 
 BMA <- c('BMA', signif(sqrt(mean(data.mod$BMASqResidual)),4), '&', #RMSE
@@ -63,6 +62,12 @@ write.csv(Table5, 'Manuscript_tables\\Table5.csv', row.names = F)
 ########################################################
 ########################################################
 ## Table 7.
+
+MPM <- c('MPM', signif(sqrt(mean(data.mod$MPMSqResidual)),4), '&', #RMSE
+         signif(100*      sqrt(mean(data.mod$MPMSqResidual))/(mean(data.mod$MPMEstimates)), 5),'&', #%RMSE
+         signif(mean(data.mod$MPMResidual), 4), '&',#Bias
+         signif(mean(data.mod$MPMResidual)/(mean(data.mod$MPMEstimates)),4),'&\\\\')
+         
 frame <- data.frame(matrix(0, nrow = 14, ncol = 12))
 colnames(frame)<-c('site', 'valOrMod','n','div','rmsesmp','div', 'Pctrmsesmp', 'div','biassmp','div', 'Pctbiassmp', 'rowEnd')
 
@@ -81,7 +86,7 @@ frame[ ,2] <- c('&Validation&', '&Validation&', '&Model&','&Validation&', '&Mode
                 '&Validation&','&Validation&')
 
 ## sample size
-frame[ ,3] <- c(length(data.val),
+frame[ ,3] <- c(length(data.val$ID),
                 length(data.val$ID[data.val$Forest == 'NorthKaibab']),
                 length(data.mod$ID[data.mod$Forest == 'NorthKaibab']),
                 length(data.val$ID[data.val$Forest == 'Coconino']),
