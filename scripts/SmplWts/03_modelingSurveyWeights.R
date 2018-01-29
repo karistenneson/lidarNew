@@ -77,6 +77,22 @@ BioMass.Mod$namesx[HPM$bestmodel+1][-1]
 
 ####################################################
 ####################################################
+#svy.school <- svydesign(id~dnum + snum, fpc = ~fpc1 + fpc2, data = apiclus2)
+data.mod$StratumNum <- as.numeric(factor(data.mod$Stratum))
+
+data.mod.svy <- svydesign(id=~Forest + Stratum, fpc = ~ForestHaSize + fpc04StrataHaPlot, data = data.mod)
+
+hist(weights(data.mod.svy))
+save<-weights(data.mod.svy)
+data.mod$PLOT_ID[save>400]
+
+save<-hist(data.mod$StratumNum, breaks = length(unique(data.mod$StratumNum)), col = 'grey')
+save2<-cbind(save$breaks[1:length(save$counts)],save$counts)
+
+data.mod[save>400, c('ID','Forest','fpc04StrataHaPlot', 'Stratum')]
+data.mod$ID[data.mod$Stratum == 'fire11']
+####################################################
+####################################################
 HPMBASModel_log_log <- lm(logSTBIOMSha ~ log(Elev_P30)+
                            log(Elev_P60)+
                            log(Elev_P90)+
