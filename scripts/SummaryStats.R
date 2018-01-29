@@ -11,8 +11,8 @@ source(file="DataPrepwithZeroesv2.R")
 
 ### Load required packages
 library(survey)
-options(survey.lonely.psu="certainty")
-options(survey.lonely.psu="adjust")
+#options(survey.lonely.psu="certainty")
+options(survey.lonely.psu="average")
 
 ##################################################################################################################################
 ## OLD CODE
