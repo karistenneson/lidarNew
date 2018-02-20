@@ -70,10 +70,27 @@ BioMass.Mod$namesx[HPM$bestmodel+1][-1]
 
 #################################################################### 
 ## step test comparison
-#StepModel <- lm(STBIOMSha ~ poly(Elev_mode, 2) + poly(Elev_P01, 2) + poly(Elev_P10, 2) + poly(Elev_P30, 2) + poly(Elev_P60, 2) + poly(Elev_P90, 2) +   Elev_stddev +  Elev_skewness +Elev_kurtosis + Elev_MAD_median + Elev_MAD_mode + Elev_L3 + Elev_L4 + Elev_LCV + Elev_Lskewness + Elev_Lkurtosis + Pct_all_returns_above_ht + all_returns_above_ht_div_Total_first_returns_x_100 + pct_all_returns_above_mean + All_returns_above_mode_div_Total_first_returns_x_100 + mode_pctAllOver3m + mode_pctAlloverModeDiv1st + P01_pctAllOver3m + P10_pctAllOver3m + Elev_P30:Pct_all_returns_above_ht + P60_pctAllOver3m + P90_pctAllOver3m + elevation + aspect + slope + NDVI_Amp + R3ERUlabel,  data = data.mod)
+StepModel <- lm(STBIOMSha ~ poly(Elev_mode, 2) + poly(Elev_P01, 2) + poly(Elev_P10, 2) + poly(Elev_P30, 2) + poly(Elev_P60, 2) + poly(Elev_P90, 2) +   Elev_stddev +  Elev_skewness +Elev_kurtosis + Elev_MAD_median + Elev_MAD_mode + Elev_L3 + Elev_L4 + Elev_LCV + Elev_Lskewness + Elev_Lkurtosis + Pct_all_returns_above_ht + all_returns_above_ht_div_Total_first_returns_x_100 + pct_all_returns_above_mean + All_returns_above_mode_div_Total_first_returns_x_100 + mode_pctAllOver3m + mode_pctAlloverModeDiv1st + P01_pctAllOver3m + P10_pctAllOver3m + Elev_P30:Pct_all_returns_above_ht + P60_pctAllOver3m + P90_pctAllOver3m + elevation + aspect + slope + NDVI_Amp + R3ERUlabel,  data = data.mod)
 
-#null <- lm(STBIOMSha ~ 1, data = data.mod)
-#step(null, scope = list(upper = StepModel), direction ='both')
+null <- lm(STBIOMSha ~ 1, data = data.mod)
+step<-step(null, scope = list(upper = StepModel), direction ='both')
+summary(step)
+
+#################################################################### 
+## step test comparison
+StepModel_ln <- lm(logSTBIOMSha ~ poly(Elev_mode, 2) + poly(Elev_P01, 2) + poly(Elev_P10, 2) + poly(Elev_P30, 2) + poly(Elev_P60, 2) + poly(Elev_P90, 2) +   Elev_stddev +  Elev_skewness +Elev_kurtosis + Elev_MAD_median + Elev_MAD_mode + Elev_L3 + Elev_L4 + Elev_LCV + Elev_Lskewness + Elev_Lkurtosis + Pct_all_returns_above_ht + all_returns_above_ht_div_Total_first_returns_x_100 + pct_all_returns_above_mean + All_returns_above_mode_div_Total_first_returns_x_100 + mode_pctAllOver3m + P01_pctAllOver3m + P10_pctAllOver3m + Elev_P30:Pct_all_returns_above_ht + P60_pctAllOver3m + P90_pctAllOver3m + elevation + aspect + slope + NDVI_Amp + R3ERUlabel,  data = data.mod)
+
+null_ln <- lm(logSTBIOMSha ~ 1, data = data.mod)
+step_ln<-step(null_ln, scope = list(upper = StepModel_ln), direction ='both')
+summary(step_ln)
+
+outlierTest(step_ln)
+qqPlot(step_ln, main="QQ Plot")
+leveragePlots(step_ln)
+av.Plots(step_ln)
+sqrt(vif(step_ln)) >2 # problem
+test<-summary(step_ln)
+PRSE<-100*(test$coefficients[,2]/test$coefficients[,1])
 
 ####################################################
 ####################################################
@@ -127,8 +144,9 @@ MedianBASModel_log <- lm(logSTBIOMSha ~ Elev_P30+
 ##
 #MedianBASModel <- lm(STBIOMSha ~ poly(Elev_P60,2) + Elev_MAD_median + all_returns_above_ht_div_Total_first_returns_x_100 + P30_pctAllOver3m + P60_pctAllOver3m, data = data.mod)
 
-MedianBASModel <- lm(STBIOMSha ~ poly(Elev_P60,2) +
+MedianBASModel <- lm(STBIOMSha ~ poly(Elev_P60,2) +Elev_P30+
                        Elev_MAD_median +
+                       Pct_all_returns_above_ht+
                        all_returns_above_ht_div_Total_first_returns_x_100 +
                        Elev_P30*Pct_all_returns_above_ht +
                        P60_pctAllOver3m,  
@@ -186,6 +204,45 @@ AIC(MedianBASModel)
 ## predict data
 ########################################################
 ########################################################
+## Step log
+data.mod$lnStepEstimates <- exp(predict(step_ln))
+data.val$lnStepEstimates <- exp(predict(step_ln, newdata = data.val))
+data.val.ind$lnStepEstimates <- exp(predict(step_ln, newdata = data.val.ind))
+
+data.mod$lnStepResidual <- data.mod$STBIOMSha-data.mod$lnStepEstimates 
+data.val$lnStepResidual <- data.val$STBIOMSha-data.val$lnStepEstimates 
+data.val.ind$lnStepResidual <- data.val.ind$STBIOMSha-data.val.ind$lnStepEstimates 
+
+data.mod$lnStepSqResidual <- (data.mod$lnStepResidual)^2
+data.val$lnStepSqResidual <- (data.val$lnStepResidual)^2
+data.val.ind$lnStepSqResidual <- (data.val.ind$lnStepResidual)^2
+
+## Step AGB
+data.mod$StepEstimates <- predict(step)
+data.val$StepEstimates <- predict(step, newdata = data.val)
+data.val.ind$StepEstimates <- predict(step, newdata = data.val.ind)
+
+data.mod$StepResidual <- data.mod$STBIOMSha-data.mod$StepEstimates 
+data.val$StepResidual <- data.val$STBIOMSha-data.val$StepEstimates 
+data.val.ind$StepResidual <- data.val.ind$STBIOMSha-data.val.ind$StepEstimates 
+
+data.mod$StepSqResidual <- (data.mod$StepResidual)^2
+data.val$StepSqResidual <- (data.val$StepResidual)^2
+data.val.ind$StepSqResidual <- (data.val.ind$StepResidual)^2
+
+## BMA log
+data.mod$lnBMAEstimates <- exp(predict(object = BioMass.Mod.log, top='10000')$fit)
+data.val$lnBMAEstimates <- exp(predict(object = BioMass.Mod.log, newdata = data.val, top='10000')$fit)
+data.val.ind$lnBMAEstimates <- exp(predict(object = BioMass.Mod.log, newdata = data.val.ind, top='10000')$fit)
+
+data.mod$lnBMAResidual <- data.mod$STBIOMSha-data.mod$lnBMAEstimates 
+data.val$lnBMAResidual <- data.val$STBIOMSha-data.val$lnBMAEstimates 
+data.val.ind$lnBMAResidual <- data.val.ind$STBIOMSha-data.val.ind$lnBMAEstimates 
+
+data.mod$lnBMASqResidual <- (data.mod$lnBMAResidual)^2
+data.val$lnBMASqResidual <- (data.val$lnBMAResidual)^2
+data.val.ind$lnBMASqResidual <- (data.val.ind$lnBMAResidual)^2
+
 ## BMA log
 data.mod$lnBMAEstimates <- exp(predict(object = BioMass.Mod.log, top='10000')$fit)
 data.val$lnBMAEstimates <- exp(predict(object = BioMass.Mod.log, newdata = data.val, top='10000')$fit)
@@ -245,7 +302,7 @@ data.mod$MPMOLDEstimates <- predict(MedianBASModel, se.fit = F)
 data.val$MPMOLDEstimates <- predict(MedianBASModel, newdata = data.val, se.fit = F)
 data.val.ind$MPMOLDEstimates <- predict(MedianBASModel, newdata = data.val.ind, se.fit = F)
 
-data.mod$MPMOLDResidual <- data.mod$STBIOMSha - data.mod$MPMEOLDstimates 
+data.mod$MPMOLDResidual <- data.mod$STBIOMSha - data.mod$MPMOLDEstimates 
 data.val$MPMOLDResidual <- data.val$STBIOMSha - data.val$MPMOLDEstimates 
 data.val.ind$MPMOLDResidual <- data.val.ind$STBIOMSha - data.val.ind$MPMOLDEstimates 
 

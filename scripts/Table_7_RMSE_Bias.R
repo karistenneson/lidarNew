@@ -30,28 +30,40 @@ data.val.ind <- read.csv('Data\\datavalindNoZeroModelFits.csv')
 ########################################################
 ########################################################
 ## Table 5.
-lMPM <- c('lMPM', signif(sqrt(mean(data.mod$lnMPMSqResidual)),4), '&', #RMSE
-         signif(100*      sqrt(mean(data.mod$lnMPMSqResidual))/(mean(data.mod$lnMPMEstimates)), 5),'&', #%RMSE
-         signif(mean(data.mod$lnMPMResidual), 4), '&',#Bias
-         signif(mean(data.mod$lnMPMResidual)/(mean(data.mod$lnMPMEstimates)),4),'&\\\\'
+lStep <- c('lstep', signif(sqrt(mean(data.val$lnStepSqResidual)),4), '&', #RMSE
+          signif(100*      sqrt(mean(data.val$lnStepSqResidual))/(mean(data.val$STBIOMSha)), 5),'&', #%RMSE
+          signif(mean(data.val$lnStepResidual), 4), '&',#Bias
+          signif(mean(data.val$lnStepResidual)/(mean(data.val$STBIOMSha)),4),'&\\\\'
 )
 
-lBMA <- c('lBMA', signif(sqrt(mean(data.mod$lnBMASqResidual)),4), '&', #RMSE
-         signif(100*      sqrt(mean(data.mod$lnBMASqResidual))/(mean(data.mod$lnBMAEstimates)), 5),'&', #%RMSE
-         signif(mean(data.mod$lnBMAResidual), 4), '&',#Bias
-         signif(mean(data.mod$lnBMAResidual)/(mean(data.mod$lnBMAEstimates)),4),'&\\\\'
+lMPM <- c('lMPM', signif(sqrt(mean(data.val$lnMPMSqResidual)),4), '&', #RMSE
+         signif(100*      sqrt(mean(data.val$lnMPMSqResidual))/(mean(data.val$STBIOMSha)), 5),'&', #%RMSE
+         signif(mean(data.val$lnMPMResidual), 4), '&',#Bias
+         signif(mean(data.val$lnMPMResidual)/(mean(data.val$STBIOMSha)),4),'&\\\\'
 )
 
-MPM <- c('MPM', signif(sqrt(mean(data.mod$MPMOLDSqResidual)),4), '&', #RMSE
-                            signif(100*      sqrt(mean(data.mod$MPMOLDSqResidual))/(mean(data.mod$MPMOLDEstimates)), 5),'&', #%RMSE
-                            signif(mean(data.mod$MPMOLDResidual), 4), '&',#Bias
-                            signif(mean(data.mod$MPMOLDResidual)/(mean(data.mod$MPMOLDEstimates)),4),'&\\\\'
+lBMA <- c('lBMA', signif(sqrt(mean(data.val$lnBMASqResidual)),4), '&', #RMSE
+         signif(100*      sqrt(mean(data.val$lnBMASqResidual))/(mean(data.val$STBIOMSha)), 5),'&', #%RMSE
+         signif(mean(data.val$lnBMAResidual), 4), '&',#Bias
+         signif(mean(data.val$lnBMAResidual)/(mean(data.val$STBIOMSha)),4),'&\\\\'
 )
 
-BMA <- c('BMA', signif(sqrt(mean(data.mod$BMASqResidual)),4), '&', #RMSE
-         signif(100*      sqrt(mean(data.mod$BMASqResidual))/(mean(data.mod$BMAEstimates)), 5),'&', #%RMSE
-         signif(mean(data.mod$BMAResidual), 4), '&',#Bias
-         signif(mean(data.mod$BMAResidual)/(mean(data.mod$BMAEstimates)),4),'& \\\\'
+Step <- c('step', signif(sqrt(mean(data.val$StepSqResidual)),4), '&', #RMSE
+           signif(100*      sqrt(mean(data.val$StepSqResidual))/(mean(data.val$STBIOMSha)), 5),'&', #%RMSE
+           signif(mean(data.val$StepResidual), 4), '&',#Bias
+           signif(mean(data.val$StepResidual)/(mean(data.val$STBIOMSha)),4),'&\\\\'
+)
+
+MPM <- c('MPM', signif(sqrt(mean(data.val$MPMOLDSqResidual)),4), '&', #RMSE
+                            signif(100*      sqrt(mean(data.val$MPMOLDSqResidual))/(mean(data.val$STBIOMSha)), 5),'&', #%RMSE
+                            signif(mean(data.val$MPMOLDResidual), 4), '&',#Bias
+                            signif(mean(data.val$MPMOLDResidual)/(mean(data.val$STBIOMSha)),4),'&\\\\'
+)
+
+BMA <- c('BMA', signif(sqrt(mean(data.val$BMASqResidual)),4), '&', #RMSE
+         signif(100*      sqrt(mean(data.val$BMASqResidual))/(mean(data.val$STBIOMSha)), 5),'&', #%RMSE
+         signif(mean(data.val$BMAResidual), 4), '&',#Bias
+         signif(mean(data.val$BMAResidual)/(mean(data.val$STBIOMSha)),4),'& \\\\'
 )
 
 Table5<-rbind(t(lMPM),t(lBMA),t(MPM),t(BMA))
@@ -68,7 +80,7 @@ MPM <- c('MPM', signif(sqrt(mean(data.mod$MPMSqResidual)),4), '&', #RMSE
          signif(mean(data.mod$MPMResidual), 4), '&',#Bias
          signif(mean(data.mod$MPMResidual)/(mean(data.mod$MPMEstimates)),4),'&\\\\')
          
-frame <- data.frame(matrix(0, nrow = 14, ncol = 12))
+frame <- data.frame(matrix(0, nrow = 15, ncol = 12))
 colnames(frame)<-c('site', 'valOrMod','n','div','rmsesmp','div', 'Pctrmsesmp', 'div','biassmp','div', 'Pctbiassmp', 'rowEnd')
 
 ## latex table syntax
@@ -76,17 +88,18 @@ frame[ ,c(4,6,8,10)]<-rep('&',dim(frame)[1])
 frame[ ,dim(frame)[2]]<-rep('\\\\',dim(frame)[1])  
 
 ## site names
-frame[ ,1] <- c('Model Construction Data', '\\multirow{2}{*}{Kaibab Plateau, AZ}', '','\\multirow{2}{*}{Coconino NF, 4FRI, AZ}', '','\\multirow{2}{*}{Tonto NF, 4FRI, AZ}','', '\\multirow{2}{*}{Apache-Sitgreaves NF, 4FRI, AZ, Phase 1}','' ,'\\multirow{2}{*}{Southwest Jemez Mountains, NM}','',
+frame[ ,1] <- c('\\multirow{2}{*}{Model Construction Data}','', '\\multirow{2}{*}{Kaibab Plateau, AZ}', '','\\multirow{2}{*}{Coconino NF, 4FRI, AZ}', '','\\multirow{2}{*}{Tonto NF, 4FRI, AZ}','', '\\multirow{2}{*}{Apache-Sitgreaves NF, 4FRI, AZ, Phase 1}','' ,'\\multirow{2}{*}{Southwest Jemez Mountains, NM}','',
                 'Transferability Validation Data', 
                 'Apache-Sitgreaves NF, 4FRI, AZ, Phase 2','Apache-Sitgreaves NF, 4FRI, AZ, Phase 3')
 
 ## model or validation
-frame[ ,2] <- c('&Validation&', '&Validation&', '&Model&','&Validation&', '&Model&','&Validation&', '&Model&','&Validation&', '&Model&','&Validation&', '&Model&',
+frame[ ,2] <- c('&Validation&', '&Calibration&', '&Validation&', '&Calibration&','&Validation&', '&Calibration&','&Validation&', '&Calibration&','&Validation&', '&Calibration&','&Validation&', '&Calibration&',
                 '&&', 
                 '&Validation&','&Validation&')
 
 ## sample size
 frame[ ,3] <- c(length(data.val$ID),
+                length(data.mod$ID),
                 length(data.val$ID[data.val$Forest == 'NorthKaibab']),
                 length(data.mod$ID[data.mod$Forest == 'NorthKaibab']),
                 length(data.val$ID[data.val$Forest == 'Coconino']),
@@ -104,64 +117,69 @@ frame[ ,3] <- c(length(data.val$ID),
 
 # All sites, model val
 frame[1 , c(5,7,9,11)] <- c(signif(sqrt(mean(data.val$MPMSqResidual)),4), #RMSE
-                  signif(100*      sqrt(mean(data.val$MPMSqResidual))/(mean(data.val$MPMEstimates)), 5), #%RMSE
+                  signif(100*      sqrt(mean(data.val$MPMSqResidual))/(mean(data.val$STBIOMSha)), 5), #%RMSE
                   signif(mean(data.val$MPMResidual), 4), #Bias
-                  signif(mean(data.val$MPMResidual)/(mean(data.val$MPMEstimates)),4)
+                  signif(mean(data.val$MPMResidual)/(mean(data.val$STBIOMSha)),4)
 )
 
+frame[2 , c(5,7,9,11)] <- c(signif(sqrt(mean(data.mod$MPMSqResidual)),4), #RMSE
+                            signif(100*      sqrt(mean(data.mod$MPMSqResidual))/(mean(data.mod$STBIOMSha)), 5), #%RMSE
+                            signif(mean(data.mod$MPMResidual), 4), #Bias
+                            signif(mean(data.mod$MPMResidual)/(mean(data.mod$STBIOMSha)),4)
+)
 # Individual sites, model validation data
 MSS <- aggregate(data.val[, 'MPMSqResidual'], list(data.val$Forest), mean)
 MSS$RMSE <- sqrt(MSS[,2])
-MSS$pctRMSE <- 100*sqrt(MSS[,2])/aggregate(data.val[, 'MPMEstimates'], list(data.val$Forest), mean)[,2]
+MSS$pctRMSE <- 100*sqrt(MSS[,2])/aggregate(data.val[, 'STBIOMSha'], list(data.val$Forest), mean)[,2]
 fixedMat<-MSS[c(2, 1, 5, 3, 4),]
-frame[c(2,4,6,8,10), 5] <- signif(fixedMat$RMSE, 4)
-frame[c(2,4,6,8,10), 7] <- signif(fixedMat$pctRMSE, 4)
+frame[c(3,5,7,9,11), 5] <- signif(fixedMat$RMSE, 4)
+frame[c(3,5,7,9,11), 7] <- signif(fixedMat$pctRMSE, 4)
 
 # Individual sites, model data
 MSSmod <- aggregate(data.mod[, 'MPMSqResidual'], list(data.mod$Forest), mean)
 MSSmod$RMSE <- sqrt(MSSmod[,2])
-MSSmod$pctRMSE <- 100*sqrt(MSSmod[,2])/aggregate(data.mod[, 'MPMEstimates'], list(data.mod$Forest), mean)[,2]
+MSSmod$pctRMSE <- 100*sqrt(MSSmod[,2])/aggregate(data.mod[, 'STBIOMSha'], list(data.mod$Forest), mean)[,2]
 fixedMatmod<-MSSmod[c(2, 1, 5, 3, 4),]
-frame[c(3,5,7,9,11), 5] <- signif(fixedMatmod$RMSE,4)
-frame[c(3,5,7,9,11), 7] <- signif(fixedMatmod$pctRMSE,4)
+frame[c(4,6,8,10,12), 5] <- signif(fixedMatmod$RMSE,4)
+frame[c(4,6,8,10,12), 7] <- signif(fixedMatmod$pctRMSE,4)
 
 # Individual sites, transfer val data
 MSStv <- aggregate(data.val.ind[, 'MPMSqResidual'], list(data.val.ind$Forest), mean)
 MSStv$RMSE <- sqrt(MSStv[,2])
-MSStv$pctRMSE <- 100*sqrt(MSStv[,2])/aggregate(data.val.ind[, 'MPMEstimates'], list(data.val.ind$Forest), mean)[,2]
+MSStv$pctRMSE <- 100*sqrt(MSStv[,2])/aggregate(data.val.ind[, 'STBIOMSha'], list(data.val.ind$Forest), mean)[,2]
 fixedMattv<-MSStv[c(2, 1),]
-frame[c(13,14), 5] <- signif(fixedMattv$RMSE,4)
-frame[c(13,14), 7] <- signif(fixedMattv$pctRMSE,4)
+frame[c(14,15), 5] <- signif(fixedMattv$RMSE,4)
+frame[c(14,15), 7] <- signif(fixedMattv$pctRMSE,4)
 
 ### Bias
 # Individual sites, model validation data
 MS <- aggregate(data.val[, 'MPMResidual'], list(data.val$Forest), mean)
 MS$Bias <- MS[,2]
-MS$Aveyhat <- aggregate(data.val[, 'MPMEstimates'], list(data.val$Forest), mean)[,2]
+MS$Aveyhat <- aggregate(data.val[, 'STBIOMSha'], list(data.val$Forest), mean)[,2]
 MS$pctBias <- 100*MS$Bias/MS$Aveyhat
 fixedMatB<-MS[c(2, 1, 5, 3, 4),]
-frame[c(2,4,6,8,10), 9] <- signif(fixedMatB$Bias, 4)
-frame[c(2,4,6,8,10), 11] <- signif(fixedMatB$pctBias, 4)
+frame[c(3,5,7,9,11), 9] <- signif(fixedMatB$Bias, 4)
+frame[c(3,5,7,9,11), 11] <- signif(fixedMatB$pctBias, 4)
 
 # Individual sites, model data
 MSmod <- aggregate(data.mod[, 'MPMResidual'], list(data.mod$Forest), mean)
 MSmod$Bias <- MSmod[,2]
-MSmod$Aveyhat <- aggregate(data.mod[, 'MPMEstimates'], list(data.mod$Forest), mean)[,2]
+MSmod$Aveyhat <- aggregate(data.mod[, 'STBIOMSha'], list(data.mod$Forest), mean)[,2]
 MSmod$pctBias <- 100*MSmod$Bias/MSmod$Aveyhat
 fixedMatBmod<-MSmod[c(2, 1, 5, 3, 4),]
-frame[c(3,5,7,9,11), 9] <- signif(fixedMatBmod$Bias, 4)
-frame[c(3,5,7,9,11), 11] <- signif(fixedMatBmod$pctBias, 4)
+frame[c(4,6,8,10,12), 9] <- signif(fixedMatBmod$Bias, 4)
+frame[c(4,6,8,10,12), 11] <- signif(fixedMatBmod$pctBias, 4)
 
 # Individual sites, transfer val data
 MStv <- aggregate(data.val.ind[, 'MPMResidual'], list(data.val.ind$Forest), mean)
 MStv$Bias <- MStv[,2]
-MStv$Aveyhat <- aggregate(data.val.ind[, 'MPMEstimates'], list(data.val.ind$Forest), mean)[,2]
+MStv$Aveyhat <- aggregate(data.val.ind[, 'STBIOMSha'], list(data.val.ind$Forest), mean)[,2]
 MStv$pctBias <- 100*MStv$Bias/MStv$Aveyhat
 fixedMatBtv<-MStv[c(2, 1),]
-frame[c(13,14), 9] <- signif(fixedMatBtv$Bias, 4)
-frame[c(13,14), 11] <- signif(fixedMatBtv$pctBias, 4)
+frame[c(14,15), 9] <- signif(fixedMatBtv$Bias, 4)
+frame[c(14,15), 11] <- signif(fixedMatBtv$pctBias, 4)
 
-write.csv(frame, 'Manuscript_tables\\Table7.csv', row.names = F)
+write.csv(frame, 'Manuscript_tables\\Table7v2.csv', row.names = F)
 
 ########################################################
 ########################################################
