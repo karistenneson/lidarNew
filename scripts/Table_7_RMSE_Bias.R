@@ -36,10 +36,20 @@ lStep <- c('lstep', signif(sqrt(mean(data.val$lnStepSqResidual)),4), '&', #RMSE
           signif(mean(data.val$lnStepResidual)/(mean(data.val$STBIOMSha)),4),'&\\\\'
 )
 
+data.val$lnMPMResidual<-data.val$STBIOMSha -data.val$lnMPMEstimates 
+data.val$lnMPMSqResidual<- (data.val$lnMPMResidual)^2
+
 lMPM <- c('lMPM', signif(sqrt(mean(data.val$lnMPMSqResidual)),4), '&', #RMSE
          signif(100*      sqrt(mean(data.val$lnMPMSqResidual))/(mean(data.val$STBIOMSha)), 5),'&', #%RMSE
          signif(mean(data.val$lnMPMResidual), 4), '&',#Bias
          signif(mean(data.val$lnMPMResidual)/(mean(data.val$STBIOMSha)),4),'&\\\\'
+)
+
+
+MPM <- c('MPM', signif(sqrt(mean(data.val$MPMOLDSqResidual)),4), '&', #RMSE
+         signif(100*      sqrt(mean(data.val$MPMOLDSqResidual))/(mean(data.val$STBIOMSha)), 5),'&', #%RMSE
+         signif(mean(data.val$MPMOLDResidual), 4), '&',#Bias
+         signif(mean(data.val$MPMOLDResidual)/(mean(data.val$STBIOMSha)),4),'&\\\\'
 )
 
 lBMA <- c('lBMA', signif(sqrt(mean(data.val$lnBMASqResidual)),4), '&', #RMSE
@@ -54,11 +64,6 @@ Step <- c('step', signif(sqrt(mean(data.val$StepSqResidual)),4), '&', #RMSE
            signif(mean(data.val$StepResidual)/(mean(data.val$STBIOMSha)),4),'&\\\\'
 )
 
-MPM <- c('MPM', signif(sqrt(mean(data.val$MPMOLDSqResidual)),4), '&', #RMSE
-                            signif(100*      sqrt(mean(data.val$MPMOLDSqResidual))/(mean(data.val$STBIOMSha)), 5),'&', #%RMSE
-                            signif(mean(data.val$MPMOLDResidual), 4), '&',#Bias
-                            signif(mean(data.val$MPMOLDResidual)/(mean(data.val$STBIOMSha)),4),'&\\\\'
-)
 
 BMA <- c('BMA', signif(sqrt(mean(data.val$BMASqResidual)),4), '&', #RMSE
          signif(100*      sqrt(mean(data.val$BMASqResidual))/(mean(data.val$STBIOMSha)), 5),'&', #%RMSE

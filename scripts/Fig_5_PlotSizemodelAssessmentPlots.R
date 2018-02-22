@@ -107,7 +107,9 @@ lines(pred2$fit~df.new$MPMEstimates, col = trendCol, lwd = trendlwd, lty = trend
 text(labelstartR, labelendR, paste("Field =",signif(test$coefficients[2],3),"* Pred.",'+',signif(test$coefficients[1],3)), adj=c(0,0.5))
 mtext("Field AGB (Mg/ha)", 2, outer=FALSE, line=2.75, xpd=NA, cex = 0.75)
 text(labelstart, labelend, paste('A. plot size =', PlotIndex[1], 'ha'), adj=c(0,0.5))
-text(labelstartR2, labelendR2, paste('n =', lengthVec[1]), adj=c(0,0.5))
+text(labelstartR2, labelendR2-100, paste('n =', lengthVec[1]), adj=c(0,0.5))
+text(labelstart, labelendR2, c('RMSE = 20.12'), adj=c(0,0.5))
+text(labelstart, labelendR2-50, c('Bias = 29.56'), adj=c(0,0.5))
 
 # .01
 plot(STBIOMSha ~ MPMEstimates, data = data.mod[data.mod$PlotSizeha==PlotIndex[2], ], xlim = c(0,755), ylim = c(0,755), col = 'white', las=1, yaxt="n", xaxt="n")
@@ -133,7 +135,9 @@ lines(pred2$fit~df.new$MPMEstimates, col = trendCol, lwd = trendlwd, lty = trend
 text(labelstartR, labelendR, paste("Field =",signif(test$coefficients[2],3),"* Pred.",'+',signif(test$coefficients[1],3)), adj=c(0,0.5))
 
 text(labelstart, labelend, paste('B. plot size =', PlotIndex[2], 'ha'), adj=c(0,0.5))
-text(labelstartR2, labelendR2, paste('n =', lengthVec[2]), adj=c(0,0.5))
+text(labelstartR2, labelendR2-100, paste('n =', lengthVec[2]), adj=c(0,0.5))
+text(labelstart, labelendR2, c('RMSE = 5.73'), adj=c(0,0.5))
+text(labelstart, labelendR2-50, c('Bias = 2.02'), adj=c(0,0.5))
 
 # .02
 plot(STBIOMSha ~ MPMEstimates, data = data.mod[data.mod$PlotSizeha==PlotIndex[3], ], xlim = c(0,755), ylim = c(0,755), col = 'white', las=1, xaxt="n", yaxt="n")
@@ -158,7 +162,9 @@ lines(pred2$fit~df.new$MPMEstimates, col = trendCol, lwd = trendlwd, lty = trend
 text(labelstartR, labelendR, paste("Field =",signif(test$coefficients[2],3),"* Pred.",'+',signif(test$coefficients[1],3)), adj=c(0,0.5))
 
 text(labelstart, labelend, paste('C. plot size =', PlotIndex[3], 'ha'), adj=c(0,0.5))
-text(labelstartR2, labelendR2, paste('n =', lengthVec[3]), adj=c(0,0.5))
+text(labelstartR2, labelendR2-100, paste('n =', lengthVec[3]), adj=c(0,0.5))
+text(labelstart, labelendR2, c('RMSE = 2.86'), adj=c(0,0.5))
+text(labelstart, labelendR2-50, c('Bias = -1.71'), adj=c(0,0.5))
 
 # .03
 plot(STBIOMSha ~ MPMEstimates, data = data.val[data.val$PlotSizeha==PlotIndex[4], ], xlim = c(0,755), ylim = c(0,755), col = 'white', las=1)
@@ -186,7 +192,9 @@ text(labelstartR, labelendR, paste("Field =",signif(test$coefficients[2],3),"* P
 mtext("Predicted AGB (Mg/ha)", 1, outer=FALSE, line=2.75, xpd=NA, cex = 0.75)
 mtext("Field AGB (Mg/ha)", 2, outer=FALSE, line=2.75, xpd=NA, cex = 0.75)
 text(labelstart, labelend, paste('D. plot size =', PlotIndex[4], 'ha'), adj=c(0,0.5))
-text(labelstartR2, labelendR2, paste('n =', lengthVec[4]), adj=c(0,0.5))
+text(labelstartR2, labelendR2-100, paste('n =', lengthVec[4]), adj=c(0,0.5))
+text(labelstart, labelendR2, c('RMSE = 4'), adj=c(0,0.5))
+text(labelstart, labelendR2-50, c('Bias = -4.75'), adj=c(0,0.5))
 
 # .04
 plot(STBIOMSha ~ MPMEstimates, data = data.mod[data.mod$PlotSizeha==PlotIndex[5], ], xlim = c(0,755), ylim = c(0,755), col = 'white', 
@@ -214,7 +222,9 @@ text(labelstartR, labelendR, paste("Field =",signif(test$coefficients[2],3),"* P
 
 mtext("Predicted AGB (Mg/ha)", 1, outer=FALSE, line=2.75, xpd=NA, cex = 0.75)
 text(labelstart, labelend, paste('E. plot size =', PlotIndex[5], 'ha'), adj=c(0,0.5))
-text(labelstartR2, labelendR2, paste('n =', lengthVec[5]), adj=c(0,0.5))
+text(labelstartR2, labelendR2-100, paste('n =', lengthVec[5]), adj=c(0,0.5))
+text(labelstart, labelendR2, c('RMSE = 1.4'), adj=c(0,0.5))
+text(labelstart, labelendR2-50, c('Bias = -3.82'), adj=c(0,0.5))
 
 # .08
 plot(STBIOMSha ~ MPMEstimates, data = data.val[data.val$PlotSizeha==PlotIndex[6], ], xlim = c(0,755), ylim = c(0,755), col = 'white', ylab = '', las=1, yaxt = 'n')
@@ -239,11 +249,13 @@ text(labelstartR, labelendR, paste("Field =",signif(test$coefficients[2],3),"* P
 axis(4, las = 1)
 mtext("Predicted AGB (Mg/ha)", 1, outer=FALSE, line=2.75, xpd=NA, cex = 0.75)
 text(labelstart, labelend, paste('F. plot size =', PlotIndex[6], 'ha'), adj=c(0,0.5))
-text(labelstartR2, labelendR2, paste('n =', lengthVec[6]), adj=c(0,0.5))
+text(labelstartR2, labelendR2-100, paste('n =', lengthVec[6]), adj=c(0,0.5))
+text(labelstart, labelendR2, c('RMSE = 2.95'), adj=c(0,0.5))
+text(labelstart, labelendR2-50, c('Bias = -13.71'), adj=c(0,0.5))
 
 #all 
 plot(STBIOMSha ~ MPMEstimates, data = data.mod, xlim = c(0,755), ylim = c(0,755), col = 'white', xlab = '', las=1,yaxt="n", xaxt="n", frame.plot = F)
-legend('left', c('model construction','model validation', 'transfer validation', 'trendline', '95% CI', '1:1'), 
+legend('left', c('model calibration','model validation', 'transfer validation', 'trendline', '95% CI', '1:1'), 
        col = c('gray', 'black', transferCol, trendCol, CICol, OneOneCol), 
        pch = c(19, 19, 19, NA, NA, NA),  pt.bg = c('black', 'gray'), bty = 'n', 
        lty = c(NA, NA, NA, trendlty, CIlty, OneOnelty), lwd = c(NA, NA, NA, trendlwd, CIlwd, OneOnelwd), 
@@ -253,6 +265,23 @@ legend('left', c('model construction','model validation', 'transfer validation',
 #########################################################################
 #########################################################################
 #########################################################################
+##RMSE calcs
+
+data.val2<-rbind(data.val,data.val.ind) 
+  
+i = 1
+
+i
+sqrt(sum((data.val2$MPMEstimates[data.val2$PlotSizeha==PlotIndex[i]] - data.val2$STBIOMSha[data.val2$PlotSizeha==PlotIndex[i]])^2))/length(data.val2$STBIOMSha[data.val2$PlotSizeha==PlotIndex[i]])
+i = i +1 
+
+#########################################################################
+##Bias calcs
+i = 1
+
+i
+sum(data.val2$STBIOMSha[data.val2$PlotSizeha==PlotIndex[i]]-data.val2$MPMEstimates[data.val2$PlotSizeha==PlotIndex[i]])/length(data.val2$STBIOMSha[data.val2$PlotSizeha==PlotIndex[i]])
+i = i +1 
 #########################################################################
 #########################################################################
 #########################################################################
