@@ -78,7 +78,7 @@ mtext("Predicted AGB (Mg/ha)", 1, outer=FALSE, line=2)
 abline(h = seq(from = startSeq, to =FinSeq, by = plotInt), col = 'light grey')
 abline(v = seq(from = startSeq, to =FinSeq, by = plotInt), col = 'light grey')
 abline(a=0, b=1, col = OneOneCol, lwd = OneOnelwd, lty = OneOnelty)
-text(labelstart, labelend, c('A. All Model Const. Development'), adj=c(0,0.5))
+text(labelstart, labelend, c('A. Model calibration data'), adj=c(0,0.5))
 text(labelstartR, labelendR, c('MA Reg.: Field = 1.22 * Pred - 0.27'), adj=c(0,0.5))
 
 plot(testmaval, 'MA', main = '', xlim = c(0,755), ylim = c(0,755), pch = 19, xlab = ' ', ylab = ' ', las = 1, yaxt="n")
@@ -88,7 +88,7 @@ axis(2, labels=FALSE)
 abline(h = seq(from = startSeq, to =FinSeq, by = plotInt), col = 'light grey')
 abline(v = seq(from = startSeq, to =FinSeq, by = plotInt), col = 'light grey')
 abline(a=0, b=1, col = OneOneCol, lwd = OneOnelwd, lty = OneOnelty)
-text(labelstart, labelend, c('B. All Model Const. Validation'), adj=c(0,0.5))
+text(labelstart, labelend, c('B. Model validation data'), adj=c(0,0.5))
 text(labelstartR, labelendR, c('MA Reg.: Field = 1.2 * Pred - 25.29'), adj=c(0,0.5))
 
 
